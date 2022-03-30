@@ -25,8 +25,8 @@ source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
 # Le Projet personnel
 J'ai divisé ce dépot en 3 branches :
-- `original` qui regroupe les fichiers originaux de `ggarillot`
-- `ilcsoft` qui permet d'exécuter le programme de `ggarillot` avec de petites modifications pour s'adapter à un stockage local.
+- `original` qui regroupe les fichiers originaux de `ggarillot` avec de petites modifications pour s'adapter à un stockage local.
+- `ilcsoft` amélioration du code `original`
 - `fcc` qui s'adapte aux nouvelles contraintes du projet FCC du CERN.
 
 ## La Branch `original`
