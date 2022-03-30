@@ -12,6 +12,9 @@ export  NNH_HOME=~/nnhAnalysis \
         NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
 ```
 ```
+mkdir $NNH_HOME/processor/OUTPUT
+```
+```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
         NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
 ```
@@ -124,10 +127,10 @@ cd $NNH_HOME/processor/script
 ```
 On crée un dossier pour tous les fichiers ROOTs qui seront générer :
 ```
-mkdir $NNH_HOME/ROOT
+mkdir $NNH_HOME/processor/OUTPUT
 ```
 ```
-export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/ROOT
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
 ```
 Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL/` : 
 ```
