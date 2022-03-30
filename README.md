@@ -1,6 +1,12 @@
 # nnhAnalysis
 Stage M2 IP2I (CNRS), groupe FCC (CMS)
 
+
+Dans ce dépots, le programme permet l'analyse des cannaux :
+
+- e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
+- e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
+
 Dans cette branche, on place le code original développer par ggarillot, que l'on peut retrouver dans la branche `refactor` sur :
 https://github.com/ggarillot/nnhAnalysis.git
 
@@ -23,5 +29,3 @@ Ou, juste après la commande `git clone`
 ```
 export NNH_HOME=nnhAnalysis
 ```
-
-bla bla bla
