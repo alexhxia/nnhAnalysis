@@ -1,43 +1,75 @@
 # nnh processor
 
+## Résumé
+On traite une première fois les fichiers LCIO dans la partie `processor` afin obtenir un fichier ROOT par processus (cf `processor/README`), qui sera placer dans un dossier `OUTPUT`.
+
+NB : les commandes pour avoir un environnement opérationnel, à refaire à chaque ouverture :
+```
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
+```
+```
+export  NNH_HOME=~/nnhAnalysis \
+        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+```
+```
+export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
+        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
+```
+```
+export MARLIN_DLL=$MARLIN_DLL:~/nnhAnalysis/processor/lib/libnnhProcessor.so
+```
+Compilation :
+```
+cd $NNH_HOME/processor && mkdir BUILD && cd BUILD
+```
+```
+cmake -C $ILCSOFT/ILCSoft.cmake .. & make & make install
+```
+Pour un seul fichier (modifier avant le nom des fichiers `input.lcio` et `output.root` dans `Marlin NNH_steer.xml`) :
+```
+Marlin $NNH_HOME/processor/NNH_steer.xml 
+```
+Pour plusieurs processus (ici 402007 et 402008) :
+```
+python3 $NNH_HOME/processor/launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
+Pour tous les processus :
+```
+python3 $NNH_HOME/processor/launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
+# nnh processor
+
 This folder is dedicated to the Marlin processor that will transform the mini-DST lcio files into TTrees in ROOT files.
 
-Usage of the processor itself is very simple, just modify the [``./script/NNH_steer.xml``](./script/NNH_steer.xml) file by replacing ``input.slcio`` and ``output.root`` into, respectively, the mini-DST input file name and the desired ROOT output file name, and then do
+Usage of the processor itself is very simple, just modify the [``./script/NNH_steer.xml``](./script/NNH_steer.xml) file by replacing ``input.slcio`` and ``output.root`` into, and then do
 ```
-$ Marlin NNH_steer.xml
+Marlin $NNH_HOME/processor/script/NNH_steer.xml
 ```
 
 The [``launchNNHProcessor.py``](./script/launchNNHProcessor.py) is just there to automatize the processing of multiple files. 
 
-
-> **IMPORTANT: Similarly to the [mini-DST maker](../miniDSTMaker), if you need to access mini-DST files on lyogrid06, do not execute the usual init_ilcsoft.sh script, but instead do:**
->
->     $ . ./script/setEnv.sh
-> and do not forget to create a proxy if not done already
->
->     $ voms-proxy-init --voms calice
-
-
-In order for the script to run properly, the input files must be ordered like this:
-
+## Compilation
 ```
-inputFiles
-└───402001
-|   | 402001_file_0_mini-DST.slcio
-|   | 402001_file_1_mini-DST.slcio
-|   | ...
-└───402002
-|   | 402002_file_0_mini-DST.slcio
-|   | 402002_file_1_mini-DST.slcio
-|   | ...
-└───402003
-|   | 402003_file_0_mini-DST.slcio
-|   | 402003_file_1_mini-DST.slcio
-|   | ...
-...
+cd $NNH_HOME/processor && mkdir BUILD && cd BUILD
 ```
-
-### Run the script
+Si ce n'est pas fait, avant le `cmake`, il faut impérativement :
+```
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
+```
+```
+cmake -C $ILCSOFT/ILCSoft.cmake ..
+```
+```
+make
+```
+```
+make install
+```
+La compilation génère une bibliotèque `libnnhProcessor` qu'il faut impérativement l'ajouter dans le `MARLIN_DLL` :
+```
+export MARLIN_DLL=$MARLIN_DLL:~/nnhAnalysis/processor/lib/libnnhProcessor.so
+```
+## Run the script
 ```
 $ python3 ./script/launchNNHProcessor.py -h
 > usage: launchNNHProcessor.py [-h] [-n NCORES] [-p PROCESSES [PROCESSES ...]] -i INPUTDIRECTORY
@@ -69,7 +101,49 @@ $ python3 script/launchNNHProcessor.py -n 10 -p 402007 402008 -i /path/to/inputF
 
 The ``launchNNHProcessor.py`` script will create one ROOT file per processID (all the results from each mini-DST file are merged). It will also create a ``logs/`` folder in the output directory to check if something wrong happened (the script will output an error message if it has encountered a problem with one file).
 
-## Output variables
+### Convertir un seul fichier
+```
+cd $NNH_HOME/processor/script/
+```
+Dans le programme `NNH_steer.xml `, il faut adapter le fichier d'entrée `input.slcio` et  le fichier de sortie `output.root` par les chemins souhaités.
+
+On peut à présent lancer ce programme qui construit un fichier `.root` à partir d'un fichier `.slcio` :
+```
+Marlin NNH_steer.xml 
+```
+NB :Vérifier le contenu du nouveau fichier .root
+```
+root -l
+TFile *f = TFile::open("XXX.root")
+f->ls()
+tree->Scan()
+```
+### Convertir plusieurs processus
+```
+cd $NNH_HOME/processor/script
+```
+On crée un dossier pour tous les fichiers ROOTs qui seront générer :
+```
+mkdir $NNH_HOME/ROOT
+```
+```
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/ROOT
+```
+Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL/` : 
+```
+export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+```
+#### Convertir quelques processus :
+Utiliser le paramètre `-p num_processus`. Par exemple pour les processus `402007` `402008` :
+```
+python3 launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
+#### Convertir tous les processus
+```
+python3 launchNNHProcessor.py -n 100 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
+
+### Output variables
 
 The Marlin processor will simultaneously output variables for the &nu;&nu;h (h &rarr; b bbar) and the &nu;&nu;h (h &rarr; WW* &rarr; qqqq) channels. The variables specific to the &nu;&nu;h (h &rarr; b bbar) channel are reconstructed using the 2-jet reconstruction, the 2-jets are identified as the two b quarks. The variables specific to the &nu;&nu;h (h &rarr; WW* &rarr; qqqq) channel are reconstructed using the 4-jet reconstruction. Amongst the 6 different jet pairings, the di-jet that has its mass closest to the true mass of the W boson is identified as the on-shell W boson and the two remaining jets are identified as the off-shell W* boson. The common variables to these two channels (higgs mass, energy...) are reconstructed using all the visible particles, minus isolated leptons and photons (the jet reconstruction is done on all particles minus isolated leptons and photons).
 
@@ -117,7 +191,7 @@ These following variables are debug variables and should not be used for cuts or
 - ``mc_higgs_decay2_e, mc_higgs_decay2_pt, mc_higgs_decay2_m`` : true energy, transverse impulsion and mass of the least energetic decay from the higgs
 - ``mc_higgs_decay_cosBetw`` : cosine of the true angle between the two decays of the higgs
 
-### Higgs Decay
+#### Higgs Decay
 
 The decay of the higgs is identified by 2 variables : ``mc_higgs_decay`` and ``mc_higgs_subDecay``.
 
