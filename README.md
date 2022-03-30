@@ -1,7 +1,7 @@
 # nnhAnalysis
 Stage M2 IP2I (CNRS), groupe FCC (CMS)
 
-Dans ce dépots, le programme permet l'analyse des cannaux :
+Dans ce dépots, le programme permet l'analyse les cannaux :
 
 - e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
 - e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
