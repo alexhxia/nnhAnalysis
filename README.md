@@ -25,11 +25,9 @@ Ou
 ```
 git clone --branch original https://github.com/alexhxia/nnhAnalysis.git original
 ```
-On considère le dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
 export NNH_HOME=original
 ```
-On se place dans le dossier créer :
 ```
 cd original
 ```
