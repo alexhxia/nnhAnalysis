@@ -21,6 +21,18 @@ On se place dans le dossier créer :
 ```
 cd nnhAnalysis
 ```
+Ou 
+```
+git clone --branch original https://github.com/alexhxia/nnhAnalysis.git original
+```
+On considère le dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
+```
+export NNH_HOME=original
+```
+On se place dans le dossier créer :
+```
+cd original
+```
 Pour exécuter ce code, on a aussi besoin de préparer l'environnement grâce à :
 ```
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
