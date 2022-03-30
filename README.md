@@ -32,7 +32,5 @@ rm -R miniDSTMaker
 ```
 NB : d'autres modifications sont apportées à l'intérieur des dossiers `processor` et `analysis`.
 # Rappel : le Projet initial
-Ce projet est basé sur le travaille de `ggarillot`. Pour importer directement de son github :
-```
-git clone --branch refactor https://github.com/ggarillot/nnhAnalysis.git
-```
+Ce projet est basé sur le travaille de `ggarillot` accéssible directement de son github :
+https://github.com/ggarillot/nnhAnalysis/tree/refactor
