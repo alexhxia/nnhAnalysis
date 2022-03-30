@@ -220,7 +220,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', '--ncores', help='Number of threads', required=False, default=8)
     parser.add_argument('-p', '--processes', help='ProcessIDs to analyse', required=False, nargs='+')
-    parser.add_argument('-i', '--inputDirectory', help='Path of input files', required=True)
+    parser.add_argument('-i', '--filesDirectory', help='Path of input files', required=True)
     parser.add_argument('-r', '--remote', help='indicate that files need to be downloaded', action='store_true', default=False)
     parser.add_argument('-o', '--outputDirectory', help='output directory', required=True)
     args = vars(parser.parse_args())
