@@ -7,7 +7,8 @@ Dans ce dépots, le programme permet l'analyse des cannaux :
 - e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
 
 # Le Projet initial
-Ce projet est basé sur le travaille de `ggarillot`. Pour importer directement de son github :
+Ce projet est basé sur le travail de `ggarillot`. 
+Pour importer directement de son github :
 ```
 git clone --branch refactor https://github.com/ggarillot/nnhAnalysis.git
 ```
