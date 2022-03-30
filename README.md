@@ -22,6 +22,8 @@ Comme on utilise les données en local, on a pas besoin du dossier `miniDSTMAKER
 ```
 rm -R miniDSTMaker
 ```
+NB : d'autres modifications sont apportées à l'intérieur des dossiers `processor` et `analysis`.
+
 ### importer 
 Pour importer directement de github :
 ```
