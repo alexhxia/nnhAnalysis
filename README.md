@@ -63,12 +63,24 @@ export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
 export MARLIN_DLL=$MARLIN_DLL:~/nnhAnalysis/processor/lib/libnnhProcessor.so
 ```
 ## `analysis`
+NB : les commandes pour avoir un environnement opérationnel, à refaire à chaque ouverture :
+```
+export  NNH_HOME=~/nnhAnalysis \
+        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+```
+```
+export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
+        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
+```
 ```
 export  NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES \
         NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
         NNH_DATA=$NNH_ANALYSIS_OUTPUTFILES
 ```
-
+Attention, il ne faut pas le charger si on souhaite effectuer `$NNH_HOME/analysis/python/launchBDT_XX.py`.
+```
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
+```
 # Rappel : le Projet initial
 Ce projet est basé sur le travaille de `ggarillot` accéssible directement de son github :
 https://github.com/ggarillot/nnhAnalysis/tree/refactor
