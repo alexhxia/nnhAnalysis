@@ -41,18 +41,18 @@ ADD_DEFINITIONS( "-O3" )
 
 include_directories( ${CMAKE_CURRENT_LIST_DIR}/include )
 
-file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cc)
-file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_LIST_DIR}/include/*.hh ${CMAKE_CURRENT_LIST_DIR}/include/*.hpp)
+#file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cc)
+#file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_LIST_DIR}/include/*.hh ${CMAKE_CURRENT_LIST_DIR}/include/*.hpp)
 
 #add library
-add_library( nnhAnalysis STATIC ${SOURCES} ${HEADERS} )
-target_link_libraries( nnhAnalysis ${ROOT_COMPONENT_LIBRARIES} )
-install( TARGETS nnhAnalysis LIBRARY DESTINATION ${CMAKE_CURRENT_LIST_DIR}/lib )
+#add_library( nnhAnalysis STATIC ${SOURCES} ${HEADERS} )
+#target_link_libraries( nnhAnalysis ${ROOT_COMPONENT_LIBRARIES} )
+#install( TARGETS nnhAnalysis LIBRARY DESTINATION ${CMAKE_CURRENT_LIST_DIR}/lib )
 
 file( GLOB APP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/exec/*.cxx )
 foreach( testsourcefile ${APP_SOURCES} )
 	get_filename_component(testname ${testsourcefile} NAME_WE)
 	add_executable( ${testname} ${testsourcefile} )
-	target_link_libraries( ${testname} nnhAnalysis ${ROOT_LIBRARIES} )
+#	target_link_libraries( ${testname} nnhAnalysis ${ROOT_LIBRARIES} )
 	install(TARGETS ${testname} RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin)
 endforeach( testsourcefile ${APP_SOURCES} )
