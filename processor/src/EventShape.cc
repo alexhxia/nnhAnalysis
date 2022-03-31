@@ -11,12 +11,14 @@
 
 unsigned int EventShape::m_maxpart = 1000;
 
-void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles)
-{
-    // To make this look like normal physics notation the
-    // zeroth element of each array, mom[i][0], will be ignored
-    // and operations will be on elements 1,2,3...
 
+void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
+    
+    /*
+     * To make this look like normal physics notation 
+     * the zeroth element of each array, mom[i][0], will be ignored
+     * and operations will be on elements 1,2,3...
+     */
     Eigen::MatrixXd mom(m_maxpart, 6);
 
     double          tmax = 0;
@@ -324,93 +326,129 @@ double EventShape::oblateness() const
     return m_dOblateness;
 }
 
+
+
+/* TOOLS */
+
+// REQUESTS
+
+/**
+ * Return polar angle. 
+ * r = std::sqrt(x * x + y * y)
+ * Return :
+ *      IF (r < 1e-20) THEN 
+ *          0                                          
+ *      ELSE 
+ *          IF (|x| / r < 0.8) THEN 
+ *              EventShape::sign(acos(x / r), y)
+ *          ELSE 
+ *              IF (x >= 0) THEN
+ *                  asin(y / r)
+ *              ELSE 
+ *                  sign(asin(y / r)) * pi  - asin(y / r) 
+ *      
+ */
 // utilities(from Jetset):
-double EventShape::ulAngle(double x, double y) const
-{
+double EventShape::ulAngle(double x, double y) const {
+    
     constexpr double pi = 3.141592653589793;
-    double           ulangl = 0;
-    double           r = std::sqrt(x * x + y * y);
-    if (r < 1e-20)
-        return ulangl;
-
-    if (std::abs(x) / r < 0.8)
-        ulangl = sign(std::acos(x / r), y);
-
-    else
-    {
-        ulangl = std::asin(y / r);
-        if (x < 0.0 && ulangl >= 0.0)
-            ulangl = pi - ulangl;
-
-        else if (x < 0.0)
-            ulangl = -pi - ulangl;
+    
+    double ulangl = 0.;
+    double r = std::sqrt(x * x + y * y);
+    
+    if (r > 1e-20) {
+        if (std::abs(x) / r < 0.8) {
+            ulangl = sign(std::acos(x / r), y);
+        } else {
+            ulangl = std::asin(y / r);
+            
+            if (x < 0.) {                
+                if (ulangl >= 0.) {
+                    ulangl = pi - ulangl;
+                } else {
+                    ulangl = -1 * pi - ulangl;
+                }
+            }
+        } 
     }
+    
     return ulangl;
 }
 
-double EventShape::sign(double a, double b) const
-{
-    if (b < 0)
-        return -std::abs(a);
-    else
-        return std::abs(a);
+/**
+ * Return : sign(b) * abs(a)
+ */
+double EventShape::sign(double a, double b) const {
+    
+    return (b < 0.) ? -1. * std::abs(a) : std::abs(a);
 }
 
-void EventShape::ludbrb(Eigen::MatrixXd& mom, double theta, double phi, double bx, double by, double bz)
-{
-    // Ignore "zeroth" elements in rot,pr,dp.
+/**
+ * Calculate pow function for integer.
+ */
+int EventShape::iPow(int man, int exp) {
+    
+    int ans = 1;
+    for (int k = 0; k < exp; k++) {
+        ans = ans * man;
+    }
+    
+    return ans;
+}
+
+// COMMANDE
+
+/**
+ * 
+ */
+void EventShape::ludbrb(
+        Eigen::MatrixXd& mom, 
+        double theta, double phi, 
+        double bx, double by, double bz) {
+
+
+    int const size_pr(4);
+    int const size_dp(5);
+    // Ignore "zeroth" elements in rot, pr, dp.
     // Trying to use physics-like notation.
     Eigen::Matrix4d rot;
-    double          pr[4];
-    double          dp[5];
+    double pr[size_pr];
+    double dp[s_dp];
 
     auto np = mom.rows();
-    if (theta * theta + phi * phi > 1e-20)
-    {
-        double ct = std::cos(theta);
-        double st = std::sin(theta);
-        double cp = std::cos(phi);
-        double sp = std::sin(phi);
+    
+    if (theta * theta + phi * phi > 1e-20) {
+        
+        rot = initRotMatrix4d();
 
-        rot(1, 1) = ct * cp;
-        rot(1, 2) = -sp;
-        rot(1, 3) = st * cp;
-        rot(2, 1) = ct * sp;
-        rot(2, 2) = cp;
-        rot(2, 3) = st * sp;
-        rot(3, 1) = -st;
-        rot(3, 2) = 0.0;
-        rot(3, 3) = ct;
-
-        for (unsigned int i = 0; i < np; i++)
-        {
-            for (int j = 1; j < 4; j++)
-            {
+        for (unsigned int i = 0; i < np; i++) {
+            for (int j = 1; j < size_pr; j++) {
                 pr[j] = mom(i, j);
                 mom(i, j) = 0;
-            }
-            for (int jb = 1; jb < 4; jb++)
-            {
-                for (int k = 1; k < 4; k++)
-                    mom(i, jb) = mom(i, jb) + rot(jb, k) * pr[k];
+
+                for (int k = 1; k < size_pr; k++) {
+                    mom(i, j) = mom(i, j) + rot(j, k) * pr[k];
+                }
             }
         }
-        double beta = std::sqrt(bx * bx + by * by + bz * bz);
-        if (beta * beta > 1e-20)
-        {
-            if (beta > 0.99999999)
-            {
+        
+        double beta2 = bx * bx + by * by + bz * bz;
+        double beta = std::sqrt(beta2);
+        double beta_max = 0.99999999;
+        
+        if (beta2 > 1e-20) {
+            if (beta > beta_max) {
                 // send message: boost too large, resetting to <~1.0.
-                bx = bx * (0.99999999 / beta);
-                by = by * (0.99999999 / beta);
-                bz = bz * (0.99999999 / beta);
-                beta = 0.99999999;
+                bx = bx * (beta_max / beta);
+                by = by * (beta_max / beta);
+                bz = bz * (beta_max / beta);
+                beta = beta_max;
             }
             double gamma = 1.0 / std::sqrt(1.0 - beta * beta);
-            for (unsigned int i = 0; i < np; i++)
-            {
-                for (int j = 1; j < 5; j++)
+            for (unsigned int i = 0; i < np; i++) {
+                for (int j = 1; j < size_dp; j++) {
                     dp[j] = mom(i, j);
+                }
 
                 double bp = bx * dp[1] + by * dp[2] + bz * dp[3];
                 double gbp = gamma * (gamma * bp / (1.0 + gamma) + dp[4]);
@@ -423,11 +461,30 @@ void EventShape::ludbrb(Eigen::MatrixXd& mom, double theta, double phi, double b
     }
 }
 
-int EventShape::iPow(int man, int exp)
-{
-    int ans = 1;
-    for (int k = 0; k < exp; k++)
-        ans = ans * man;
+/*
+ * Return matrix :
+ * [    cos(theta)cos(phi)      -sin(phi)       sin(theta)cos(phi)      ]
+ * [    cos(theta)sin(phi)       cos(phi)       sin(theta)sin(phi)      ]
+ * [   -sin(theta)                  0           cos(theta)              ]
+ */
+Eigen::Matrix4d initRotMatrix4d() {
+    
+    Eigen::Matrix4d rot;
+    
+    double ct = std::cos(theta);
+    double st = std::sin(theta);
+    double cp = std::cos(phi);
+    double sp = std::sin(phi);
 
-    return ans;
+    rot(1, 1) = ct * cp;
+    rot(1, 2) = -sp;
+    rot(1, 3) = st * cp;
+    rot(2, 1) = ct * sp;
+    rot(2, 2) = cp;
+    rot(2, 3) = st * sp;
+    rot(3, 1) = -st;
+    rot(3, 2) = 0.;
+    rot(3, 3) = ct;
+    
+    return &rot;
 }

@@ -7,7 +7,7 @@
 #pragma once
 
 
-#include <fastjet/PseudoJet.hh> // FastJet : softwore package for jet
+#include <fastjet/PseudoJet.hh> // FastJet : jet
 #include <EVENT/ReconstructedParticle.h> // LCIO
 
 /**
