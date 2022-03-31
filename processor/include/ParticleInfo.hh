@@ -32,7 +32,7 @@ class ParticleInfo : public fastjet::PseudoJet::UserInfoBase {
         // COMMANDS
         void operator=(const ParticleInfo& toCopy) = delete;
 
-        void setReconstructedParticle(EVENT::ReconstructedParticle* rPart) { _
+        void setReconstructedParticle(EVENT::ReconstructedParticle* rPart) { 
             recoParticle = rPart; 
         }
         
@@ -40,7 +40,7 @@ class ParticleInfo : public fastjet::PseudoJet::UserInfoBase {
         EVENT::ReconstructedParticle* recoParticle() const { 
             return _recoParticle; 
         }
-        void setRecoParticle(EVENT::ReconstructedParticle* rPart) { _
+        void setRecoParticle(EVENT::ReconstructedParticle* rPart) { 
             recoParticle = rPart; 
         }
         // ------ END à supprimer ------*/
