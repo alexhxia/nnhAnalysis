@@ -20,3 +20,12 @@ Ajout un attribut ``EVENT::ReconstructedParticle`` au sein de l'objet ``fastjet:
 
 - setRecoParticle <- setReconstructedParticle
 - recoParticle <- getReconstructedParticle
+
+# ``EventShape.hh``
+
+## Include 
+
+- ``CLHEP/Vector/ThreeVector.h`` : https://www-zeuthen.desy.de/ILC/geant4/clhep-2.0.4.3/ThreeVector_8h.html
+- ``Eigen/Dense`` : Matrice 
+
+// Attention au test ligne 470, Eigen::Matrix4d initRotMatrix4d()
