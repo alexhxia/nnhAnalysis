@@ -78,7 +78,7 @@ $ python3 ./launchNNHProcessor.py -h
 #### option `-n NCORES` `--ncores NCORES`
 Personalise le nombre de threads utilisé, par défaut 8 :
 ```
-python3 ./launchNNHProcessor.py -n 100 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+python3 launchNNHProcessor.py -n 100 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
 ```
 
 #### option `-p PROCESSES [PROCESSES ...]` `--processes PROCESSES [PROCESSES ...]`
