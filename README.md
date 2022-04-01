@@ -6,12 +6,12 @@ Dans ce dépots, le programme permet l'analyse les cannaux :
 - e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
 - e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
 
-# La Branche `ilcsoft`
-Dans cette branche, on améliore les fichiers de la branche `original`.
+# La Branche `original`
+Dans cette branche, on ajoute des petites corrections aux fichiers originaux de `ggarillot` afin de s'adapter à un stockage local.
 ## importer 
 Pour importer directement de github :
 ```
-git clone --branch ilcsoft https://github.com/alexhxia/nnhAnalysis.git
+git clone --branch original https://github.com/alexhxia/nnhAnalysis.git
 ```
 On considère le dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
@@ -23,18 +23,24 @@ cd nnhAnalysis
 ```
 Ou 
 ```
-git clone --branch ilcsoft https://github.com/alexhxia/nnhAnalysis.git ilcsoft
+git clone --branch original https://github.com/alexhxia/nnhAnalysis.git original
 ```
 ```
-export NNH_HOME=ilcsoft
+export NNH_HOME=original
 ```
 ```
-cd ilcsoft
+cd original
 ```
 Pour exécuter ce code, on a aussi besoin de préparer l'environnement grâce à :
 ```
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
+## miniDSTMaker
+Comme on utilise les données en local, on a pas besoin du dossier `miniDSTMAKER` :
+```
+rm -R miniDSTMaker
+```
+NB : d'autres modifications sont apportées à l'intérieur des dossiers `processor` et `analysis`.
 
 ## Données initiales
 Les données LCIO sont stockées localement dans le dossier :

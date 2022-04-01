@@ -26,33 +26,33 @@ class EventShape {
         ~EventShape() = default;
 
         // REQUESTS
-        double getThMomPower() const;
+        double getThMomPower() const; // getThrustMomentumPower ?
         int    getFast() const;
 
         CLHEP::Hep3Vector thrustAxis() const;
         CLHEP::Hep3Vector majorAxis() const;
         CLHEP::Hep3Vector minorAxis() const;
 
-        double thrust() const;
-        double majorThrust() const;
-        double minorThrust() const;
+        double thrust() const;      // getTrust ?
+        double majorThrust() const; // getMajorTrust ?
+        double minorThrust() const; // getMinorTrust ?
         // thrust :: Corresponding thrust, major, and minor value.
 
         double oblateness() const;
         
         // COMMANDS
         void setPartList(const std::vector<fastjet::PseudoJet>& particles);
-        void setThMomPower(double tp);
+        void setThMomPower(double tp); // setThrustMomentumPower
         void setFast(int nf);
 
     private:
     
         // ATTRIBUTES
         
-        double m_dDeltaThPower = 0;
+        double m_dDeltaThPower = 0; // parameter
         // PARU(42): Power of momentum dependence in thrust finder.
 
-        int m_iFast = 4;
+        int m_iFast = 4;            // parameter
         // MSTU(44): # of initial fastest particles choosen to start search.
 
         double m_dConv = 0.0001;
@@ -73,7 +73,7 @@ class EventShape {
         std::array<double, 4> m_dThrust = {};
         double                m_dOblateness = 0;
 
-        static unsigned int m_maxpart;
+        static unsigned int m_maxpart; // max nb particle ?
     
         // REQUESTS
         
@@ -84,9 +84,9 @@ class EventShape {
         // COMMAND
         
         void ludbrb(
-                Eigen::MatrixXd& mom, 
-                double theta, double phi, 
-                double bx, double by, double bz);
+                Eigen::MatrixXd& mom,               // momentum
+                double theta, double phi,           // angle : rad 
+                double bx, double by, double bz);   // coord 
 };
 
 #endif

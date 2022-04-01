@@ -1,17 +1,16 @@
-// V0.0           :            Thrust finder utility translated from
-//                             Java routines written by G.Bower.
-// V0.2 Jul 07/99 : M.Iwasaki  Change Mod to Mag function in TVector3
-//                             so as to use root 2.2.x
-// V0.3 Sep 23/99 : M.Iwasaki  Fix setEvent memory leak,
-//                             apply nessesary modifications in Thrust, Major,
-//                             Minor axis, and Thrust, and add ~EventSape().
-// V0.4 May 12/00 : M.Iwasaki  Make necessary modifications.
-//
+/******************************************************************************/
+/**                                                                          **/
+/**               Team : FCC, IP2I, UCBLyon 1, France, 2022                  **/
+/**                                                                          **/
+/******************************************************************************/
+
 #include "EventShape.hh"
 
 unsigned int EventShape::m_maxpart = 1000;
 
-
+/**
+ * AE : particles.size() <= m_maxpart
+ */
 void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     
     /*
@@ -19,12 +18,12 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
      * the zeroth element of each array, mom[i][0], will be ignored
      * and operations will be on elements 1,2,3...
      */
-    Eigen::MatrixXd mom(m_maxpart, 6);
+    Eigen::MatrixXd mom(m_maxpart, 6); // init momentum of m_maxpart ?
 
-    double          tmax = 0;
+    double          tmax = 0.;
     double          phi = 0.;
-    double          the = 0.;
-    double          sgn;
+    double          the = 0.;                   // theta ?
+    double          sgn;                        // sign ?
     Eigen::MatrixXd fast(m_iFast + 1, 6);
     Eigen::MatrixXd work(11, 6);
     double          tdi[4] = {0., 0., 0., 0.};
@@ -35,31 +34,30 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
 
     Eigen::MatrixXd temp(3, 5);
 
-    if (particles.size() > m_maxpart)
-    {
-        std::cout << "ERROR : Too many particles input to EventShape" << std::endl;
+    if (particles.size() > m_maxpart) {
+        std::cout 
+                << "ERROR : Too many particles input to EventShape" 
+                << std::endl;
         return;
     }
 
-    int np = 0;
-    for (const auto& particle : particles)
-    {
+    int np = 0; // num particles
+    for (const auto& particle : particles) {
         mom(np, 1) = particle.px();
         mom(np, 2) = particle.py();
         mom(np, 3) = particle.pz();
         mom(np, 4) = particle.modp();
 
-        if (std::abs(m_dDeltaThPower) <= 0.001)
+        if (std::abs(m_dDeltaThPower) <= 0.001) {
             mom(np, 5) = 1.0;
-        else
+        } else {
             mom(np, 5) = std::pow(mom(np, 4), m_dDeltaThPower);
-
+        }
         tmax = tmax + mom(np, 4) * mom(np, 5);
         np++;
     }
 
-    if (np < 2)
-    {
+    if (np < 2) {
         m_dThrust[1] = -1.0;
         m_dOblateness = -1.0;
         return;
@@ -67,10 +65,8 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
 
     // for pass = 1: find thrust axis.
     // for pass = 2: find major axis.
-    for (unsigned int pass = 1; pass < 3; pass++)
-    {
-        if (pass == 2)
-        {
+    for (unsigned int pass = 1; pass < 3; pass++) {
+        if (pass == 2) {
             phi = ulAngle(m_dAxes(1, 1), m_dAxes(1, 2));
             ludbrb(mom, 0, -phi, 0., 0., 0.);
             for (int i = 0; i < 3; i++)
@@ -109,32 +105,34 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
             }
         }
 
-        for (int ifas = 0; ifas < m_iFast + 1; ifas++)
-            fast(ifas, 4) = 0.0;
-
+        // init all element = 0. at matrix 'fast'.
+        for (int ifas = 0; ifas < m_iFast + 1; ifas++) {
+            fast(ifas, 4) = 0.;
+        }
+        
         // Find the m_iFast highest momentum particles and
         // put the highest in fast[0], next in fast[1],....fast[m_iFast-1].
         // fast[m_iFast] is just a workspace.
-        for (int i = 0; i < np; i++)
-        {
-            if (pass == 2)
-                mom(i, 4) = std::sqrt(mom(i, 1) * mom(i, 1) + mom(i, 2) * mom(i, 2));
-
-            for (int ifas = m_iFast - 1; ifas > -1; ifas--)
-            {
-                if (mom(i, 4) > fast(ifas, 4))
-                {
-                    for (int j = 1; j < 6; j++)
-                    {
+        for (int i = 0; i < np; i++) {
+            
+            if (pass == 2) {
+                mom(i, 4) = std::sqrt(
+                        mom(i, 1) * mom(i, 1) 
+                        + mom(i, 2) * mom(i, 2));
+            }
+            
+            for (int ifas = m_iFast - 1; ifas > -1; ifas--) {
+                if (mom(i, 4) > fast(ifas, 4)) {
+                    for (int j = 1; j < 6; j++) {
                         fast(ifas + 1, j) = fast(ifas, j);
-                        if (ifas == 0)
+                        if (ifas == 0) {
                             fast(ifas, j) = mom(i, j);
+                        }
                     }
-                }
-                else
-                {
-                    for (int j = 1; j < 6; j++)
+                } else {
+                    for (int j = 1; j < 6; j++) {
                         fast(ifas + 1, j) = mom(i, j);
+                    }
 
                     break;
                 }
@@ -263,70 +261,65 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     m_dOblateness = m_dThrust[2] - m_dThrust[3];
 }
 
-// Setting and getting parameters.
+// Returning results
 
-void EventShape::setThMomPower(double tp)
-{
-    // Error if sp not positive.
-    if (tp > 0.)
-        m_dDeltaThPower = tp - 1.0;
+CLHEP::Hep3Vector EventShape::thrustAxis() const {
+    return CLHEP::Hep3Vector(m_dAxes(1, 1), m_dAxes(1, 2), m_dAxes(1, 3));
 }
 
-double EventShape::getThMomPower() const
-{
+CLHEP::Hep3Vector EventShape::majorAxis() const {
+    return CLHEP::Hep3Vector(m_dAxes(2, 1), m_dAxes(2, 2), m_dAxes(2, 3));
+}
+
+CLHEP::Hep3Vector EventShape::minorAxis() const {
+    return CLHEP::Hep3Vector(m_dAxes(3, 1), m_dAxes(3, 2), m_dAxes(3, 3));
+}
+
+double EventShape::thrust() const {
+    return m_dThrust[1];
+}
+
+double EventShape::majorThrust() const {
+    return m_dThrust[2];
+}
+
+double EventShape::minorThrust() const {
+    return m_dThrust[3];
+}
+
+double EventShape::oblateness() const {
+    return m_dOblateness;
+}
+
+// Getting parameters.
+
+double EventShape::getThMomPower() const {
     return 1.0 + m_dDeltaThPower;
 }
 
-void EventShape::setFast(int nf)
-{
+int EventShape::getFast() const {
+    return m_iFast;
+}
+
+// COMMANDS 
+
+// Setting parameters.
+
+/**
+ * Do nothing if (nf <= 3)
+ */
+void EventShape::setFast(int nf) {
+    
     // Error if sp not positive.
     if (nf > 3)
         m_iFast = nf;
 }
 
-int EventShape::getFast() const
-{
-    return m_iFast;
+void EventShape::setThMomPower(double tp) {
+    // Error if sp not positive.
+    if (tp > 0.)
+        m_dDeltaThPower = tp - 1.0;
 }
-
-// Returning results
-
-CLHEP::Hep3Vector EventShape::thrustAxis() const
-{
-    return CLHEP::Hep3Vector(m_dAxes(1, 1), m_dAxes(1, 2), m_dAxes(1, 3));
-}
-
-CLHEP::Hep3Vector EventShape::majorAxis() const
-{
-    return CLHEP::Hep3Vector(m_dAxes(2, 1), m_dAxes(2, 2), m_dAxes(2, 3));
-}
-
-CLHEP::Hep3Vector EventShape::minorAxis() const
-{
-    return CLHEP::Hep3Vector(m_dAxes(3, 1), m_dAxes(3, 2), m_dAxes(3, 3));
-}
-
-double EventShape::thrust() const
-{
-    return m_dThrust[1];
-}
-
-double EventShape::majorThrust() const
-{
-    return m_dThrust[2];
-}
-
-double EventShape::minorThrust() const
-{
-    return m_dThrust[3];
-}
-
-double EventShape::oblateness() const
-{
-    return m_dOblateness;
-}
-
-
 
 /* TOOLS */
 
@@ -345,7 +338,7 @@ double EventShape::oblateness() const
  *              IF (x >= 0) THEN
  *                  asin(y / r)
  *              ELSE 
- *                  sign(asin(y / r)) * pi  - asin(y / r) 
+ *                  sign(asin(y / r)) * pi - asin(y / r) 
  *      
  */
 // utilities(from Jetset):
@@ -402,7 +395,7 @@ int EventShape::iPow(int man, int exp) {
  * 
  */
 void EventShape::ludbrb(
-        Eigen::MatrixXd& mom, 
+        Eigen::MatrixXd& mom, // momentum ?
         double theta, double phi, 
         double bx, double by, double bz) {
 
@@ -411,7 +404,7 @@ void EventShape::ludbrb(
     int const size_dp(5);
     // Ignore "zeroth" elements in rot, pr, dp.
     // Trying to use physics-like notation.
-    Eigen::Matrix4d rot;
+    Eigen::Matrix4d rot; // rotational : ?
     double pr[size_pr];
     double dp[s_dp];
 
@@ -420,8 +413,10 @@ void EventShape::ludbrb(
     if (theta * theta + phi * phi > 1e-20) {
         
         rot = initRotMatrix4d();
-
+        
+        mom(0, 0) = 0.;
         for (unsigned int i = 0; i < np; i++) {
+             mom(i, 0) = 0.;
             for (int j = 1; j < size_pr; j++) {
                 pr[j] = mom(i, j);
                 mom(i, j) = 0;
@@ -462,7 +457,7 @@ void EventShape::ludbrb(
 }
 
 /*
- * Return matrix :
+ * Return matrix (1:3)
  * [    cos(theta)cos(phi)      -sin(phi)       sin(theta)cos(phi)      ]
  * [    cos(theta)sin(phi)       cos(phi)       sin(theta)sin(phi)      ]
  * [   -sin(theta)                  0           cos(theta)              ]
@@ -471,6 +466,14 @@ Eigen::Matrix4d initRotMatrix4d() {
     
     Eigen::Matrix4d rot;
     
+    // init 0. no using case
+    rot(0, 0) = 0.;
+    for (int i = 1; i < 4; i++) {
+        rot(i, 0) = 0.;
+        rot(0, i) = 0.;
+    }
+    
+    // init other
     double ct = std::cos(theta);
     double st = std::sin(theta);
     double cp = std::cos(phi);

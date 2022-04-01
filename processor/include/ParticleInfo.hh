@@ -6,7 +6,6 @@
 
 #pragma once
 
-
 #include <fastjet/PseudoJet.hh> // FastJet : jet
 #include <EVENT/ReconstructedParticle.h> // LCIO
 
