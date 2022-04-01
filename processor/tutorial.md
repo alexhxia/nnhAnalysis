@@ -1,4 +1,4 @@
-# Tutorial `processor`
+# Tutorial ``processor``
 
 ## Définition de l'environnement
 À chaque redémarage de terminal, il est nécessaire d'exécuter :
