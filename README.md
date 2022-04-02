@@ -86,7 +86,7 @@ export  NNH_HOME=~/nnhAnalysis/original \
 ```
 ```
 export  NNH_ANALYSIS_INPUTFILES=$NNH_HOME/processor/RESULTS \
-        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
+        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA 
 ```
 Attention, il ne faut pas le charger si on souhaite effectuer `$NNH_HOME/analysis/python/launchBDT_XX.py`.
 ```
