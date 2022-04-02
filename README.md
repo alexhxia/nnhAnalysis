@@ -66,7 +66,7 @@ NB : les commandes pour avoir un environnement opérationnel, à refaire à chaq
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
-export  NNH_HOME=~/nnhAnalysis/original \
+export  NNH_HOME=~/nnhAnalysis/ilcsoft \
         NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
 ```
 ```
@@ -80,7 +80,7 @@ export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 ## `analysis`
 NB : les commandes pour avoir un environnement opérationnel, à refaire à chaque ouverture :
 ```
-export  NNH_HOME=~/nnhAnalysis/original \
+export  NNH_HOME=~/nnhAnalysis/ilcsoft \
         NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
 ```
 ```
