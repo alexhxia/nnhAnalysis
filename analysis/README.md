@@ -8,25 +8,28 @@ source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 Avant d'exécuter `analysis` il faut avoir générer les fichiers ROOTs (voir la partie `processor`).
 ```
-export  NNH_HOME=~/nnhAnalysis \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+export  NNH_HOME=~/nnhAnalysis/original
+```
+```
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
 ```
 ```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
+        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 ```
-## Préparation de données
-First of all , what you need to do is merge all the ROOT files for each individual processID into a single big ROOT file named ``DATA.root`` and put into a ``DATA/`` folder : 
 ```
-export  NNH_ANALYSIS_INPUTFILES=$NNH_HOME/ROOT \
-        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
-        NNH_DATA=$NNH_HOME/analysis/DATA
+export  NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES \
+        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA 
 ```
 ```
 mkdir $NNH_DATA $NNH_HOME/analysis/BUILD
 ```
+
+## Préparation de données
+First of all , what you need to do is merge all the ROOT files for each individual processID into a single big ROOT file named ``DATA.root`` and put into a ``DATA/`` folder : 
 ```
-hadd $NNH_DATA/DATA.root $NNH_ROOTFILES/*.root
+hadd $NNH_DATA/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
 ```
 where ``/path/to/single/rootfiles`` is the folder containing all the single ROOT files outputed by the Marlin processor you previously had to run.
 
@@ -45,6 +48,7 @@ make
 ```
 make install
 ```
+
 ## Préparer la BDT 
 First, to use a BDT, you have to split the data set into two sets, the training and the testing set. 
 This is done by the ``exec/prepareForBDT.cxx`` file :
@@ -81,19 +85,8 @@ cd $NNH_HOME/analysis/python
 ```
 Attention, il faut redémarrer ou changer de terminal, car la commande 
 `source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh`
-ne doit pas avoir été exécuter. 
-Mais il ne faut pas oublier de ré-export les variables d'environnement :
-```
-export  NNH_HOME=~/nnhAnalysis \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/ \
-        NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
-```
-```
-export  NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT \
-        NNH_ANALYSIS_INPUTFILES=$NNH_HOME/processor/OUTPUT \
-        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
-        NNH_DATA=$NNH_HOME/analysis/DATA
-```
+ne doit pas avoir été exécuter. Donc il faut aussi ré-export les variables d'environnement.
+
 To run the BDT, use :
 ```
 python3 launchBDT_bb.py
