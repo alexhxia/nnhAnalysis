@@ -12,33 +12,31 @@ export  NNH_HOME=~/nnhAnalysis \
         NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 ```
 ```
-mkdir $NNH_HOME/processor/OUTPUT
-```
-```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
+        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 ```
 ```
 export MARLIN_DLL=$MARLIN_DLL:~/nnhAnalysis/processor/lib/libnnhProcessor.so
 ```
 Compilation :
 ```
-cd $NNH_HOME/processor && mkdir BUILD && cd BUILD
+mkdir $NNH_HOME/processor/BUILD & cd $NNH_HOME/processor/BUILD
 ```
 ```
-cmake -C $ILCSOFT/ILCSoft.cmake .. & make & make install
+cmake -C $ILCSOFT/ILCSoft.cmake .. 
+make
+make install
 ```
 Pour un seul fichier (modifier avant le nom des fichiers `input.lcio` et `output.root` dans `Marlin NNH_steer.xml`) :
 ```
 Marlin $NNH_HOME/processor/NNH_steer.xml 
 ```
-Pour plusieurs processus (ici 402007 et 402008) :
+Pour exécuter tous les processus :
 ```
-python3 $NNH_HOME/processor/launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+mkdir $NNH_PROCESSOR_OUTPUTFILES
 ```
-Pour tous les processus :
 ```
-python3 $NNH_HOME/processor/launchNNHProcessor.py -n 10 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
 ```
 # nnh processor
 
