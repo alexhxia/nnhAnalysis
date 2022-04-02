@@ -33,7 +33,7 @@ rm -R miniDSTMaker
 ## Données initiales
 Les données LCIO sont stockées localement dans le dossier :
 ```
-/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 ```
 Puis chaque fichier est trié dans des sous-dossiers en fonction de leur numéro de processus.
 
@@ -67,7 +67,7 @@ source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
 export  NNH_HOME=~/nnhAnalysis/ilcsoft \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 ```
 ```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
@@ -81,7 +81,7 @@ export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 NB : les commandes pour avoir un environnement opérationnel, à refaire à chaque ouverture :
 ```
 export  NNH_HOME=~/nnhAnalysis/ilcsoft \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 ```
 ```
 export  NNH_ANALYSIS_INPUTFILES=$NNH_HOME/processor/RESULTS \
