@@ -19,6 +19,7 @@
 class EventShape {
     
     public:
+    
         // MAKERS
         EventShape() = default;
         
@@ -27,7 +28,7 @@ class EventShape {
 
         // REQUESTS
         double getThMomPower() const; // getThrustMomentumPower ?
-        int    getFast() const;
+        int getFast() const;
 
         CLHEP::Hep3Vector thrustAxis() const;
         CLHEP::Hep3Vector majorAxis() const;
@@ -49,25 +50,36 @@ class EventShape {
     
         // ATTRIBUTES
         
+        /**
+         * PARU(42): Power of momentum dependence in thrust finder.
+         */
         double m_dDeltaThPower = 0; // parameter
-        // PARU(42): Power of momentum dependence in thrust finder.
 
+        /**
+         * MSTU(44): # of initial fastest particles choosen to start search.
+         */
         int m_iFast = 4;            // parameter
-        // MSTU(44): # of initial fastest particles choosen to start search.
 
+        /**
+         * PARU(48): Convergence criteria for axis maximization.
+         */
         double m_dConv = 0.0001;
-        // PARU(48): Convergence criteria for axis maximization.
-
+        
+        /**
+         * MSTU(45): # different starting configurations that must
+         * converge before axis is accepted as correct.
+         */
         int m_iGood = 2;
-        // MSTU(45): # different starting configurations that must
-        // converge before axis is accepted as correct.
+        
 
+        /**
+         * m_dAxes[1] is the Thrust axis.
+         * m_dAxes[2] is the Major axis.
+         * m_dAxes[3] is the Minor axis.
+         */
         Eigen::Matrix4d m_dAxes = {};
-        // m_dAxes[1] is the Thrust axis.
-        // m_dAxes[2] is the Major axis.
-        // m_dAxes[3] is the Minor axis.
 
-        std::mt19937_64                 generator = std::mt19937_64();
+        std::mt19937_64 generator = std::mt19937_64();
         std::uniform_int_distribution<> distribution = std::uniform_int_distribution<>(0, 1);
 
         std::array<double, 4> m_dThrust = {};

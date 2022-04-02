@@ -20,11 +20,14 @@
 #include <TFile.h>
 #include <TTree.h>
 
+/**
+ * 
+ */
 class NNHProcessor : public marlin::Processor {
     
     public:
         static constexpr float W_MASS_REF = 80.379;     // W mass boson
-        static constexpr float Z_MASS_REF = 91.1876;    // Higgs mass boson
+        static constexpr float Z_MASS_REF = 91.1876;    // Z mass boson
 
     public:
         virtual Processor* newProcessor() { return new NNHProcessor; }
@@ -142,8 +145,8 @@ class NNHProcessor : public marlin::Processor {
         /* MC variables */
         
         // ISR (Initial State Radiation)
-        float mc_ISR_e = 0.;                // energy component
-        float mc_ISR_pt = 0.;               // transverse component of the spatial vector
+        float mc_ISR_e = 0.;            // energy component
+        float mc_ISR_pt = 0.;           // transverse component of the spatial vector
 
         // Neutrinos
         int   mc_nu_flavor = 0.;

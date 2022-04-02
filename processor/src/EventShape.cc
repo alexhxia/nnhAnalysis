@@ -13,6 +13,14 @@ unsigned int EventShape::m_maxpart = 1000;
  */
 void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     
+    // AE : particles.size() <= m_maxpart
+    if (particles.size() > m_maxpart) {
+        std::cout 
+                << "ERROR : Too many particles input to EventShape" 
+                << std::endl;
+        return;
+    }
+    
     /*
      * To make this look like normal physics notation 
      * the zeroth element of each array, mom[i][0], will be ignored
@@ -34,12 +42,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
 
     Eigen::MatrixXd temp(3, 5);
 
-    if (particles.size() > m_maxpart) {
-        std::cout 
-                << "ERROR : Too many particles input to EventShape" 
-                << std::endl;
-        return;
-    }
+    
 
     int np = 0; // num particles
     for (const auto& particle : particles) {
@@ -68,39 +71,35 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     for (unsigned int pass = 1; pass < 3; pass++) {
         if (pass == 2) {
             phi = ulAngle(m_dAxes(1, 1), m_dAxes(1, 2));
+            
             ludbrb(mom, 0, -phi, 0., 0., 0.);
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 1; j < 4; j++)
-                {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 1; j < 4; j++) {
                     temp(i, j) = m_dAxes(i + 1, j);
                 }
                 temp(i, 4) = 0;
             }
+            
             ludbrb(temp, 0., -phi, 0., 0., 0.);
-            for (int ib = 0; ib < 3; ib++)
-            {
-                for (int j = 1; j < 4; j++)
-                {
-                    m_dAxes(ib + 1, j) = temp(ib, j);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 1; j < 4; j++) {
+                    m_dAxes(i + 1, j) = temp(i, j);
                 }
             }
             the = ulAngle(m_dAxes(1, 3), m_dAxes(1, 1));
+            
             ludbrb(mom, -the, 0., 0., 0., 0.);
-            for (int ic = 0; ic < 3; ic++)
-            {
-                for (int j = 1; j < 4; j++)
-                {
-                    temp(ic, j) = m_dAxes(ic + 1, j);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 1; j < 4; j++) {
+                    temp(i, j) = m_dAxes(i + 1, j);
                 }
-                temp(ic, 4) = 0;
+                temp(i, 4) = 0;
             }
+            
             ludbrb(temp, -the, 0., 0., 0., 0.);
-            for (int id = 0; id < 3; id++)
-            {
-                for (int j = 1; j < 4; j++)
-                {
-                    m_dAxes(id + 1, j) = temp(id, j);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 1; j < 4; j++) {
+                    m_dAxes(i + 1, j) = temp(i, j);
                 }
             }
         }
@@ -117,8 +116,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
             
             if (pass == 2) {
                 mom(i, 4) = std::sqrt(
-                        mom(i, 1) * mom(i, 1) 
-                        + mom(i, 2) * mom(i, 2));
+                        mom(i, 1) * mom(i, 1) + mom(i, 2) * mom(i, 2));
             }
             
             for (int ifas = m_iFast - 1; ifas > -1; ifas--) {
@@ -133,96 +131,87 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
                     for (int j = 1; j < 6; j++) {
                         fast(ifas + 1, j) = mom(i, j);
                     }
-
                     break;
                 }
             }
         }
+        
         // Find axis with highest thrust (case 1)/ highest major (case 2).
-        for (int ie = 0; ie < work.rows(); ie++)
+        for (int ie = 0; ie < work.rows(); ie++) {
             work(ie, 4) = 0.;
+        }
 
         int p = std::min(m_iFast, np) - 1;
+        
         // Don't trust Math.pow to give right answer always.
         // Want nc = 2**p.
         int nc = iPow(2, p);
-        for (int n = 0; n < nc; n++)
-        {
-            for (int j = 1; j < 4; j++)
+        for (int n = 0; n < nc; n++) {
+            for (int j = 1; j < 4; j++) {
                 tdi[j] = 0.;
-
-            for (int i = 0; i < std::min(m_iFast, n); i++)
-            {
+            }
+            for (int i = 0; i < std::min(m_iFast, n); i++) {
                 sgn = fast(i, 5);
-                if (iPow(2, (i + 1)) * ((n + iPow(2, i)) / iPow(2, (i + 1))) >= i + 1)
+                if (iPow(2, (i + 1)) * ((n + iPow(2, i)) / iPow(2, (i + 1))) >= i + 1) {
                     sgn = -sgn;
-
-                for (unsigned int j = 1; j < 5 - pass; j++)
+                }
+                for (unsigned int j = 1; j < 5 - pass; j++) {
                     tdi[j] = tdi[j] + sgn * fast(i, j);
+                }
             }
             tds = tdi[1] * tdi[1] + tdi[2] * tdi[2] + tdi[3] * tdi[3];
-            for (int iw = std::min(n, 9); iw > -1; iw--)
-            {
-                if (tds > work(iw, 4))
-                {
-                    for (int j = 1; j < 5; j++)
-                    {
+            for (int iw = std::min(n, 9); iw > -1; iw--) {
+                if (tds > work(iw, 4)) {
+                    for (int j = 1; j < 5; j++) {
                         work(iw + 1, j) = work(iw, j);
-                        if (iw == 0)
-                        {
-                            if (j < 4)
+                        if (iw == 0) {
+                            if (j < 4) {
                                 work(iw, j) = tdi[j];
 
-                            else
+                            } else {
                                 work(iw, j) = tds;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    for (int j = 1; j < 4; j++)
+                } else {
+                    for (int j = 1; j < 4; j++) {
                         work(iw + 1, j) = tdi[j];
-
+                    }
                     work(iw + 1, 4) = tds;
                 }
             }
         }
+        
         // Iterate direction of axis until stable maximum.
         m_dThrust[pass] = 0;
         thp = -99999.;
         int nagree = 0;
-        for (int iw = 0; iw < std::min(nc, 10) && nagree < m_iGood; iw++)
-        {
+        for (int iw = 0; iw < std::min(nc, 10) && nagree < m_iGood; iw++) {
             thp = 0.;
             thps = -99999.;
-            while (thp > thps + m_dConv)
-            {
+            while (thp > thps + m_dConv) {
                 thps = thp;
-                for (int j = 1; j < 4; j++)
-                {
-                    if (thp <= 1E-10)
+                for (int j = 1; j < 4; j++) {
+                    if (thp <= 1E-10) {
                         tdi[j] = work(iw, j);
-                    else
-                    {
+                    } else {
                         tdi[j] = tpr[j];
                         tpr[j] = 0;
                     }
                 }
-                for (int i = 0; i < np; i++)
-                {
+                for (int i = 0; i < np; i++) {
                     sgn = sign(mom(i, 5), tdi[1] * mom(i, 1) + tdi[2] * mom(i, 2) + tdi[3] * mom(i, 3));
                     for (unsigned int j = 1; j < 5 - pass; j++)
                         tpr[j] = tpr[j] + sgn * mom(i, j);
                 }
                 thp = std::sqrt(tpr[1] * tpr[1] + tpr[2] * tpr[2] + tpr[3] * tpr[3]) / tmax;
             }
-            // Save good axis. Try new initial axis until enough
-            // tries agree.
-            if (thp < m_dThrust[pass] - m_dConv)
+            
+            // Save good axis. Try new initial axis until enough tries agree.
+            if (thp < m_dThrust[pass] - m_dConv) {
                 break;
-
-            if (thp > m_dThrust[pass] + m_dConv)
-            {
+            }
+            if (thp > m_dThrust[pass] + m_dConv) {
                 nagree = 0;
                 sgn = iPow(-1, distribution(generator));
                 for (int j = 1; j < 4; j++)
@@ -308,6 +297,7 @@ int EventShape::getFast() const {
 /**
  * Do nothing if (nf <= 3)
  */
+// AE : nf > 3 => WHY ?
 void EventShape::setFast(int nf) {
     
     // Error if sp not positive.
@@ -315,7 +305,13 @@ void EventShape::setFast(int nf) {
         m_iFast = nf;
 }
 
+/**
+ * Do nothing if (tp <= 0)
+ * tp : thrust_power ?
+ */
+// AE : tp > 0. => WHY ?
 void EventShape::setThMomPower(double tp) {
+    
     // Error if sp not positive.
     if (tp > 0.)
         m_dDeltaThPower = tp - 1.0;
@@ -373,7 +369,9 @@ double EventShape::ulAngle(double x, double y) const {
  */
 double EventShape::sign(double a, double b) const {
     
-    return (b < 0.) ? -1. * std::abs(a) : std::abs(a);
+    int b_sign = (b < 0.) ? -1. : +1;
+    
+    return b_sign * std::abs(a);
 }
 
 /**
@@ -400,26 +398,30 @@ void EventShape::ludbrb(
         double bx, double by, double bz) {
 
 
+    /* Ignore "zeroth" elements in rot, pr, dp. *
+     * Trying to use physics-like notation.     */
+    
+    // rotational ?
+    Eigen::Matrix4d rot; 
+    int np = mom.rows(); // nb of lign
+    
+    // ?
     int const size_pr(4);
-    int const size_dp(5);
-    // Ignore "zeroth" elements in rot, pr, dp.
-    // Trying to use physics-like notation.
-    Eigen::Matrix4d rot; // rotational : ?
     double pr[size_pr];
+    
+    // ?
+    int const size_dp(5);
     double dp[s_dp];
 
-    auto np = mom.rows();
-    
     if (theta * theta + phi * phi > 1e-20) {
         
         rot = initRotMatrix4d();
         
-        mom(0, 0) = 0.;
+        //
         for (unsigned int i = 0; i < np; i++) {
-             mom(i, 0) = 0.;
             for (int j = 1; j < size_pr; j++) {
                 pr[j] = mom(i, j);
-                mom(i, j) = 0;
+                mom(i, j) = 0.;
 
                 for (int k = 1; k < size_pr; k++) {
                     mom(i, j) = mom(i, j) + rot(j, k) * pr[k];
@@ -427,6 +429,7 @@ void EventShape::ludbrb(
             }
         }
         
+        // 
         double beta2 = bx * bx + by * by + bz * bz;
         double beta = std::sqrt(beta2);
         double beta_max = 0.99999999;
@@ -439,7 +442,7 @@ void EventShape::ludbrb(
                 bz = bz * (beta_max / beta);
                 beta = beta_max;
             }
-            double gamma = 1.0 / std::sqrt(1.0 - beta * beta);
+            double gamma = 1.0 / std::sqrt(1.0 - beta2);
             for (unsigned int i = 0; i < np; i++) {
                 for (int j = 1; j < size_dp; j++) {
                     dp[j] = mom(i, j);
@@ -457,6 +460,9 @@ void EventShape::ludbrb(
 }
 
 /*
+ * Ignore "zeroth" elements in rot, pr, dp.
+ * Trying to use physics-like notation.
+ * 
  * Return matrix (1:3)
  * [    cos(theta)cos(phi)      -sin(phi)       sin(theta)cos(phi)      ]
  * [    cos(theta)sin(phi)       cos(phi)       sin(theta)sin(phi)      ]
@@ -466,7 +472,7 @@ Eigen::Matrix4d initRotMatrix4d() {
     
     Eigen::Matrix4d rot;
     
-    // init 0. no using case
+    // init 0. no using case => use physics-like notation.
     rot(0, 0) = 0.;
     for (int i = 1; i < 4; i++) {
         rot(i, 0) = 0.;
