@@ -6,7 +6,7 @@ Dans ce dépots, le programme permet l'analyse des cannaux :
 - e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
 - e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
 
-# Le Projet initial
+## Le Projet initial
 Ce projet est basé sur le travail de `ggarillot`. 
 Pour l'importer directement de son github :
 ```
@@ -21,7 +21,7 @@ Pour exécuter ce code, on a aussi besoin de préparer l'environnement grâce à
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 
-# Le Projet personnel
+## Le Projet personnel
 J'ai divisé ce dépot en 3 branches :
 - `original` qui regroupe les fichiers originaux de `ggarillot` avec de petites modifications pour s'adapter et pour un stockage local.
 - `ilcsoft` amélioration du code `original` toujours pour un stockage local.
