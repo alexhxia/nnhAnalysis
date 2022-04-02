@@ -26,3 +26,13 @@ J'ai divisé ce dépot en 3 branches :
 - `original` qui regroupe les fichiers originaux de `ggarillot` avec de petites modifications pour s'adapter et pour un stockage local.
 - `ilcsoft` amélioration du code `original` toujours pour un stockage local.
 - `fcc` qui s'adapte aux nouvelles contraintes du projet FCC du CERN.
+
+```
+git clone https://github.com/alexhxia/nnhAnalysis.git
+```
+```
+export NNH_HOME=nnhAnalysis
+```
+```
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
+```
