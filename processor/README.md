@@ -38,7 +38,7 @@ python3 $NNH_HOME/processor/launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH
 ```
 Pour tous les processus :
 ```
-python3 $NNH_HOME/processor/launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+python3 $NNH_HOME/processor/launchNNHProcessor.py -n 10 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
 ```
 # nnh processor
 
