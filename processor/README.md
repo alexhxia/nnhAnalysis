@@ -9,7 +9,7 @@ source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
 export  NNH_HOME=~/nnhAnalysis \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 ```
 ```
 mkdir $NNH_HOME/processor/OUTPUT
@@ -106,7 +106,7 @@ The ``launchNNHProcessor.py`` script will create one ROOT file per processID (al
 
 ### Convertir un seul fichier
 ```
-cd $NNH_HOME/processor/script/
+cd $NNH_HOME/processor/script
 ```
 Dans le programme `NNH_steer.xml `, il faut adapter le fichier d'entrée `input.slcio` et  le fichier de sortie `output.root` par les chemins souhaités.
 
@@ -132,9 +132,9 @@ mkdir $NNH_HOME/processor/OUTPUT
 ```
 export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
 ```
-Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL/` : 
+Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL` : 
 ```
-export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 ```
 #### Convertir quelques processus :
 Utiliser le paramètre `-p num_processus`. Par exemple pour les processus `402007` `402008` :
