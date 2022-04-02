@@ -90,14 +90,14 @@ $ python3 ./script/launchNNHProcessor.py -h
 ```
 For example, it you want to run all the files that are present on lyogrid06 (from a lyoui):
 ```
-$ python3 script/launchNNHProcessor.py -n 10 -i root://lyogrid06.in2p3.fr/dpm/in2p3.fr/home/calice/garillot/ILD/AHCAL -r -o /path/to/wherever/youwant
+python3 script/launchNNHProcessor.py -n 10 -i root://lyogrid06.in2p3.fr/dpm/in2p3.fr/home/calice/garillot/ILD/AHCAL -r -o /path/to/wherever/youwant
 ```
 Do not forget to put the ``-r`` argument to tell the script that the files need to be downloaded (from lyogrid06).
 It is unnecessary to ask for more than 10 threads on lyoui because the limiting factor is the transfer time between lyogrid06 and lyoui servers. The output path cannot be remote like the input path.
 
 If you want to run only files from processesID 402007 and 402008, and the input files are present locally : 
 ```
-$ python3 script/launchNNHProcessor.py -n 10 -p 402007 402008 -i /path/to/inputFiles -o /path/to/wherever/youwant
+python3 script/launchNNHProcessor.py -n 10 -p 402007 402008 -i /path/to/inputFiles -o /path/to/wherever/youwant
 ```
 
 The ``launchNNHProcessor.py`` script will create one ROOT file per processID (all the results from each mini-DST file are merged). It will also create a ``logs/`` folder in the output directory to check if something wrong happened (the script will output an error message if it has encountered a problem with one file).
@@ -125,10 +125,10 @@ cd $NNH_HOME/processor/script
 ```
 On crée un dossier pour tous les fichiers ROOTs qui seront générer :
 ```
-mkdir $NNH_HOME/processor/OUTPUT
+mkdir $NNH_HOME/processor/RESULTS
 ```
 ```
-export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 ```
 Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL` : 
 ```
