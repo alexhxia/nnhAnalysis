@@ -29,7 +29,7 @@ mkdir $NNH_ANALYSIS_OUTPUTFILES $NNH_HOME/analysis/BUILD
 ## Préparation de données
 First of all , what you need to do is merge all the ROOT files for each individual processID into a single big ROOT file named ``DATA.root`` and put into a ``DATA/`` folder : 
 ```
-hadd $NNH_DATA/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
+hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
 ```
 where ``/path/to/single/rootfiles`` is the folder containing all the single ROOT files outputed by the Marlin processor you previously had to run.
 
