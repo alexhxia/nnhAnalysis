@@ -20,7 +20,10 @@ export MARLIN_DLL=$MARLIN_DLL:~/nnhAnalysis/processor/lib/libnnhProcessor.so
 ```
 Compilation :
 ```
-mkdir $NNH_HOME/processor/BUILD & cd $NNH_HOME/processor/BUILD
+mkdir $NNH_HOME/processor/BUILD 
+```
+```
+cd $NNH_HOME/processor/BUILD
 ```
 ```
 cmake -C $ILCSOFT/ILCSoft.cmake .. 
