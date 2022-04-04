@@ -1,9 +1,3 @@
-/******************************************************************************/
-/**                                                                          **/
-/**               Team : FCC, IP2I, UCBLyon 1, France, 2022                  **/
-/**                                                                          **/
-/******************************************************************************/
-
 #include "NNHProcessor.hh"
 
 #include "EventShape.hh"
@@ -37,12 +31,73 @@
 #include <string>
 #include <vector>
 
+/* PDG Tools */
+
+// Leptons
+int const PDG_ELECTRON = 11;
+int const PDG_ELECTRON_NEUTRINO = 12;
+int const PDG_MUON = 13;
+int const PDG_MUON_NEUTRINO = 14;
+int const PDG_TAU = 15;
+int const PDG_TAU_NEUTRINO = 16;
+
+// Bosons
+
+int const PDG_GLUON = 21;
+int const PDG_PHOTON = 22;
+int const PDG_Z0 = 23;
+int const PDG_W = 24;
+int const PDG_HIGGS = 25;
+
+/* TOOLS REQUEST */
+
+/**
+ * 1 <= PDG(quark) <= 8
+ */
+bool isQuark(const EVENT::MCParticle* p) {
+    return 1 <= std::abs(p->getPDG()) && std::abs(p->getPDG()) <= 8;
+}
+
+bool isElectron(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_ELECTRON;
+}
+
+bool isMuon(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_MUON;
+}
+
+bool isTau(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_TAU;
+}
+
+bool isNeutrino(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_ELECTRON_NEUTRINO
+            || std::abs(p->getPDG()) == PDG_MUON_NEUTRINO
+            || std::abs(p->getPDG()) == PDG_TAU_NEUTRINO;;
+}
+
+bool isGluon(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_GLUON;
+}
+
+bool isPhoton(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_PHOTON;
+}
+
+bool isZ0Boson(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_Z0;
+}
+
+bool isWBoson(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_W;
+}
+
+bool isHiggs(const EVENT::MCParticle* p) {
+    return std::abs(p->getPDG()) == PDG_HIGGS;
+}
+
 NNHProcessor aNNHProcessor;
 
-// MARKER
-/**
- * 
- */
 NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
     
     // Test
@@ -55,20 +110,21 @@ NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
             "MCParticlesCollectionName", "Name of the MC particles collection",
             mcParticleCollectionName, std::string("MCParticlesSkimmed"));
 
-    // Reconstructed particles
+    // Reconstructed Particles 
     registerProcessorParameter(
-                "ReconstructedParticlesCollectionName", 
-                "Name of the reconstructed particles collection",
-                reconstructedParticleCollectionName, 
-                std::string("PandoraPFOs"));
+            "ReconstructedParticlesCollectionName", 
+            "Name of the reconstructed particles collection",
+            reconstructedParticleCollectionName, 
+            std::string("PandoraPFOs"));
 
-    // Isolated photons
+    // Isolated Photons 
     registerProcessorParameter(
             "IsolatedPhotonsCollectionName", 
             "Name of the reconstructed isolated photon collection",
-            isolatedPhotonsCollectionName, std::string("IsolatedPhotons"));
+            isolatedPhotonsCollectionName, 
+            std::string("IsolatedPhotons"));
 
-    // Isolated leptons
+    // Isolated Leptons
     registerProcessorParameter(
             "IsolatedLeptonsCollectionNames",
             "Name of the reconstructed isolated leptons collections", 
@@ -76,21 +132,17 @@ NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
             {"IsolatedElectrons", "IsolatedMuons", "IsolatedTaus"});
 
     // Jets
-    registerProcessorParameter("2JetsCollectionName", "2 Jets Collection Name", 
-                                _2JetsCollectionName, 
-                                std::string("Refined2Jets"));
-    registerProcessorParameter("3JetsCollectionName", "3 Jets Collection Name", 
-                                _3JetsCollectionName,
-                                std::string("Refined3Jets"));
-    registerProcessorParameter("4JetsCollectionName", "4 Jets Collection Name", 
-                                _4JetsCollectionName,
-                                std::string("Refined4Jets"));
+    registerProcessorParameter(
+            "2JetsCollectionName", "2 Jets Collection Name", 
+            _2JetsCollectionName, std::string("Refined2Jets"));
+    registerProcessorParameter(
+            "3JetsCollectionName", "3 Jets Collection Name", 
+            _3JetsCollectionName, std::string("Refined3Jets"));
+    registerProcessorParameter(
+            "4JetsCollectionName", "4 Jets Collection Name", 
+            _4JetsCollectionName, std::string("Refined4Jets"));
 }
 
-// COMMANDS
-/**
- * Create file root, add tree root and init columns.
- */
 void NNHProcessor::init() {
     
     streamlog_out(MESSAGE) << "NNHProcessor::init()" << std::endl;
@@ -186,39 +238,26 @@ void NNHProcessor::init() {
     outputTree->Branch("mc_higgs_decay_cosBetw", &mc_higgs_decay_cosBetw);
 }
 
-/**
- * Put all particles.
- */ 
 void NNHProcessor::clear() {
     particles.clear();
 }
 
-// TOOLS
-
-/** Tool function
- * Bind a PseudoJet form a ReconstructedParticle*
- */
 fastjet::PseudoJet recoParticleToPseudoJet(EVENT::ReconstructedParticle* recoPart) {
     
-    double* mom = recoPart->getMomentum(); // auto ? double*
-    double energy = recoPart->getEnergy(); // auto ? double
+    double* mom = recoPart->getMomentum();          // auto ? double*
+    double energy = recoPart->getEnergy();          // auto ? double
 
     fastjet::PseudoJet particle(mom[0], mom[1], mom[2], energy);
-    
-    ParticleInfo* partInfo = new ParticleInfo; // auto ? ParticleInfo*
+    fastjet::PseudoJet partInfo = new ParticleInfo; // auto ? fastjet::PseudoJet
     partInfo->setRecoParticle(recoPart);
-    
     particle.set_user_info(partInfo);
     
     return particle;
 }
 
-/** Tool function
- * Compute recoil mass from a HepLorentzVector and a energy.
- */
 double computeRecoilMass(const CLHEP::HepLorentzVector z4Vector, float energy) {
     
-    CLHEP::Hep3Vector pTot = CLHEP::Hep3Vector(energy * std::sin(7e-3), 0, 0); // auto ? CLHEP::Hep3Vector
+    CLHEP::Hep3Vector pTot = CLHEP::Hep3Vector(energy * std::sin(7e-3), 0, 0); // auto
     pTot = pTot - CLHEP::Hep3Vector(z4Vector.px(), z4Vector.py(), z4Vector.pz());
     
     double rm = (energy - z4Vector.e()) * (energy - z4Vector.e()) - pTot.mag2();
@@ -227,59 +266,40 @@ double computeRecoilMass(const CLHEP::HepLorentzVector z4Vector, float energy) {
         return 0.;
     } else {
         rm = std::sqrt(rm);
-        return rm; 
+        return rm;
     }
 }
 
-/** Tool function
- * Compute recoil mass from a PseudoJet and a energy.
- */
 double computeRecoilMass(const fastjet::PseudoJet& particle, float energy) {
     
     const CLHEP::HepLorentzVector vec = CLHEP::HepLorentzVector(
-            particle.px(), particle.py(), particle.pz(), particle.e());
+            particle.px(), particle.py(), particle.pz(), particle.e()); // auto
             
     return computeRecoilMass(vec, energy);
 }
 
-// COMMANDS 
-
-/**
- * Initial State Radiation
- */
 void NNHProcessor::processISR(
-        const EVENT::MCParticle* gamma0, const EVENT::MCParticle* gamma1) {
+            const EVENT::MCParticle* gamma0, const EVENT::MCParticle* gamma1) {
+            
+    mc_ISR_e = -1;
+    mc_ISR_pt = -1;
 
-    mc_ISR_e = -1.;
-    mc_ISR_pt = -1.;
-    
-    const int PDG_PHOTON = 22; 
-    if (gamma0->getPDG() != PDG_PHOTON || gamma1->getPDG() != PDG_PHOTON) {
+    if (!isPhoton(gamma0) || !isPhoton(gamma1)) {
         throw std::logic_error("not gammas");
     }
 
-    
-    // auto ? CLHEP::HepLorentzVector
-    CLHEP::HepLorentzVector gamma0_4Vec = CLHEP::HepLorentzVector(
-            gamma0->getMomentum()[0], gamma0->getMomentum()[1],
-            gamma0->getMomentum()[2], gamma0->getEnergy());
-    
-    // auto ? CLHEP::HepLorentzVector
-    CLHEP::HepLorentzVector gamma1_4Vec = CLHEP::HepLorentzVector(
-            gamma1->getMomentum()[0], gamma1->getMomentum()[1],
-            gamma1->getMomentum()[2], gamma1->getEnergy());
-    
-    // auto ? CLHEP::HepLorentzVector
-    CLHEP::HepLorentzVector ISR_4Vec = gamma0_4Vec + gamma1_4Vec;
+    auto gamma0_4Vec = CLHEP::HepLorentzVector(gamma0->getMomentum()[0], gamma0->getMomentum()[1],
+                                               gamma0->getMomentum()[2], gamma0->getEnergy());
+    auto gamma1_4Vec = CLHEP::HepLorentzVector(gamma1->getMomentum()[0], gamma1->getMomentum()[1],
+                                               gamma1->getMomentum()[2], gamma1->getEnergy());
+    auto ISR_4Vec = gamma0_4Vec + gamma1_4Vec;
 
     mc_ISR_e = ISR_4Vec.e();
     mc_ISR_pt = ISR_4Vec.perp();
 }
 
-void NNHProcessor::processNeutrinos(
-        const EVENT::MCParticle* nu0, const EVENT::MCParticle* nu1) {
-            
-
+void NNHProcessor::processNeutrinos(const EVENT::MCParticle* nu0, const EVENT::MCParticle* nu1)
+{
     mc_nu_flavor = -1;
     mc_nu_e = -1;
     mc_nu_pt = -1;
@@ -309,7 +329,8 @@ void NNHProcessor::processNeutrinos(
     mc_nu_cosBetw = std::cos(angleBetw);
 }
 
-void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
+void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs)
+{
     mc_higgs_e = -1;
     mc_higgs_pt = -1;
     mc_higgs_m = -1;

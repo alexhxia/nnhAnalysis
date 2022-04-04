@@ -20,14 +20,11 @@
 #include <TFile.h>
 #include <TTree.h>
 
-/**
- * 
- */
 class NNHProcessor : public marlin::Processor {
     
     public:
-        static constexpr float W_MASS_REF = 80.379;     // W mass boson
-        static constexpr float Z_MASS_REF = 91.1876;    // Z mass boson
+        static constexpr float W_MASS_REF = 80.379;
+        static constexpr float Z_MASS_REF = 91.1876;
 
     public:
         virtual Processor* newProcessor() { return new NNHProcessor; }
@@ -52,7 +49,7 @@ class NNHProcessor : public marlin::Processor {
         Eigen::Matrix3d computeSphericityTensor(const std::vector<fastjet::PseudoJet>& particleVec) const;
         double          computeSphericity(const std::vector<fastjet::PseudoJet>& particleVec) const;
 
-        // steering file parameters
+        /* steering file parameters */
         std::string rootFileName{};
         std::string mcParticleCollectionName{};
         std::string reconstructedParticleCollectionName{};
@@ -67,8 +64,8 @@ class NNHProcessor : public marlin::Processor {
         TFile* outputFile = nullptr;
         TTree* outputTree = nullptr;
 
-        LCCollection* mcCol = nullptr;      // Monte Carlo Collection
-        LCCollection* recoCol = nullptr;    // reconstructedParticleCollection ?
+        LCCollection* mcCol = nullptr;
+        LCCollection* recoCol = nullptr;
 
         std::vector<fastjet::PseudoJet> particles{};
 
@@ -76,8 +73,6 @@ class NNHProcessor : public marlin::Processor {
         std::set<EVENT::ReconstructedParticle*> isolatedPhotons{};
 
         /* event variables */
-        
-        // Collision Energy
         int   processID = 0;
         int   event = 0;
         float sqrtS = -1.;
@@ -86,16 +81,16 @@ class NNHProcessor : public marlin::Processor {
         bool isValid_ww = false;
 
         float visible_e = 0.;
-        int   nParticles = 0;
-        int   nIsoLep = 0;      // nb of isoled lepton
-        float eIsoLep = 0.;     // energy of isoled lepton ?
+        int   nParticles = 0;       // nb of particles
+        int   nIsoLep = 0;          // nb of isoled leptons
+        float eIsoLep = 0.;         // energy of isoled lepton
 
-        /* Reco variables */
+        /* Reco variables*/
         
-        float higgs_e = 0.;             // energy, charge ?
-        float higgs_pt = 0.;            // ?
-        float higgs_m = 0.;             // mass ?
-        float higgs_cosTheta = -2.;     // 
+        float higgs_e = 0.;
+        float higgs_pt = 0.;
+        float higgs_m = 0.;
+        float higgs_cosTheta = -2.;
         float higgs_recMass = 0.;
 
         float higgs_bTag1 = 0.;
@@ -145,11 +140,11 @@ class NNHProcessor : public marlin::Processor {
         /* MC variables */
         
         // ISR (Initial State Radiation)
-        float mc_ISR_e = 0.;            // energy component
-        float mc_ISR_pt = 0.;           // transverse component of the spatial vector
+        float mc_ISR_e = 0.;
+        float mc_ISR_pt = 0.;
 
         // Neutrinos
-        int   mc_nu_flavor = 0.;
+        int   mc_nu_flavor = 0;
         float mc_nu_e = 0.;
         float mc_nu_pt = 0.;
         float mc_nu_m = 0.;
@@ -161,8 +156,8 @@ class NNHProcessor : public marlin::Processor {
         float mc_higgs_m = 0.;
         float mc_higgs_recMass = 0.;
 
-        int mc_higgs_decay = 0.;
-        int mc_higgs_subDecay = 0.;
+        int mc_higgs_decay = 0;
+        int mc_higgs_subDecay = 0;
 
         float mc_higgs_decay1_e = 0.;
         float mc_higgs_decay1_pt = 0.;
@@ -173,6 +168,5 @@ class NNHProcessor : public marlin::Processor {
         float mc_higgs_decay_cosBetw = -2.;
 
         /* debug variables */
-        
         int nEventsProcessed = 0;
 };

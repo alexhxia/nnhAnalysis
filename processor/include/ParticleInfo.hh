@@ -6,47 +6,31 @@
 
 #pragma once
 
-#include <fastjet/PseudoJet.hh> // FastJet : jet
-#include <EVENT/ReconstructedParticle.h> // LCIO
+#include <fastjet/PseudoJet.hh>
+
+#include <EVENT/ReconstructedParticle.h>
 
 /**
  * ParticleInfo class, add to 'fastjet::PseudoJet::UserInfoBase' interface 
  * once object of 'EVENT::ReconstructedParticle'.
  */
 class ParticleInfo : public fastjet::PseudoJet::UserInfoBase {
-  
-    public:
     
-        // MAKERS
+    public:
         ParticleInfo() = default;
-        ParticleInfo(const ParticleInfo& toCopy) = delete; 
-        
-        // WRECKER
         ~ParticleInfo() = default;
 
-        // REQUESTS
-        EVENT::ReconstructedParticle* getReconstructedParticle() const { 
-            return _recoParticle; 
-        }
-        
-        // COMMANDS
+        ParticleInfo(const ParticleInfo& toCopy) = delete;
         void operator=(const ParticleInfo& toCopy) = delete;
 
-        void setReconstructedParticle(EVENT::ReconstructedParticle* rPart) { 
-            _recoParticle = rPart; 
+        void setRecoParticle(EVENT::ReconstructedParticle* recoPart) { 
+            _recoParticle = recoPart; 
         }
-        
-        // ------ BEGIN à supprimer ------ /*
+
         auto recoParticle() const { 
             return _recoParticle; 
         }
-        void setRecoParticle(EVENT::ReconstructedParticle* rPart) { 
-            _recoParticle = rPart; 
-        }
-        // ------ END à supprimer ------*/
 
     protected:
-    
-        // ATTRIBUTES
         EVENT::ReconstructedParticle* _recoParticle = nullptr;
 };
