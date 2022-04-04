@@ -11,7 +11,7 @@ export NNH_HOME=~/nnhAnalysis/ilcsoft
 Dans ce tutorial, on considère que les fichiers sont en local dans le dossier `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`.
 Et on placera nos fichiers de résultats dans le sous dossier `nnhAnalysis/ilcsoft/processor/RESULTS`.
 ```
-export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/ \
+export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS 
 ```
 Si c'est la première exécution du code, il est nécessaire d'avoir un dossier de copilation et de résultats :
