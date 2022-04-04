@@ -23,7 +23,7 @@ export  NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES \
         NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA 
 ```
 ```
-mkdir $NNH_DATA $NNH_HOME/analysis/BUILD
+mkdir $NNH_ANALYSIS_OUTPUTFILES $NNH_HOME/analysis/BUILD
 ```
 
 ## Préparation de données
