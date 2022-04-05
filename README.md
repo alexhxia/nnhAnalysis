@@ -13,7 +13,7 @@ git clone --branch ilcsoft https://github.com/alexhxia/nnhAnalysis.git ilcsoft
 ```
 On considère le dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
-export NNH_HOME=nnhAnalysis/ilcsoft
+export NNH_HOME=$PWD/nnhAnalysis/ilcsoft
 ```
 On se place dans le dossier créer :
 ```
@@ -66,8 +66,9 @@ NB : les commandes pour avoir un environnement opérationnel, à refaire à chaq
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
-export  NNH_HOME=~/nnhAnalysis/ilcsoft \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result \
+        NNH_HOME=~/nnhAnalysis/ilcsoft
 ```
 ```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
@@ -80,8 +81,9 @@ export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 ## `analysis`
 NB : les commandes pour avoir un environnement opérationnel, à refaire à chaque ouverture :
 ```
-export  NNH_HOME=~/nnhAnalysis/ilcsoft \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result \
+        NNH_HOME=~/nnhAnalysis/ilcsoft
 ```
 ```
 export  NNH_ANALYSIS_INPUTFILES=$NNH_HOME/processor/RESULTS \
