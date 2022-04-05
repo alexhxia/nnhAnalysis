@@ -19,7 +19,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
 
     Eigen::MatrixXd mom(m_maxpart, 6); // momentum
 
-    double          tmax = 0;
+    double          tmax = 0.;
     double          phi = 0.;
     double          the = 0.;
     double          sgn;
