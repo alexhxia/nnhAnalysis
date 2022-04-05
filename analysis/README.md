@@ -85,14 +85,14 @@ ne doit pas avoir été exécuter.
 Mais il ne faut pas oublier de ré-export les variables d'environnement :
 ```
 export  NNH_HOME=~/nnhAnalysis \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/ \
-        NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
 ```
 ```
-export  NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT \
-        NNH_ANALYSIS_INPUTFILES=$NNH_HOME/processor/OUTPUT \
-        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
-        NNH_DATA=$NNH_HOME/analysis/DATA
+export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES
+        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS \
+        NNH_ANALYSIS_INPUTFILES=$NNH_HOME/processor/RESULTS \
+        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA 
 ```
 To run the BDT, use :
 ```
