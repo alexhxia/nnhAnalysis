@@ -73,6 +73,7 @@ class NNHProcessor : public marlin::Processor {
         std::set<EVENT::ReconstructedParticle*> isolatedPhotons{};
 
         /* event variables */
+        
         int   processID = 0;
         int   event = 0;
         float sqrtS = -1.;
@@ -107,7 +108,7 @@ class NNHProcessor : public marlin::Processor {
         float w1_m = -1.;
         float w1_pt = -1.;
         float w1_e = -1.;
-        float w1_cosBetw = -2.;
+        float w1_cosBetw = -2.;         // cos btw 2 jets
 
         float w2_m = -1.;
         float w2_pt = -1.;
@@ -144,11 +145,11 @@ class NNHProcessor : public marlin::Processor {
         float mc_ISR_pt = 0.;
 
         // Neutrinos
-        int   mc_nu_flavor = 0;
-        float mc_nu_e = 0.;
-        float mc_nu_pt = 0.;
-        float mc_nu_m = 0.;
-        float mc_nu_cosBetw = -2.;
+        int   mc_nu_flavor = 0;             // flavor
+        float mc_nu_e = 0.;                 // energy
+        float mc_nu_pt = 0.;                // scalar transversal momentum
+        float mc_nu_m = 0.;                 // invariant mass
+        float mc_nu_cosBetw = -2.;          // cos btw
 
         // Higgs
         float mc_higgs_e = 0.;
@@ -168,5 +169,6 @@ class NNHProcessor : public marlin::Processor {
         float mc_higgs_decay_cosBetw = -2.;
 
         /* debug variables */
+        
         int nEventsProcessed = 0;
 };
