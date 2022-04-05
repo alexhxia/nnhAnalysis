@@ -26,7 +26,7 @@ export  NNH_ANALYSIS_INPUTFILES=$NNH_HOME/ROOT \
 mkdir $NNH_DATA $NNH_HOME/analysis/BUILD
 ```
 ```
-hadd $NNH_DATA/DATA.root $NNH_ROOTFILES/*.root
+hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_PROCESSOR_OUTPUTFILES/*.root
 ```
 where ``/path/to/single/rootfiles`` is the folder containing all the single ROOT files outputed by the Marlin processor you previously had to run.
 
