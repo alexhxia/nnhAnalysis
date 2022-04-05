@@ -8,15 +8,16 @@ NB : les commandes pour avoir un environnement opérationnel, à refaire à chaq
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
-export  NNH_HOME=~/nnhAnalysis \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
+        NNH_HOME=~/nnhAnalysis 
 ```
 ```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
         NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 ```
 ```
-export MARLIN_DLL=$MARLIN_DLL:~/nnhAnalysis/processor/lib/libnnhProcessor.so
+export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 ```
 Compilation :
 ```
@@ -54,7 +55,10 @@ The [``launchNNHProcessor.py``](./script/launchNNHProcessor.py) is just there to
 
 ## Compilation
 ```
-cd $NNH_HOME/processor && mkdir BUILD && cd BUILD
+mkdir $NNH_HOME/processor/BUILD
+```
+```
+cd $NNH_HOME/processor/BUILD
 ```
 Si ce n'est pas fait, avant le `cmake`, il faut impérativement :
 ```
@@ -71,7 +75,7 @@ make install
 ```
 La compilation génère une bibliotèque `libnnhProcessor` qu'il faut impérativement l'ajouter dans le `MARLIN_DLL` :
 ```
-export MARLIN_DLL=$MARLIN_DLL:~/nnhAnalysis/processor/lib/libnnhProcessor.so
+export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 ```
 ## Run the script
 ```
