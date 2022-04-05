@@ -3,27 +3,28 @@ This folder contains code to train a BDT to select events for the &nu;&nu;h (h &
 
 ## Prérequis
 Il faut un environnement au moins sous `python 3.9` et avec `root`.
-```
-source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-```
+
 Avant d'exécuter `analysis` il faut avoir générer les fichiers ROOTs (voir la partie `processor`).
 ```
-export  NNH_HOME=~/nnhAnalysis \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL/
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result \
+        NNH_HOME=~/nnhAnalysis/ilcsoft
 ```
 ```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/OUTPUT
+        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 ```
 ## Préparation de données
 First of all , what you need to do is merge all the ROOT files for each individual processID into a single big ROOT file named ``DATA.root`` and put into a ``DATA/`` folder : 
 ```
-export  NNH_ANALYSIS_INPUTFILES=$NNH_HOME/ROOT \
+export  NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES \
         NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
-        NNH_DATA=$NNH_HOME/analysis/DATA
 ```
 ```
-mkdir $NNH_DATA $NNH_HOME/analysis/BUILD
+mkdir $NNH_ANALYSIS_OUTPUTFILES $NNH_HOME/analysis/BUILD
+```
+```
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
 hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_PROCESSOR_OUTPUTFILES/*.root
@@ -84,15 +85,17 @@ Attention, il faut redémarrer ou changer de terminal, car la commande
 ne doit pas avoir été exécuter. 
 Mais il ne faut pas oublier de ré-export les variables d'environnement :
 ```
-export  NNH_HOME=~/nnhAnalysis \
-        NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
-        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result \
+        NNH_HOME=~/nnhAnalysis/ilcsoft
 ```
 ```
-export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS \
-        NNH_ANALYSIS_INPUTFILES=$NNH_HOME/processor/RESULTS \
-        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA 
+export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
+        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+```
+```
+export  NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES \
+        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
 ```
 To run the BDT, use :
 ```
