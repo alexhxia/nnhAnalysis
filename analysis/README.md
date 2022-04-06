@@ -18,7 +18,7 @@ export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
 First of all , what you need to do is merge all the ROOT files for each individual processID into a single big ROOT file named ``DATA.root`` and put into a ``DATA/`` folder : 
 ```
 export  NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES \
-        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA \
+        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA
 ```
 ```
 mkdir $NNH_ANALYSIS_OUTPUTFILES $NNH_HOME/analysis/BUILD
