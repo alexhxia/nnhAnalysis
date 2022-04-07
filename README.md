@@ -13,7 +13,7 @@ git clone --branch ilcsoft https://github.com/alexhxia/nnhAnalysis.git ilcsoft
 ```
 On considère le dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
-export NNH_HOME=$PWD/nnhAnalysis/ilcsoft
+export NNH_HOME=~/nnhAnalysis/ilcsoft
 ```
 On se place dans le dossier créer :
 ```
