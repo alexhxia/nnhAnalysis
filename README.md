@@ -30,6 +30,3 @@ J'ai divisé ce dépot en 3 branches :
 ```
 git clone https://github.com/alexhxia/nnhAnalysis.git
 ```
-```
-export NNH_HOME=$PWD/nnhAnalysis
-```
