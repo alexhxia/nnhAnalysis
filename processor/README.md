@@ -1,49 +1,5 @@
 # nnh processor
 
-## Résumé
-On traite une première fois les fichiers LCIO dans la partie `processor` afin obtenir un fichier ROOT par processus (cf `processor/README`), qui sera placer dans un dossier `OUTPUT`.
-
-NB : les commandes pour avoir un environnement opérationnel, à refaire à chaque ouverture :
-```
-source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-```
-```
-export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
-        NNH_HOME=~/nnhAnalysis/original 
-```
-```
-export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
-```
-```
-export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
-```
-Compilation :
-```
-mkdir $NNH_HOME/processor/BUILD 
-```
-```
-cd $NNH_HOME/processor/BUILD
-```
-```
-cmake -C $ILCSOFT/ILCSoft.cmake .. 
-make
-make install
-```
-Pour un seul fichier (modifier avant le nom des fichiers `input.lcio` et `output.root` dans `Marlin NNH_steer.xml`) :
-```
-Marlin $NNH_HOME/processor/NNH_steer.xml 
-```
-Pour exécuter tous les processus :
-```
-mkdir $NNH_PROCESSOR_OUTPUTFILES
-```
-```
-python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
-```
-# nnh processor
-
 This folder is dedicated to the Marlin processor that will transform the mini-DST lcio files into TTrees in ROOT files.
 
 Usage of the processor itself is very simple, just modify the [``./script/NNH_steer.xml``](./script/NNH_steer.xml) file by replacing ``input.slcio`` and ``output.root`` into, and then do
@@ -220,6 +176,3 @@ For decays other than h &rarr; WW* and h &rarr; ZZ*, ``mc_higgs_subDecay == 0``.
 These two variables are useful to distinguish between signal and background:
 - for the &nu;&nu;h (h &rarr; b bbar) study, only the events with ``mc_higgs_decay == 5`` are signal events
 - for the  &nu;&nu;h (h &rarr; WW* &rarr; qqqq) study, only the events with ``mc_higgs_decay == 24 && mc_higgs_subDecay == 1`` are signal events
-
-
-
