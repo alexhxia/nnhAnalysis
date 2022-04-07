@@ -5,6 +5,7 @@
 /******************************************************************************/
 
 #include "NNHProcessor.hh"
+#include "NNHProcessorTools.cc"
 
 #include "EventShape.hh"
 #include "ParticleInfo.hh"
@@ -16,6 +17,7 @@
 #include <limits>
 #include <sstream>
 #include <stdexcept>
+#include <cassert>
 
 #include <marlin/VerbosityLevels.h>
 
@@ -37,77 +39,7 @@
 #include <string>
 #include <vector>
 
-/* PDG Tools */
 
-// Leptons
-int const PDG_ELECTRON = 11;
-int const PDG_ELECTRON_NEUTRINO = 12;
-int const PDG_MUON = 13;
-int const PDG_MUON_NEUTRINO = 14;
-int const PDG_TAU = 15;
-int const PDG_TAU_NEUTRINO = 16;
-
-// Bosons
-
-int const PDG_GLUON = 21;
-int const PDG_PHOTON = 22;
-int const PDG_Z0 = 23;
-int const PDG_W = 24;
-int const PDG_HIGGS = 25;
-
-/* TOOLS REQUEST */
-
-/**
- * 1 <= PDG(quark) <= 8
- */
-bool isQuark(const EVENT::MCParticle* p) {
-    return 1 <= std::abs(p->getPDG()) && std::abs(p->getPDG()) <= 8;
-}
-
-bool isElectron(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_ELECTRON;
-}
-
-bool isMuon(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_MUON;
-}
-
-bool isTau(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_TAU;
-}
-
-bool isNeutrino(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_ELECTRON_NEUTRINO
-            || std::abs(p->getPDG()) == PDG_MUON_NEUTRINO
-            || std::abs(p->getPDG()) == PDG_TAU_NEUTRINO;;
-}
-
-bool isGluon(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_GLUON;
-}
-
-bool isPhoton(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_PHOTON;
-}
-
-bool isZ0Boson(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_Z0;
-}
-
-bool isWBoson(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_W;
-}
-
-bool isHiggs(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_HIGGS;
-}
-
-/**
- * Test if p1 is antiparticle to p2.
- */
-bool isTwin(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
-    return p1->getPDG() == -p2->getPDG();
-}
 
 /* NNHProcessor */
 
@@ -158,6 +90,10 @@ NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
             _4JetsCollectionName, std::string("Refined4Jets"));
 }
 
+/**
+ * Create output file and root tree.
+ * Init branch root tree.
+ */
 void NNHProcessor::init() {
     
     streamlog_out(MESSAGE) << "NNHProcessor::init()" << std::endl;
@@ -253,48 +189,17 @@ void NNHProcessor::init() {
     outputTree->Branch("mc_higgs_decay_cosBetw", &mc_higgs_decay_cosBetw);
 }
 
+/**
+ * Remove all particules.
+ */
 void NNHProcessor::clear() {
     particles.clear();
 }
 
-fastjet::PseudoJet recoParticleToPseudoJet(EVENT::ReconstructedParticle* recoPart) {
-    
-    const double* mom = recoPart->getMomentum();          // auto ? const double*
-    double energy = recoPart->getEnergy();          // auto ? double
-
-    fastjet::PseudoJet particle(mom[0], mom[1], mom[2], energy);
-    
-    ParticleInfo* partInfo = new ParticleInfo; // auto ? ParticleInfo
-    partInfo->setRecoParticle(recoPart);
-    
-    particle.set_user_info(partInfo);
-    
-    return particle;
-}
-
-double computeRecoilMass(const CLHEP::HepLorentzVector z4Vector, float energy) {
-    
-    CLHEP::Hep3Vector pTot = CLHEP::Hep3Vector(energy * std::sin(7e-3), 0, 0); // auto ? CLHEP::Hep3Vector
-    pTot = pTot - CLHEP::Hep3Vector(z4Vector.px(), z4Vector.py(), z4Vector.pz());
-    
-    double rm = (energy - z4Vector.e()) * (energy - z4Vector.e()) - pTot.mag2();
-
-    if (rm < 0.) {
-        return 0.;
-    } else {
-        rm = std::sqrt(rm);
-        return rm;
-    }
-}
-
-double computeRecoilMass(const fastjet::PseudoJet& particle, float energy) {
-    
-    const CLHEP::HepLorentzVector vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
-            particle.px(), particle.py(), particle.pz(), particle.e()); 
-            
-    return computeRecoilMass(vec, energy);
-}
-
+/**
+ * Init root tree variables in ISR process : "mc_ISR_*"
+ * AE : isPhoton(gamma0) && isPhoton(gamma1)
+ */
 void NNHProcessor::processISR(
             const EVENT::MCParticle* gamma0, const EVENT::MCParticle* gamma1) {
     
@@ -307,6 +212,7 @@ void NNHProcessor::processISR(
         throw std::logic_error("not gammas");
     }
 
+    // 4-Vector gammas sum
     CLHEP::HepLorentzVector gamma0_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
             gamma0->getMomentum()[0], gamma0->getMomentum()[1],
             gamma0->getMomentum()[2], gamma0->getEnergy());
@@ -323,6 +229,7 @@ void NNHProcessor::processISR(
 }
 
 /**
+ * Init root tree variables for neutrinos process : "mc_nu_*"
  * AE : isNeutrino(nu0) && isNeutrino(nu1) && isTwin(nu0, nu1)
  */
 void NNHProcessor::processNeutrinos(
@@ -354,18 +261,23 @@ void NNHProcessor::processNeutrinos(
     CLHEP::HepLorentzVector nu1_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
             nu1->getMomentum()[0], nu1->getMomentum()[1], 
             nu1->getMomentum()[2], nu1->getEnergy());
-            
+    
+    // 4-Vector neutrinos sum
+    CLHEP::HepLorentzVector nu_4Vec = nu0_4Vec + nu1_4Vec;
+    
+    // angle between 2 neutrinos 4-vector 
     double angleBetw = nu0_4Vec.v().angle(nu1_4Vec.v()); // auto ? double
 
     // Init mc_nu_*
     mc_nu_flavor = flavor;
-    mc_nu_e = (nu0_4Vec + nu1_4Vec).e();
-    mc_nu_pt = (nu0_4Vec + nu1_4Vec).perp();
-    mc_nu_m = (nu0_4Vec + nu1_4Vec).m();
+    mc_nu_e = nu_4Vec.e();
+    mc_nu_pt = nu_4Vec.perp();
+    mc_nu_m = nu_4Vec.m();
     mc_nu_cosBetw = std::cos(angleBetw);
 }
 
 /**
+ * Init root tree variables for Higgs process : "mc_higgs_*"
  * AE : isHiggs(higgs)
  */
 void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
@@ -395,7 +307,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
             higgs->getMomentum()[0], higgs->getMomentum()[1], 
             higgs->getMomentum()[2], higgs->getEnergy());
 
-    const MCParticleVec  vec = higgs->getDaughters(); // auto ? CLHEP::HepLorentzVector*
+    const MCParticleVec vec = higgs->getDaughters(); // auto ? CLHEP::HepLorentzVector*
 
     // We need exactly 2 daughters to continue without error
     if (vec.size() != 2) {
@@ -412,7 +324,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
             vec[1]->getMomentum()[0], vec[1]->getMomentum()[1],
              vec[1]->getMomentum()[2], vec[1]->getEnergy());
 
-    // need energiy decay1_4Vec < decay2_4Vec
+    // we choose 1 have more energy 
     if (decay2_4Vec.e() > decay1_4Vec.e()) {
         std::swap(decay1_4Vec, decay2_4Vec);
     }
@@ -439,56 +351,24 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 }
 
 /**
- * 
- */
-std::array<fastjet::PseudoJet, 2> findParticleByMass(
-            const std::vector<fastjet::PseudoJet> jets,
-            const double                          targetMass,
-            std::vector<fastjet::PseudoJet>&      remainingJets) {
-
-
-    std::array<unsigned int, 2> goodPair = std::array<unsigned int, 2>{}; // auto ? std::array<unsigned int, 2>
-    double chi2 = std::numeric_limits<double>::max(); // auto ? double
-
-    for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
-        for (unsigned int j = i + 1; j < jets.size(); ++j) { // auto ? size_t
-            
-            double m = (jets[i] + jets[j]).m(); // auto ? double
-            double val = std::abs(m - targetMass); // auto ? double
-
-            if (val <= chi2) {
-                chi2 = val;
-                goodPair = {i, j};
-            }
-        }
-    }
-
-    std::array<fastjet::PseudoJet, 2> toReturn = {
-                jets[goodPair[0]], jets[goodPair[1]]};
-
-    for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
-        if (i != goodPair[0] && i != goodPair[1]) {
-            remainingJets.push_back(jets[i]);
-        }
-    }
-
-    return toReturn;
-}
-
-/**
- * 
+ * AE : (isPhoton(part1) || isZ0Boson(part1)) => (PDG(part1) == PDG(part2))
+ * AS : (decay1, decay2)
+ *          with decay1 = {PDG_PHOTON, PDG_Z0, PDG_HIGGS}
+ *          and  decay2 = getDecayCode(part1, part2)       
  */
 std::array<int, 2> NNHProcessor::findDecayMode(
         const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const {
             
-            
-    std::array<int, 2> toReturn{-1, -1};
+    
+    // init 
+    std::array<int, 2> toReturn{-1, -1}; // return variable
 
-    int decay1 = std::abs(part1->getPDG()); // auto ? int
-    int decay2 = std::abs(part2->getPDG()); // auto ? int
-
+    // Exception
+    int p1_PDG = std::abs(part1->getPDG());
+    int p2_PDG = std::abs(part2->getPDG());
+    
     if (!isPhoton(part1) && !isZ0Boson(part1)) {
-        if (decay1 != decay2) {
+        if (p1_PDG != p2_PDG) { // ???
             throw std::logic_error(
                     "weird higgs decay : " 
                     + std::to_string(decay1) + ", " 
@@ -496,112 +376,15 @@ std::array<int, 2> NNHProcessor::findDecayMode(
         }
     }
 
-    if (decay1 != decay2) {
+    // init variable couple to return ??? à vérifier avec Gérald
+    int decay1;
+    int decay2;
+    if (p1_PDG != p2_PDG) {
         decay1 = PDG_HIGGS;
-    }
-
-    decay2 = 0;
-    
-    if (isWBoson(part1) || isZ0Boson(part1)) {
-        
-        const MCParticleVec vec0 = part1->getDaughters(); // auto ? const MCParticleVec*
-        const MCParticleVec vec1 = part2->getDaughters(); // auto ? const MCParticleVec*
-
-        if (vec0.size() != 2 || vec1.size() != 2) {
-            throw std::logic_error(
-                    "weird higgs subdecay for WW or ZZ : " 
-                    + std::to_string(vec0.size() + vec1.size()) 
-                    + "particles");
-        }
-
-        std::array<int, 4> subDecay = {{
-                std::abs(vec0[0]->getPDG()), std::abs(vec0[1]->getPDG()),
-                std::abs(vec1[0]->getPDG()), std::abs(vec1[1]->getPDG())
-        }};
-
-        std::sort(subDecay.begin(), subDecay.end());
-
-        if (subDecay[1] < 10) { // qq--
-            if (subDecay[3] < 10) { // qqqq
-                decay2 = 1;
-            } else if (subDecay[2] % 2 != 0 && subDecay[3] % 2 != 0) { // qqll
-                if (subDecay[2] == PDG_ELECTRON) {
-                    decay2 = 21;
-                } else if (subDecay[2] == PDG_MUON) {
-                    decay2 = 22;
-                } else if (subDecay[2] == PDG_TAU) {
-                    decay2 = 23;
-                } else {
-                    throw std::logic_error("weird qqll decay");
-                }
-            } else if (subDecay[2] % 2 == 0 && subDecay[3] % 2 == 0) { // qqvv
-                decay2 = 4;
-            } else { // qqlv
-                if (subDecay[2] == PDG_ELECTRON) {
-                    decay2 = 31;
-                } else if (subDecay[2] == PDG_MUON) {
-                    decay2 = 32;
-                } else if (subDecay[2] == PDG_TAU) {
-                    decay2 = 33;
-                } else {
-                    throw std::logic_error("weird qqlv decay");
-                }
-            }
-        } else {
-            int nbNu = 0;
-            for (const int& i : subDecay) { // auto ? int
-                if (i % 2 == 0) {
-                    nbNu++;
-                }
-            }
-
-            if (nbNu == 0) { // llll
-                decay2 = 500;
-                if (subDecay[0] == PDG_ELECTRON) {
-                    decay2 += 10;
-                } else if (subDecay[0] == PDG_MUON) {
-                    decay2 += 20;
-                } else if (subDecay[0] == PDG_TAU) {
-                    decay2 += 30;
-                } else {
-                    throw std::logic_error("weird llll decay");
-                }
-                if (subDecay[2] == PDG_ELECTRON) {
-                    decay2 += 1;
-                } else if (subDecay[2] == PDG_MUON) {
-                    decay2 += 2;
-                } else if (subDecay[2] == PDG_TAU) {
-                    decay2 += 3;
-                } else {
-                    throw std::logic_error("weird llll decay");
-                }
-            } else if (nbNu == 2) { // llvv
-                decay2 = 600;
-                std::vector<int> temp = {};
-                for (const int& i : subDecay) { // auto ? int
-                    if (i % 2 != 0) {
-                        if (i == PDG_ELECTRON) {
-                            temp.push_back(1);
-                        } else if (i == PDG_MUON) {
-                            temp.push_back(2);
-                        } else if (i == PDG_TAU) {
-                            temp.push_back(3);
-                        } else {
-                            throw std::logic_error("weird llvv decay");
-                        }
-                    }
-                }
-
-                if (temp.size() != 2) {
-                    throw std::logic_error("weird llvv decay");
-                }
-                std::sort(temp.begin(), temp.end());
-
-                decay2 = decay2 + 10 * temp[0] + temp[1];
-            } else { // vvvv
-                decay2 = 7;
-            }
-        }
+        decay2 = 0;
+    } else {
+        decay1 = p1_PDG;
+        decay2 = getDecayCode(part1, part2);
     }
 
     toReturn = {decay1, decay2};
@@ -677,7 +460,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     try {
         processISR(mc_gamma0, mc_gamma1);
     } catch (std::logic_error& e) {
-        streamlog_out(DEBUG) 
+        cerr //streamlog_out(DEBUG) 
                 << "Run : " << evt->getRunNumber() << ", "
                 << "Event : " << evt->getEventNumber() << " : "
                 << e.what() << std::endl;
