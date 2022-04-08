@@ -277,7 +277,7 @@ int getDecayCode(
             try {
                 decay2 = getChargedLeptonCode(subDecay[2]);
             } catch(exception const& e) {
-                cerr << "ERREUR : " << e.what() << endl;
+                std::cerr << "ERREUR : " << e.what() << endl;
             }
             if (isChargedLepton(subDecay[3])) { // qqlv
                 decay2 += 20;
@@ -299,12 +299,12 @@ int getDecayCode(
             try {
                 decay2 = 10 * getChargedLeptonCode(subDecay[0]);
             } catch(exception const& e) {
-                cerr << "ERREUR : " << e.what() << endl;
+                std::cerr << "ERREUR : " << e.what() << endl;
             }
             try {
                 decay2 = getChargedLeptonCode(subDecay[2]);
             } catch(exception const& e) {
-                cerr << "ERREUR : " << e.what() << endl;
+                std::cerr << "ERREUR : " << e.what() << endl;
             }
         } else if (nbNu == 2) { // llvv
             decay2 = 600;
@@ -314,7 +314,7 @@ int getDecayCode(
                     try {
                         temp.push_back(getChargedLeptonCode(i));
                     } catch(exception const& e) {
-                        cerr << "ERREUR : " << e.what() << endl;
+                        std::cerr << "ERREUR : " << e.what() << endl;
                     }
                 }
             }
