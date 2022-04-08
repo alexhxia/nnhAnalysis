@@ -210,7 +210,7 @@ int getChargedLeptonCode(const int pdg) {
     } else if (pdg == PDG_TAU) {
         return 3;
     } else {
-        throw std::runtime_error("is not a charged lepton")
+        throw std::runtime_error("is not a charged lepton");
     }
 }
 
