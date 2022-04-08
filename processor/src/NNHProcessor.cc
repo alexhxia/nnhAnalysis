@@ -40,7 +40,6 @@
 #include <vector>
 #include <iostream>
 
-
 /* NNHProcessor */
 
 NNHProcessor aNNHProcessor;
@@ -371,8 +370,8 @@ std::array<int, 2> NNHProcessor::findDecayMode(
         if (p1_PDG != p2_PDG) { // ???
             throw std::logic_error(
                     "weird higgs decay : " 
-                    + std::to_string(decay1) + ", " 
-                    + std::to_string(decay2));
+                    + std::to_string(p1_PDG) + ", " 
+                    + std::to_string(p2_PDG));
         }
     }
 
@@ -460,7 +459,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     try {
         processISR(mc_gamma0, mc_gamma1);
     } catch (std::logic_error& e) {
-        cerr //streamlog_out(DEBUG) 
+        std::cerr //streamlog_out(DEBUG) 
                 << "Run : " << evt->getRunNumber() << ", "
                 << "Event : " << evt->getEventNumber() << " : "
                 << e.what() << std::endl;

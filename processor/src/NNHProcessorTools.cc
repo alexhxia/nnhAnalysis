@@ -42,19 +42,19 @@
 
 enum PGDCode {
     // Leptons
-    ELECTRON = 11;
-    ELECTRON_NEUTRINO = 12;
-    MUON = 13;
-    MUON_NEUTRINO = 14;
-    TAU = 15;
-    TAU_NEUTRINO = 16;
+    ELECTRON = 11,
+    ELECTRON_NEUTRINO = 12,
+    MUON = 13,
+    MUON_NEUTRINO = 14,
+    TAU = 15,
+    TAU_NEUTRINO = 16,
 
     // Bosons
-    GLUON = 21;
-    PHOTON = 22;
-    Z0 = 23;
-    W = 24;
-    HIGGS = 25;
+    GLUON = 21,
+    PHOTON = 22,
+    Z0 = 23,
+    W = 24,
+    HIGGS = 25
 };
 
 // Leptons
@@ -82,7 +82,7 @@ bool isQuark(const int pdg) {
 }
 
 bool isQuark(const EVENT::MCParticle* p) {
-    return isQuarkPDG(std::abs(p->getPDG()));
+    return isQuark(std::abs(p->getPDG()));
 }
 
 bool isElectron(const int pdg) {
@@ -90,7 +90,7 @@ bool isElectron(const int pdg) {
 }
 
 bool isElectron(const EVENT::MCParticle* p) {
-    return isElectronPDG(std::abs(p->getPDG()));
+    return isElectron(std::abs(p->getPDG()));
 }
 
 bool isMuon(const int pdg) {
@@ -98,7 +98,7 @@ bool isMuon(const int pdg) {
 }
 
 bool isMuon(const EVENT::MCParticle* p) {
-    return isMuonPDG(std::abs(p->getPDG()));
+    return isMuon(std::abs(p->getPDG()));
 }
 
 bool isTau(const int pdg) {
@@ -106,7 +106,7 @@ bool isTau(const int pdg) {
 }
 
 bool isTau(const EVENT::MCParticle* p) {
-    return isTauPDG(std::abs(p->getPDG()));
+    return isTau(std::abs(p->getPDG()));
 }
 
 bool isChargedLepton(const int pdg) {
@@ -114,17 +114,17 @@ bool isChargedLepton(const int pdg) {
 }
 
 bool isChargedLepton(const EVENT::MCParticle* p) {
-    return isChargedLeptonPDG(std::abs(p->getPDG()));
+    return isChargedLepton(std::abs(p->getPDG()));
 }
 
-bool isNeutrino(const int p) {
+bool isNeutrino(const int pdg) {
     return     pdg == PDG_ELECTRON_NEUTRINO
             || pdg == PDG_MUON_NEUTRINO
             || pdg == PDG_TAU_NEUTRINO;
 }
 
 bool isNeutrino(const EVENT::MCParticle* p) {
-    return isNeutrinoPDG(p->getPDG());
+    return isNeutrino(p->getPDG());
 }
 
 bool isGluon(const int pdg) {
@@ -132,7 +132,7 @@ bool isGluon(const int pdg) {
 }
 
 bool isGluon(const EVENT::MCParticle* p) {
-    return isGluonPDG(std::abs(p->getPDG()));
+    return isGluon(std::abs(p->getPDG()));
 }
 
 bool isPhoton(const int pdg) {
@@ -140,7 +140,7 @@ bool isPhoton(const int pdg) {
 }
 
 bool isPhoton(const EVENT::MCParticle* p) {
-    return isPhotonPDG(std::abs(p->getPDG()));
+    return isPhoton(std::abs(p->getPDG()));
 }
 
 bool isZ0Boson(const int pdg) {
@@ -148,7 +148,7 @@ bool isZ0Boson(const int pdg) {
 }
 
 bool isZ0Boson(const EVENT::MCParticle* p) {
-    return isPhotonPDG(std::abs(p->getPDG()));
+    return isPhoton(std::abs(p->getPDG()));
 }
 
 bool isWBoson(const int pdg) {
@@ -156,7 +156,7 @@ bool isWBoson(const int pdg) {
 }
 
 bool isWBoson(const EVENT::MCParticle* p) {
-    return isWBosonPDG(std::abs(p->getPDG()));
+    return isWBoson(std::abs(p->getPDG()));
 }
 
 bool isHiggs(const int pdg) {
@@ -164,7 +164,7 @@ bool isHiggs(const int pdg) {
 }
 
 bool isHiggs(const EVENT::MCParticle* p) {
-    return isHiggsPDG(std::abs(p->getPDG()));
+    return isHiggs(std::abs(p->getPDG()));
 }
 
 /**
@@ -337,8 +337,8 @@ int getDecayCode(
         } else { // qql-
             try {
                 decay2 = getChargedLeptonCode(subDecay[2]);
-            } catch(exception const& e) {
-                std::cerr << "ERREUR : " << e.what() << endl;
+            } catch(std::exception const& e) {
+                std::cerr << "ERREUR : " << e.what() << std::endl;
             }
             if (isChargedLepton(subDecay[3])) { // qqlv
                 decay2 += 20;
@@ -359,13 +359,13 @@ int getDecayCode(
             decay2 = 500;
             try {
                 decay2 = 10 * getChargedLeptonCode(subDecay[0]);
-            } catch(exception const& e) {
-                std::cerr << "ERREUR : " << e.what() << endl;
+            } catch(std::exception const& e) {
+                std::cerr << "ERREUR : " << e.what() << std::endl;
             }
             try {
                 decay2 = getChargedLeptonCode(subDecay[2]);
-            } catch(exception const& e) {
-                std::cerr << "ERREUR : " << e.what() << endl;
+            } catch(std::exception const& e) {
+                std::cerr << "ERREUR : " << e.what() << std::endl;
             }
         } else if (nbNu == 2) { // llvv
             decay2 = 600;
@@ -374,8 +374,8 @@ int getDecayCode(
                 if (isChargedLepton(i)) {
                     try {
                         temp.push_back(getChargedLeptonCode(i));
-                    } catch(exception const& e) {
-                        std::cerr << "ERREUR : " << e.what() << endl;
+                    } catch(std::exception const& e) {
+                        std::cerr << "ERREUR : " << e.what() << std::endl;
                     }
                 }
             }
