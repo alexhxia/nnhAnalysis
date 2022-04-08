@@ -207,7 +207,7 @@ void NNHProcessor::processISR(
     mc_ISR_pt = -1;
 
     // Exception
-    if (!isPhoton(gamma0) || !isPhoton(gamma1)) {
+    if (!isAbsPDG(PHOTON, gamma0) || !isAbsPDG(PHOTON, gamma1)) {
         throw std::logic_error("not gammas");
     }
 
@@ -242,7 +242,8 @@ void NNHProcessor::processNeutrinos(
     mc_nu_cosBetw = -2;
 
     // Exception
-    if (!isNeutrino(nu0) || !isNeutrino(nu1) || !isTwin(nu0, nu1)) {
+    if (!isNeutrino(nu0) || !isNeutrino(nu1) 
+            || !isSameParticleAbsPDG(nu0, nu1)) {
         throw std::logic_error("not neutrinos");
     }
 
@@ -298,7 +299,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
     mc_higgs_decay_cosBetw = -1;
 
     // Exception
-    if (!isHiggs(higgs)) {
+    if (!isAbsPDG(HIGGS, higgs)) {
         throw std::logic_error("not a higgs");
     }
 
@@ -366,7 +367,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(
     int p1_PDG = std::abs(part1->getPDG());
     int p2_PDG = std::abs(part2->getPDG());
     
-    if (!isPhoton(part1) && !isZ0Boson(part1)) {
+    if (!isAbsPDG(PHOTON, part1) && !isAbsPDG(Z0, part1)) {
         if (p1_PDG != p2_PDG) { // ???
             throw std::logic_error(
                     "weird higgs decay : " 
@@ -379,7 +380,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(
     int decay1;
     int decay2;
     if (p1_PDG != p2_PDG) {
-        decay1 = PDG_HIGGS;
+        decay1 = HIGGS;
         decay2 = 0;
     } else {
         decay1 = p1_PDG;
@@ -700,7 +701,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
     // 4 jets study
     isValid_ww = (_4Jets.size() == 4);
-    if ( isValid_ww) {
+    if (isValid_ww) {
         std::vector<fastjet::PseudoJet> jets = std::vector<fastjet::PseudoJet>{}; // auto ? std::vector<fastjet::PseudoJet>
         for (EVENT::ReconstructedParticle* lcioJet : _4Jets) { // auto ? fastjet::PseudoJet
             jets.push_back(recoParticleToPseudoJet(lcioJet));

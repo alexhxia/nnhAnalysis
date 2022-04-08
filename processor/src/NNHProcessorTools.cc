@@ -38,8 +38,6 @@
 #include <vector>
 #include <iostream>
 
-/* PDG Tools */
-
 enum PGDCode {
     // Leptons
     ELECTRON = 11,
@@ -57,150 +55,70 @@ enum PGDCode {
     HIGGS = 25
 };
 
-// Leptons
-int const PDG_ELECTRON = 11;
-int const PDG_ELECTRON_NEUTRINO = 12;
-int const PDG_MUON = 13;
-int const PDG_MUON_NEUTRINO = 14;
-int const PDG_TAU = 15;
-int const PDG_TAU_NEUTRINO = 16;
-
-// Bosons
-int const PDG_GLUON = 21;
-int const PDG_PHOTON = 22;
-int const PDG_Z0 = 23;
-int const PDG_W = 24;
-int const PDG_HIGGS = 25;
-
-/* TOOLS REQUEST */
 
 /**
- * Return : 1 <= PDG(p) <= 8
+ * Return if particle is a neutrino.
  */
-bool isQuark(const int pdg) {
-    return 1 <= pdg && pdg <= 8;
-}
-
-bool isQuark(const EVENT::MCParticle* p) {
-    return isQuark(std::abs(p->getPDG()));
-}
-
-bool isElectron(const int pdg) {
-    return pdg == PDG_ELECTRON;
-}
-
-bool isElectron(const EVENT::MCParticle* p) {
-    return isElectron(std::abs(p->getPDG()));
-}
-
-bool isMuon(const int pdg) {
-    return pdg == PDG_MUON;
-}
-
-bool isMuon(const EVENT::MCParticle* p) {
-    return isMuon(std::abs(p->getPDG()));
-}
-
-bool isTau(const int pdg) {
-    return pdg == PDG_TAU;
-}
-
-bool isTau(const EVENT::MCParticle* p) {
-    return isTau(std::abs(p->getPDG()));
-}
-
-bool isChargedLepton(const int pdg) {
-    return pdg == PDG_ELECTRON || pdg == PDG_MUON || pdg == PDG_TAU;
-}
-
-bool isChargedLepton(const EVENT::MCParticle* p) {
-    return isChargedLepton(std::abs(p->getPDG()));
-}
-
-bool isNeutrino(const int pdg) {
-    return     pdg == PDG_ELECTRON_NEUTRINO
-            || pdg == PDG_MUON_NEUTRINO
-            || pdg == PDG_TAU_NEUTRINO;
-}
-
-bool isNeutrino(const EVENT::MCParticle* p) {
-    return isNeutrino(p->getPDG());
-}
-
-bool isGluon(const int pdg) {
-    return pdg == PDG_GLUON;
-}
-
-bool isGluon(const EVENT::MCParticle* p) {
-    return isGluon(std::abs(p->getPDG()));
-}
-
-bool isPhoton(const int pdg) {
-    return pdg == PDG_PHOTON;
-}
-
-bool isPhoton(const EVENT::MCParticle* p) {
-    return isPhoton(std::abs(p->getPDG()));
-}
-
-bool isZ0Boson(const int pdg) {
-    return pdg == PDG_Z0;
-}
-
-bool isZ0Boson(const EVENT::MCParticle* p) {
-    return isPhoton(std::abs(p->getPDG()));
-}
-
-bool isWBoson(const int pdg) {
-    return pdg == PDG_W;
-}
-
-bool isWBoson(const EVENT::MCParticle* p) {
-    return isWBoson(std::abs(p->getPDG()));
-}
-
-bool isHiggs(const int pdg) {
-    return pdg == PDG_HIGGS;
-}
-
-bool isHiggs(const EVENT::MCParticle* p) {
-    return isHiggs(std::abs(p->getPDG()));
+bool isNeutrino(int pdg) {
+    return     pdg == ELECTRON_NEUTRINO
+            || pdg == MUON_NEUTRINO
+            || pdg == TAU_NEUTRINO;
 }
 
 /**
- * Test if p1 is antiparticle to p2.
+ * Return if particle is a charged lepton.
  */
-bool isTwin(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
-    return p1->getPDG() == -p2->getPDG();
+bool isChargedLepton(int pdg) {
+    return     pdg == ELECTRON
+            || pdg == MUON
+            || pdg == TAU;
 }
 
 /**
- * Test if p1 and p2 are same PDG, without sign.
+ * Return if particle is a quark.
  */
-bool isSameAbsPDG(const int pdg1, const int pdg2) {
-    return std::abs(pdg1) == std::abs(pdg2);
+bool isQuark(int pdg) const {
+    return 1 <=  pdg && pdg <= 9;
 }
-bool isSameAbsPDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
+
+/**
+ * Return if particle have this pdg in absolute.
+ */
+bool isAbsPDG(const int pdg, const EVENT::MCParticle* particle) {
+    return pdg == std::abs(particle->getPDG());
+}
+
+/**
+ * Return if p1 have same pdg p2 in absolute.
+ */
+bool isSameParticleAbsPDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
     return std::abs(p1->getPDG()) == std::abs(p2->getPDG());
 }
 
 /* NNHProcessor */
 
-fastjet::PseudoJet recoParticleToPseudoJet(EVENT::ReconstructedParticle* recoPart) {
+/**
+ * Built 'PseudoJet' with 'ReconstructedParticle'
+ */
+fastjet::PseudoJet recoParticleToPseudoJet(
+        EVENT::ReconstructedParticle* reconstructedParticle) {
     
-    const double* mom = recoPart->getMomentum();          // auto ? const double*
-    double energy = recoPart->getEnergy();          // auto ? double
+    const double* momentum = recoPart->getMomentum();   // auto ? const double*
+    double energy = recoPart->getEnergy();              // auto ? double
 
-    fastjet::PseudoJet particle(mom[0], mom[1], mom[2], energy);
+    fastjet::PseudoJet particle(momentum[0], momentum[1], momentum[2], energy);
     
-    ParticleInfo* partInfo = new ParticleInfo; // auto ? ParticleInfo
-    partInfo->setRecoParticle(recoPart);
+    ParticleInfo* particleInfo = new ParticleInfo;      // auto ? ParticleInfo
+    particleInfo->setRecoParticle(reconstructedParticle);
     
-    particle.set_user_info(partInfo);
+    particle.set_user_info(particleInfo);
     
     return particle;
 }
 
+/**
+ * Compute a recoil mass with a 4-vector and a energy
+ */
 double computeRecoilMass(const CLHEP::HepLorentzVector z4Vector, float energy) {
     
     CLHEP::Hep3Vector pTot = CLHEP::Hep3Vector(energy * std::sin(7e-3), 0, 0); // auto ? CLHEP::Hep3Vector
@@ -216,6 +134,9 @@ double computeRecoilMass(const CLHEP::HepLorentzVector z4Vector, float energy) {
     }
 }
 
+/**
+ * Compute a recoil mass with a PseudoJet and a energy
+ */
 double computeRecoilMass(const fastjet::PseudoJet& particle, float energy) {
     
     const CLHEP::HepLorentzVector vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
@@ -226,7 +147,8 @@ double computeRecoilMass(const fastjet::PseudoJet& particle, float energy) {
 
 
 /**
- * 
+ * Search a couple particle in PseudoJet vector's
+ * which minimized (invariant mass - targetMass)
  */
 std::array<fastjet::PseudoJet, 2> findParticleByMass(
             const std::vector<fastjet::PseudoJet> jets,
@@ -234,13 +156,14 @@ std::array<fastjet::PseudoJet, 2> findParticleByMass(
             std::vector<fastjet::PseudoJet>&      remainingJets) {
 
 
+    // Search a couple particle which minimized (invariant mass - targetMass)
     std::array<unsigned int, 2> goodPair = std::array<unsigned int, 2>{}; // auto ? std::array<unsigned int, 2>
     double chi2 = std::numeric_limits<double>::max(); // auto ? double
 
     for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
         for (unsigned int j = i + 1; j < jets.size(); ++j) { // auto ? size_t
             
-            double m = (jets[i] + jets[j]).m(); // auto ? double
+            double m = (jets[i] + jets[j]).m(); // invariant mass, auto ? double
             double val = std::abs(m - targetMass); // auto ? double
 
             if (val <= chi2) {
@@ -253,6 +176,7 @@ std::array<fastjet::PseudoJet, 2> findParticleByMass(
     std::array<fastjet::PseudoJet, 2> toReturn = {
                 jets[goodPair[0]], jets[goodPair[1]]};
 
+    // Save a not "good pair" jets
     for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
         if (i != goodPair[0] && i != goodPair[1]) {
             remainingJets.push_back(jets[i]);
@@ -262,6 +186,12 @@ std::array<fastjet::PseudoJet, 2> findParticleByMass(
     return toReturn;
 }
 
+/**
+ * Return : 1 if pdg is pdg electron's
+ *          2 if muon
+ *          3 if tau
+ *          throw error else.
+ */
 int getChargedLeptonCode(const int pdg) {
     
     if (pdg == ELECTRON) {
@@ -280,19 +210,19 @@ int getChargedLeptonCode(const int pdg) {
  *      && isSameAbsPDG(particle1, particle2)
  * 
  * AS:  1       if qqqq
- *      4       if qqnn
- *      7       if nnnn
+ *      4       if qqvv
+ *      7       if vvvv
  *     21       if qqee
  *     22       if qqmm
  *     23       if qqtt
- *     31       if qqen
- *     32       if qqmn
- *     33       if qqtn
- *    500 
- *    600
+ *     31       if qqev
+ *     32       if qqmv
+ *     33       if qqtv
+ *    5XX       if llll
+ *    6XX       if llvv
  * 
  * with q : quark, 
- *      n : neutrino,
+ *      v : neutrino,
  *      e : electron,
  *      m : muon,
  *      t : tau
@@ -302,13 +232,15 @@ int getDecayCode(
         const EVENT::MCParticle* particle1, 
         const EVENT::MCParticle* particle2) {
     
-    assert((isPhoton(particle1) || isZ0Boson(particle1)) 
-            && isSameAbsPDG(particle1, particle2));
+    assert((isAbsPDG(PHOTON, particle1) || isAbsPDG(Z0, particle1)) 
+            && isSameParticleAbsPDG(particle1, particle2));
     
     int decay2 = 0;
             
-    const MCParticleVec daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
-    const MCParticleVec daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
+    //const MCParticleVec 
+    auto daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
+    //const MCParticleVec 
+    auto daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
 
     if (daughter1.size() != 2 || daughter2.size() != 2) {
         throw std::logic_error(
@@ -354,8 +286,9 @@ int getDecayCode(
                 nbNu++;
             }
         }
-
-        if (nbNu == 0) { // llll
+        if (nbNu == 4) { // vvvv
+            decay2 = 7;
+        } else if (nbNu == 0) { // llll
             decay2 = 500;
             try {
                 decay2 = 10 * getChargedLeptonCode(subDecay[0]);
@@ -367,7 +300,7 @@ int getDecayCode(
             } catch(std::exception const& e) {
                 std::cerr << "ERREUR : " << e.what() << std::endl;
             }
-        } else if (nbNu == 2) { // llvv
+        } else if (nbNu == 2) { // llvv ou lvlv ou vvll
             decay2 = 600;
             std::vector<int> temp = {};
             for (const int& i : subDecay) { // auto ? int
@@ -386,8 +319,6 @@ int getDecayCode(
             std::sort(temp.begin(), temp.end());
 
             decay2 = decay2 + 10 * temp[0] + temp[1];
-        } else { // vvvv
-            decay2 = 7;
-        }
+        } 
     }
 }
