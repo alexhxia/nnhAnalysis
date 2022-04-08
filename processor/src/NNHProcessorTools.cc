@@ -65,7 +65,7 @@ bool isQuark(const EVENT::MCParticle* p) {
     return 1 <= std::abs(p->getPDG()) && std::abs(p->getPDG()) <= 8;
 }
 
-bool isQuark(const int pdg) {
+bool isQuarkPDG(const int pdg) {
     return 1 <= pdg && pdg <= 8;
 }
 
@@ -73,7 +73,7 @@ bool isElectron(const EVENT::MCParticle* p) {
     return std::abs(p->getPDG()) == PDG_ELECTRON;
 }
 
-bool isElectron(const int pdg) {
+bool isElectronPDG(const int pdg) {
     return pdg == PDG_ELECTRON;
 }
 
@@ -81,7 +81,7 @@ bool isMuon(const EVENT::MCParticle* p) {
     return std::abs(p->getPDG()) == PDG_MUON;
 }
 
-bool isMuon(const int pdg) {
+bool isMuonPDG(const int pdg) {
     return pdg == PDG_MUON;
 }
 
@@ -89,7 +89,7 @@ bool isTau(const EVENT::MCParticle* p) {
     return std::abs(p->getPDG()) == PDG_TAU;
 }
 
-bool isTau(const int pdg) {
+bool isTauPDG(const int pdg) {
     return pdg == PDG_TAU;
 }
 
@@ -284,10 +284,10 @@ int getDecayCode(
     std::sort(subDecay.begin(), subDecay.end());
 
     // if the first 2 are quark
-    if (isQuark(subDecay[1])) { // qq--
-        if (isQuark(subDecay[3])) { // qqqq
+    if (isQuarkPDG(subDecay[1])) { // qq--
+        if (isQuarkPDG(subDecay[3])) { // qqqq
             decay2 = 1;
-        } else if (isNeutrino(subDecay[2]) && isNeutrino(subDecay[3])) { // qqvv
+        } else if (isNeutrinoPDG(subDecay[2]) && isNeutrinoPDG(subDecay[3])) { // qqvv
             decay2 = 4;
         } else { // qql-
             try {
@@ -295,17 +295,17 @@ int getDecayCode(
             } catch(exception const& e) {
                 std::cerr << "ERREUR : " << e.what() << endl;
             }
-            if (isChargedLepton(subDecay[3])) { // qqlv
+            if (isChargedLeptonPDG(subDecay[3])) { // qqlv
                 decay2 += 20;
             } 
-            if (isNeutrino(subDecay[3])) { // qqlv
+            if (isNeutrinoPDG(subDecay[3])) { // qqlv
                 decay2 += 30;
             } // else qqll
         }
     } else {
         int nbNu = 0;
         for (const int& i : subDecay) { // auto ? int
-            if (isNeutrino(i)) {
+            if (isNeutrinoPDG(i)) {
                 nbNu++;
             }
         }
@@ -326,7 +326,7 @@ int getDecayCode(
             decay2 = 600;
             std::vector<int> temp = {};
             for (const int& i : subDecay) { // auto ? int
-                if (isChargedLepton(i)) {
+                if (isChargedLeptonPDG(i)) {
                     try {
                         temp.push_back(getChargedLeptonCode(i));
                     } catch(exception const& e) {
