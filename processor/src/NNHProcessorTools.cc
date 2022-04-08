@@ -210,7 +210,7 @@ int getChargedLeptonCode(const int pdg) {
     } else if (pdg == PDG_TAU) {
         return 3;
     } else {
-        throw runtime_error("is not a charged lepton")
+        throw std::runtime_error("is not a charged lepton")
     }
 }
 
@@ -246,8 +246,8 @@ int getDecayCode(
     
     int decay2 = 0;
             
-    const MCParticleVec daughter1 = part1->getDaughters(); // auto ? const MCParticleVec*
-    const MCParticleVec daughter2 = part2->getDaughters(); // auto ? const MCParticleVec*
+    const MCParticleVec daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
+    const MCParticleVec daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
 
     if (daughter1.size() != 2 || daughter2.size() != 2) {
         throw std::logic_error(
