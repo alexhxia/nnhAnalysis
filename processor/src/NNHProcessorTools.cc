@@ -65,16 +65,32 @@ bool isQuark(const EVENT::MCParticle* p) {
     return 1 <= std::abs(p->getPDG()) && std::abs(p->getPDG()) <= 8;
 }
 
+bool isQuark(const int pdg) {
+    return 1 <= pdg && pdg <= 8;
+}
+
 bool isElectron(const EVENT::MCParticle* p) {
     return std::abs(p->getPDG()) == PDG_ELECTRON;
+}
+
+bool isElectron(const int pdg) {
+    return pdg == PDG_ELECTRON;
 }
 
 bool isMuon(const EVENT::MCParticle* p) {
     return std::abs(p->getPDG()) == PDG_MUON;
 }
 
+bool isMuon(const int pdg) {
+    return pdg == PDG_MUON;
+}
+
 bool isTau(const EVENT::MCParticle* p) {
     return std::abs(p->getPDG()) == PDG_TAU;
+}
+
+bool isTau(const int pdg) {
+    return pdg == PDG_TAU;
 }
 
 bool isChargedLepton(const EVENT::MCParticle* p) {
