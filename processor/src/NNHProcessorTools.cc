@@ -61,68 +61,94 @@ int const PDG_HIGGS = 25;
 /**
  * Return : 1 <= PDG(p) <= 8
  */
-bool isQuark(const EVENT::MCParticle* p) {
-    return 1 <= std::abs(p->getPDG()) && std::abs(p->getPDG()) <= 8;
-}
-
 bool isQuarkPDG(const int pdg) {
     return 1 <= pdg && pdg <= 8;
 }
 
+bool isQuark(const EVENT::MCParticle* p) {
+    return isQuarkPDG(std::abs(p->getPDG()));
+}
+
 bool isElectron(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_ELECTRON;
+    return isElectronPDG(std::abs(p->getPDG()));
 }
 
 bool isElectronPDG(const int pdg) {
     return pdg == PDG_ELECTRON;
 }
 
-bool isMuon(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_MUON;
-}
-
 bool isMuonPDG(const int pdg) {
     return pdg == PDG_MUON;
 }
 
-bool isTau(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_TAU;
+bool isMuon(const EVENT::MCParticle* p) {
+    return isMuonPDG(std::abs(p->getPDG()));
 }
 
 bool isTauPDG(const int pdg) {
     return pdg == PDG_TAU;
 }
 
+bool isTau(const EVENT::MCParticle* p) {
+    return isTauPDG(std::abs(p->getPDG()));
+}
+
+bool isChargedLeptonPDG(const int pdg) {
+    return pdg == PDG_ELECTRON || pdg == PDG_MUON || pdg == PDG_TAU;
+}
+
 bool isChargedLepton(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_ELECTRON
-            || std::abs(p->getPDG()) == PDG_MUON
-            || std::abs(p->getPDG()) == PDG_TAU;
+    return isChargedLeptonPDG(std::abs(p->getPDG()));
+}
+
+bool isNeutrinoPDG(const int p) {
+    return     pdg == PDG_ELECTRON_NEUTRINO
+            || pdg == PDG_MUON_NEUTRINO
+            || pdg == PDG_TAU_NEUTRINO;
 }
 
 bool isNeutrino(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_ELECTRON_NEUTRINO
-            || std::abs(p->getPDG()) == PDG_MUON_NEUTRINO
-            || std::abs(p->getPDG()) == PDG_TAU_NEUTRINO;
+    return isNeutrinoPDG(p->getPDG());
+}
+
+bool isGluonPDG(const int pdg) {
+    return pdg == PDG_GLUON;
 }
 
 bool isGluon(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_GLUON;
+    return isGluonPDG(std::abs(p->getPDG()));
+}
+
+bool isPhotonPDG(const int pdg) {
+    return pdg == PDG_PHOTON;
 }
 
 bool isPhoton(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_PHOTON;
+    return isPhotonPDG(std::abs(p->getPDG()));
+}
+
+bool isZ0BosonPDG(const int pdg) {
+    return pdg == PDG_Z0;
 }
 
 bool isZ0Boson(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_Z0;
+    return isPhotonPDG(std::abs(p->getPDG()));
+}
+
+bool isWBosonPDG(const int pdg) {
+    return pdg == PDG_W;
 }
 
 bool isWBoson(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_W;
+    return isWBosonPDG(std::abs(p->getPDG()));
+}
+
+bool isHiggsPDG(const int pdg) {
+    return pdg == PDG_HIGGS;
 }
 
 bool isHiggs(const EVENT::MCParticle* p) {
-    return std::abs(p->getPDG()) == PDG_HIGGS;
+    return isHiggsPDG(std::abs(p->getPDG()));
 }
 
 /**
