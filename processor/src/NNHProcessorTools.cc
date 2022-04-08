@@ -207,7 +207,7 @@ int getChargedLeptonCode(const int pdg) {
     } else if (pdg == PDG_MUON) {
         return 2;
     } else if (pdg == PDG_TAU) {
-        return 3
+        return 3;
     } else {
         throw runtime_error("is not a charged lepton")
     }
