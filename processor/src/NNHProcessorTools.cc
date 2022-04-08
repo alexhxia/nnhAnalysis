@@ -40,6 +40,23 @@
 
 /* PDG Tools */
 
+enum PGDCode {
+    // Leptons
+    ELECTRON = 11;
+    ELECTRON_NEUTRINO = 12;
+    MUON = 13;
+    MUON_NEUTRINO = 14;
+    TAU = 15;
+    TAU_NEUTRINO = 16;
+
+    // Bosons
+    GLUON = 21;
+    PHOTON = 22;
+    Z0 = 23;
+    W = 24;
+    HIGGS = 25;
+};
+
 // Leptons
 int const PDG_ELECTRON = 11;
 int const PDG_ELECTRON_NEUTRINO = 12;
@@ -49,7 +66,6 @@ int const PDG_TAU = 15;
 int const PDG_TAU_NEUTRINO = 16;
 
 // Bosons
-
 int const PDG_GLUON = 21;
 int const PDG_PHOTON = 22;
 int const PDG_Z0 = 23;
@@ -61,7 +77,7 @@ int const PDG_HIGGS = 25;
 /**
  * Return : 1 <= PDG(p) <= 8
  */
-bool isQuarkPDG(const int pdg) {
+bool isQuark(const int pdg) {
     return 1 <= pdg && pdg <= 8;
 }
 
@@ -69,15 +85,15 @@ bool isQuark(const EVENT::MCParticle* p) {
     return isQuarkPDG(std::abs(p->getPDG()));
 }
 
+bool isElectron(const int pdg) {
+    return pdg == PDG_ELECTRON;
+}
+
 bool isElectron(const EVENT::MCParticle* p) {
     return isElectronPDG(std::abs(p->getPDG()));
 }
 
-bool isElectronPDG(const int pdg) {
-    return pdg == PDG_ELECTRON;
-}
-
-bool isMuonPDG(const int pdg) {
+bool isMuon(const int pdg) {
     return pdg == PDG_MUON;
 }
 
@@ -85,7 +101,7 @@ bool isMuon(const EVENT::MCParticle* p) {
     return isMuonPDG(std::abs(p->getPDG()));
 }
 
-bool isTauPDG(const int pdg) {
+bool isTau(const int pdg) {
     return pdg == PDG_TAU;
 }
 
@@ -93,7 +109,7 @@ bool isTau(const EVENT::MCParticle* p) {
     return isTauPDG(std::abs(p->getPDG()));
 }
 
-bool isChargedLeptonPDG(const int pdg) {
+bool isChargedLepton(const int pdg) {
     return pdg == PDG_ELECTRON || pdg == PDG_MUON || pdg == PDG_TAU;
 }
 
@@ -101,7 +117,7 @@ bool isChargedLepton(const EVENT::MCParticle* p) {
     return isChargedLeptonPDG(std::abs(p->getPDG()));
 }
 
-bool isNeutrinoPDG(const int p) {
+bool isNeutrino(const int p) {
     return     pdg == PDG_ELECTRON_NEUTRINO
             || pdg == PDG_MUON_NEUTRINO
             || pdg == PDG_TAU_NEUTRINO;
@@ -111,7 +127,7 @@ bool isNeutrino(const EVENT::MCParticle* p) {
     return isNeutrinoPDG(p->getPDG());
 }
 
-bool isGluonPDG(const int pdg) {
+bool isGluon(const int pdg) {
     return pdg == PDG_GLUON;
 }
 
@@ -119,7 +135,7 @@ bool isGluon(const EVENT::MCParticle* p) {
     return isGluonPDG(std::abs(p->getPDG()));
 }
 
-bool isPhotonPDG(const int pdg) {
+bool isPhoton(const int pdg) {
     return pdg == PDG_PHOTON;
 }
 
@@ -127,7 +143,7 @@ bool isPhoton(const EVENT::MCParticle* p) {
     return isPhotonPDG(std::abs(p->getPDG()));
 }
 
-bool isZ0BosonPDG(const int pdg) {
+bool isZ0Boson(const int pdg) {
     return pdg == PDG_Z0;
 }
 
@@ -135,7 +151,7 @@ bool isZ0Boson(const EVENT::MCParticle* p) {
     return isPhotonPDG(std::abs(p->getPDG()));
 }
 
-bool isWBosonPDG(const int pdg) {
+bool isWBoson(const int pdg) {
     return pdg == PDG_W;
 }
 
@@ -143,7 +159,7 @@ bool isWBoson(const EVENT::MCParticle* p) {
     return isWBosonPDG(std::abs(p->getPDG()));
 }
 
-bool isHiggsPDG(const int pdg) {
+bool isHiggs(const int pdg) {
     return pdg == PDG_HIGGS;
 }
 
@@ -161,6 +177,9 @@ bool isTwin(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
 /**
  * Test if p1 and p2 are same PDG, without sign.
  */
+bool isSameAbsPDG(const int pdg1, const int pdg2) {
+    return std::abs(pdg1) == std::abs(pdg2);
+}
 bool isSameAbsPDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
     return std::abs(p1->getPDG()) == std::abs(p2->getPDG());
 }
@@ -245,11 +264,11 @@ std::array<fastjet::PseudoJet, 2> findParticleByMass(
 
 int getChargedLeptonCode(const int pdg) {
     
-    if (pdg == PDG_ELECTRON) {
+    if (pdg == ELECTRON) {
         return 1;
-    } else if (pdg == PDG_MUON) {
+    } else if (pdg == MUON) {
         return 2;
-    } else if (pdg == PDG_TAU) {
+    } else if (pdg == TAU) {
         return 3;
     } else {
         throw std::runtime_error("is not a charged lepton");
@@ -310,10 +329,10 @@ int getDecayCode(
     std::sort(subDecay.begin(), subDecay.end());
 
     // if the first 2 are quark
-    if (isQuarkPDG(subDecay[1])) { // qq--
-        if (isQuarkPDG(subDecay[3])) { // qqqq
+    if (isQuark(subDecay[1])) { // qq--
+        if (isQuark(subDecay[3])) { // qqqq
             decay2 = 1;
-        } else if (isNeutrinoPDG(subDecay[2]) && isNeutrinoPDG(subDecay[3])) { // qqvv
+        } else if (isNeutrino(subDecay[2]) && isNeutrino(subDecay[3])) { // qqvv
             decay2 = 4;
         } else { // qql-
             try {
@@ -321,17 +340,17 @@ int getDecayCode(
             } catch(exception const& e) {
                 std::cerr << "ERREUR : " << e.what() << endl;
             }
-            if (isChargedLeptonPDG(subDecay[3])) { // qqlv
+            if (isChargedLepton(subDecay[3])) { // qqlv
                 decay2 += 20;
             } 
-            if (isNeutrinoPDG(subDecay[3])) { // qqlv
+            if (isNeutrino(subDecay[3])) { // qqlv
                 decay2 += 30;
             } // else qqll
         }
     } else {
         int nbNu = 0;
         for (const int& i : subDecay) { // auto ? int
-            if (isNeutrinoPDG(i)) {
+            if (isNeutrino(i)) {
                 nbNu++;
             }
         }
@@ -352,7 +371,7 @@ int getDecayCode(
             decay2 = 600;
             std::vector<int> temp = {};
             for (const int& i : subDecay) { // auto ? int
-                if (isChargedLeptonPDG(i)) {
+                if (isChargedLepton(i)) {
                     try {
                         temp.push_back(getChargedLeptonCode(i));
                     } catch(exception const& e) {
