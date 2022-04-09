@@ -5,24 +5,39 @@ On traite une première fois les fichiers LCIO dans la partie ``processor`` afin
 ## Données d'entrée
 Le programme ``processor`` nécéssite des fichiers LCIO en entrée. 
 Ici elles sont stockées en locales dans le dossier ``/gridgroup/ilc/nnhAnalysisFiles/AHCAL`` de la façon suivante :
+```
+inputFiles
+└───402001
+|   | 402001_file_0_mini-DST.slcio
+|   | 402001_file_1_mini-DST.slcio
+|   | ...
+└───402002
+|   | 402002_file_0_mini-DST.slcio
+|   | 402002_file_1_mini-DST.slcio
+|   | ...
+└───402003
+|   | 402003_file_0_mini-DST.slcio
+|   | 402003_file_1_mini-DST.slcio
+|   | ...
+...
+```
+Pour plus de faciliter, on peut y ratacher une variable d'environnement :
+```
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+```
 
 ## Préparer l'environnement
-Les commandes pour avoir un environnement opérationnel, à refaire à chaque ouverture :
 ```
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
-export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
-        NNH_HOME=~/nnhAnalysis/original 
+export NNH_HOME=$PWD/nnhAnalysis/original 
 ```
 ```
-export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+export NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
+       NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 ```
-```
-export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
-```
+
 ## Compilation 
 ```
 mkdir $NNH_HOME/processor/BUILD 
@@ -39,11 +54,53 @@ make
 ```
 make install
 ```
+La compilation génère une bibliotèque `libnnhProcessor` qu'il faut impérativement l'ajouter dans le `MARLIN_DLL` :
+```
+export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
+```
+
 ## Exécution
+Les programmes python qui exécutent la conversion sont dans le dossier ``script`` :
+```
+cd $NNH_HOME/processor/script
+```
+
+### Pour convertir un seul fichier LCIO en fichier ROOT
+This folder is dedicated to the Marlin processor that will transform the mini-DST lcio files into TTrees in ROOT files.
+
+Usage of the processor itself is very simple, just modify the [``./script/NNH_steer.xml``](./script/NNH_steer.xml) file by replacing ``input.slcio`` and ``output.root`` into, and then do
+
 Pour un seul fichier (modifier avant le nom des fichiers `input.lcio` et `output.root` dans `Marlin NNH_steer.xml`) :
 ```
-Marlin $NNH_HOME/processor/NNH_steer.xml 
+Marlin $NNH_HOME/processor/script/NNH_steer.xml 
 ```
+
+### Pour convertir plusieurs dossiers de fichiers LCIO en un fichier ROOT par processus
+
+
+On crée un dossier pour tous les fichiers ROOTs qui seront générer :
+```
+mkdir $NNH_HOME/processor/RESULTS
+```
+```
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+```
+Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL` : 
+```
+export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+```
+```
+cd $NNH_HOME/processor/script
+```
+Dans le programme `NNH_steer.xml `, il faut adapter le fichier d'entrée `input.slcio` et  le fichier de sortie `output.root` par les chemins souhaités.
+
+On peut à présent lancer ce programme qui construit un fichier `.root` à partir d'un fichier `.slcio` :
+```
+Marlin NNH_steer.xml 
+```
+
+The [``launchNNHProcessor.py``](./script/launchNNHProcessor.py) is just there to automatize the processing of multiple files. 
+
 Pour exécuter tous les processus :
 ```
 mkdir $NNH_PROCESSOR_OUTPUTFILES
@@ -51,44 +108,6 @@ mkdir $NNH_PROCESSOR_OUTPUTFILES
 ```
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
 ```
-
-
-# nnh processor
-
-This folder is dedicated to the Marlin processor that will transform the mini-DST lcio files into TTrees in ROOT files.
-
-Usage of the processor itself is very simple, just modify the [``./script/NNH_steer.xml``](./script/NNH_steer.xml) file by replacing ``input.slcio`` and ``output.root`` into, and then do
-```
-Marlin $NNH_HOME/processor/script/NNH_steer.xml
-```
-
-The [``launchNNHProcessor.py``](./script/launchNNHProcessor.py) is just there to automatize the processing of multiple files. 
-
-## Compilation
-```
-mkdir $NNH_HOME/processor/BUILD
-```
-```
-cd $NNH_HOME/processor/BUILD
-```
-Si ce n'est pas fait, avant le `cmake`, il faut impérativement :
-```
-source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-```
-```
-cmake -C $ILCSOFT/ILCSoft.cmake ..
-```
-```
-make
-```
-```
-make install
-```
-La compilation génère une bibliotèque `libnnhProcessor` qu'il faut impérativement l'ajouter dans le `MARLIN_DLL` :
-```
-export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
-```
-## Run the script
 ```
 $ python3 ./script/launchNNHProcessor.py -h
 > usage: launchNNHProcessor.py [-h] [-n NCORES] [-p PROCESSES [PROCESSES ...]] -i INPUTDIRECTORY
@@ -120,38 +139,7 @@ python3 script/launchNNHProcessor.py -n 10 -p 402007 402008 -i /path/to/inputFil
 
 The ``launchNNHProcessor.py`` script will create one ROOT file per processID (all the results from each mini-DST file are merged). It will also create a ``logs/`` folder in the output directory to check if something wrong happened (the script will output an error message if it has encountered a problem with one file).
 
-### Convertir un seul fichier
-```
-cd $NNH_HOME/processor/script
-```
-Dans le programme `NNH_steer.xml `, il faut adapter le fichier d'entrée `input.slcio` et  le fichier de sortie `output.root` par les chemins souhaités.
 
-On peut à présent lancer ce programme qui construit un fichier `.root` à partir d'un fichier `.slcio` :
-```
-Marlin NNH_steer.xml 
-```
-NB :Vérifier le contenu du nouveau fichier .root
-```
-root -l
-TFile *f = TFile::open("XXX.root")
-f->ls()
-tree->Scan()
-```
-### Convertir plusieurs processus
-```
-cd $NNH_HOME/processor/script
-```
-On crée un dossier pour tous les fichiers ROOTs qui seront générer :
-```
-mkdir $NNH_HOME/processor/RESULTS
-```
-```
-export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
-```
-Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL` : 
-```
-export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-```
 #### Convertir quelques processus :
 Utiliser le paramètre `-p num_processus`. Par exemple pour les processus `402007` `402008` :
 ```
@@ -231,3 +219,9 @@ For decays other than h &rarr; WW* and h &rarr; ZZ*, ``mc_higgs_subDecay == 0``.
 These two variables are useful to distinguish between signal and background:
 - for the &nu;&nu;h (h &rarr; b bbar) study, only the events with ``mc_higgs_decay == 5`` are signal events
 - for the  &nu;&nu;h (h &rarr; WW* &rarr; qqqq) study, only the events with ``mc_higgs_decay == 24 && mc_higgs_subDecay == 1`` are signal events
+
+## Historique
+Dans le dossier ``/gridgroup/ilc/nnhAnalysisFiles/result`` on pourra retrouver des résultats précédents :
+```
+export NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
+```
