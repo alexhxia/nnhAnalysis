@@ -14,7 +14,7 @@ git clone --branch refactor https://github.com/ggarillot/nnhAnalysis.git
 ```
 On considère ce dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
-export NNH_HOME=~/nnhAnalysis
+export NNH_HOME=$PWD/nnhAnalysis
 ```
 Pour exécuter ce code, on a aussi besoin de préparer l'environnement grâce à :
 ```
