@@ -23,6 +23,7 @@
 class NNHProcessor : public marlin::Processor {
     
     public:
+        // CONSTANTES
         static constexpr float W_MASS_REF = 80.379;
         static constexpr float Z_MASS_REF = 91.1876;
 
@@ -86,7 +87,13 @@ class NNHProcessor : public marlin::Processor {
         int   nIsoLep = 0;          // nb of isoled leptons
         float eIsoLep = 0.;         // energy of isoled lepton
 
-        /* Reco variables*/
+        /* Reco variables : 
+         * 
+         * _flavor  -> flavor
+         * _e       -> energy
+         * _pt      -> scalar transversal momentum
+         * _m       -> invariant mass
+         */
         
         float higgs_e = 0.;
         float higgs_pt = 0.;
@@ -145,11 +152,11 @@ class NNHProcessor : public marlin::Processor {
         float mc_ISR_pt = 0.;
 
         // Neutrinos
-        int   mc_nu_flavor = 0;             // flavor
-        float mc_nu_e = 0.;                 // energy
-        float mc_nu_pt = 0.;                // scalar transversal momentum
-        float mc_nu_m = 0.;                 // invariant mass
-        float mc_nu_cosBetw = -2.;          // cos btw
+        int   mc_nu_flavor = 0;
+        float mc_nu_e = 0.;
+        float mc_nu_pt = 0.;
+        float mc_nu_m = 0.;
+        float mc_nu_cosBetw = -2.;
 
         // Higgs
         float mc_higgs_e = 0.;

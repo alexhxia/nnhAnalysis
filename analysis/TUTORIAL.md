@@ -9,7 +9,7 @@ Avant d'exécuter `analysis` il faut avoir générer les fichiers ROOTs (voir la
 ```
 export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
         NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result \
-        NNH_HOME=~/nnhAnalysis/ilcsoft
+        NNH_HOME=~/nnhAnalysis/original
 ```
 ```
 export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \

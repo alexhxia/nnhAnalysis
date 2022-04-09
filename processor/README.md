@@ -1,16 +1,11 @@
-# nnh processor
+# ``processor`` program
 
-This folder is dedicated to the Marlin processor that will transform the mini-DST lcio files into TTrees in ROOT files.
+On traite une première fois les fichiers LCIO dans la partie ``processor`` afin obtenir un fichier ROOT par processus, qui sera placer dans un dossier `RESULTS`.
 
-Usage of the processor itself is very simple, just modify the [``./script/NNH_steer.xml``](./script/NNH_steer.xml) file by replacing ``input.slcio`` and ``output.root`` into, respectively, the mini-DST input file name and the desired ROOT output file name, and then do
-```
-Marlin NNH_steer.xml
-```
+## Input files
 
-The [``launchNNHProcessor.py``](./script/launchNNHProcessor.py) is just there to automatize the processing of multiple files. 
-
-In order for the script to run properly, the input files must be ordered like this:
-
+Le programme ``processor`` nécéssite des fichiers LCIO en entrée. 
+Ici elles sont stockées en locales dans le dossier ``/gridgroup/ilc/nnhAnalysisFiles/AHCAL`` de la façon suivante :
 ```
 inputFiles
 └───402001
@@ -27,8 +22,93 @@ inputFiles
 |   | ...
 ...
 ```
+Pour plus de faciliter, on peut y ratacher une variable d'environnement :
+```
+export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+```
 
-### Run the script
+## Préparer l'environnement
+```
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
+```
+```
+export NNH_HOME=$PWD/nnhAnalysis/original 
+```
+```
+export NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
+       NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+```
+
+## Compilation 
+```
+mkdir $NNH_HOME/processor/BUILD 
+```
+```
+cd $NNH_HOME/processor/BUILD
+```
+```
+cmake -C $ILCSOFT/ILCSoft.cmake .. 
+```
+```
+make
+```
+```
+make install
+```
+La compilation génère une bibliotèque `libnnhProcessor` qu'il faut impérativement l'ajouter dans le `MARLIN_DLL` :
+```
+export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
+```
+
+## Exécution
+Les programmes python qui exécutent la conversion sont dans le dossier ``script`` :
+```
+cd $NNH_HOME/processor/script
+```
+
+### Pour convertir un seul fichier LCIO en fichier ROOT
+This folder is dedicated to the Marlin processor that will transform the mini-DST lcio files into TTrees in ROOT files.
+
+Usage of the processor itself is very simple, just modify the [``./script/NNH_steer.xml``](./script/NNH_steer.xml) file by replacing ``input.slcio`` and ``output.root`` into, and then do
+
+Pour un seul fichier (modifier avant le nom des fichiers `input.lcio` et `output.root` dans `Marlin NNH_steer.xml`) :
+```
+Marlin $NNH_HOME/processor/script/NNH_steer.xml 
+```
+
+### Pour convertir plusieurs dossiers de fichiers LCIO en un fichier ROOT par processus
+
+
+On crée un dossier pour tous les fichiers ROOTs qui seront générer :
+```
+mkdir $NNH_HOME/processor/RESULTS
+```
+```
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+```
+Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL` : 
+```
+export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+```
+```
+cd $NNH_HOME/processor/script
+```
+Dans le programme `NNH_steer.xml `, il faut adapter le fichier d'entrée `input.slcio` et  le fichier de sortie `output.root` par les chemins souhaités.
+
+On peut à présent lancer ce programme qui construit un fichier `.root` à partir d'un fichier `.slcio` :
+```
+Marlin NNH_steer.xml 
+```
+
+The [``launchNNHProcessor.py``](./script/launchNNHProcessor.py) is just there to automatize the processing of multiple files. 
+
+Pour exécuter tous les processus :
+```
+mkdir $NNH_PROCESSOR_OUTPUTFILES
+```
+```
+python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
 ```
 $ python3 ./script/launchNNHProcessor.py -h
 > usage: launchNNHProcessor.py [-h] [-n NCORES] [-p PROCESSES [PROCESSES ...]] -i INPUTDIRECTORY
@@ -46,19 +126,34 @@ $ python3 ./script/launchNNHProcessor.py -h
 >   -o OUTPUTDIRECTORY, --outputDirectory OUTPUTDIRECTORY
 >                         output directory
 ```
-For example, it you want to run all the files :
+For example, it you want to run all the files that are present on lyogrid06 (from a lyoui):
 ```
-python3 script/launchNNHProcessor.py -n 10 -i /path/to/inputFiles  -o /path/to/wherever/youwant
+python3 script/launchNNHProcessor.py -n 10 -i root://lyogrid06.in2p3.fr/dpm/in2p3.fr/home/calice/garillot/ILD/AHCAL -r -o /path/to/wherever/youwant
 ```
+Do not forget to put the ``-r`` argument to tell the script that the files need to be downloaded (from lyogrid06).
+It is unnecessary to ask for more than 10 threads on lyoui because the limiting factor is the transfer time between lyogrid06 and lyoui servers. The output path cannot be remote like the input path.
 
 If you want to run only files from processesID 402007 and 402008, and the input files are present locally : 
 ```
-$ python3 script/launchNNHProcessor.py -n 10 -p 402007 402008 -i /path/to/inputFiles -o /path/to/wherever/youwant
+python3 script/launchNNHProcessor.py -n 10 -p 402007 402008 -i /path/to/inputFiles -o /path/to/wherever/youwant
 ```
 
-The ``launchNNHProcessor.py`` script will create one ROOT file per processID. It will also create a ``logs/`` folder in the output directory to check if something wrong happened (the script will output an error message if it has encountered a problem with one file).
+The ``launchNNHProcessor.py`` script will create one ROOT file per processID (all the results from each mini-DST file are merged). It will also create a ``logs/`` folder in the output directory to check if something wrong happened (the script will output an error message if it has encountered a problem with one file).
 
-## Output variables
+
+#### Convertir quelques processus :
+Utiliser le paramètre `-p num_processus`. Par exemple pour les processus `402007` `402008` :
+```
+python3 launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
+#### Convertir tous les processus
+```
+python3 launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
+
+## Output files
+
+### Output variables
 
 The Marlin processor will simultaneously output variables for the &nu;&nu;h (h &rarr; b bbar) and the &nu;&nu;h (h &rarr; WW* &rarr; qqqq) channels. The variables specific to the &nu;&nu;h (h &rarr; b bbar) channel are reconstructed using the 2-jet reconstruction, the 2-jets are identified as the two b quarks. The variables specific to the &nu;&nu;h (h &rarr; WW* &rarr; qqqq) channel are reconstructed using the 4-jet reconstruction. Amongst the 6 different jet pairings, the di-jet that has its mass closest to the true mass of the W boson is identified as the on-shell W boson and the two remaining jets are identified as the off-shell W* boson. The common variables to these two channels (higgs mass, energy...) are reconstructed using all the visible particles, minus isolated leptons and photons (the jet reconstruction is done on all particles minus isolated leptons and photons).
 
@@ -106,7 +201,7 @@ These following variables are debug variables and should not be used for cuts or
 - ``mc_higgs_decay2_e, mc_higgs_decay2_pt, mc_higgs_decay2_m`` : true energy, transverse impulsion and mass of the least energetic decay from the higgs
 - ``mc_higgs_decay_cosBetw`` : cosine of the true angle between the two decays of the higgs
 
-### Higgs Decay
+#### Higgs Decay
 
 The decay of the higgs is identified by 2 variables : ``mc_higgs_decay`` and ``mc_higgs_subDecay``.
 
@@ -128,4 +223,8 @@ These two variables are useful to distinguish between signal and background:
 - for the &nu;&nu;h (h &rarr; b bbar) study, only the events with ``mc_higgs_decay == 5`` are signal events
 - for the  &nu;&nu;h (h &rarr; WW* &rarr; qqqq) study, only the events with ``mc_higgs_decay == 24 && mc_higgs_subDecay == 1`` are signal events
 
-
+## Historique
+Dans le dossier ``/gridgroup/ilc/nnhAnalysisFiles/result`` on pourra retrouver des résultats précédents :
+```
+export NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
+```
