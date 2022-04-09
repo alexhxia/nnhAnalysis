@@ -38,13 +38,16 @@
 #include <vector>
 #include <iostream>
 
+using namespace std;
+
 enum PGDCode {
     // Leptons
     ELECTRON = 11,
-    ELECTRON_NEUTRINO = 12,
     MUON = 13,
-    MUON_NEUTRINO = 14,
     TAU = 15,
+    
+    ELECTRON_NEUTRINO = 12,
+    MUON_NEUTRINO = 14,
     TAU_NEUTRINO = 16,
 
     // Bosons
@@ -60,18 +63,16 @@ enum PGDCode {
  * Return if particle is a neutrino.
  */
 bool isNeutrino(int pdg) {
-    return     pdg == ELECTRON_NEUTRINO
-            || pdg == MUON_NEUTRINO
-            || pdg == TAU_NEUTRINO;
+    return pdg == ELECTRON_NEUTRINO 
+        || pdg == MUON_NEUTRINO 
+        || pdg == TAU_NEUTRINO;
 }
 
 /**
  * Return if particle is a charged lepton.
  */
 bool isChargedLepton(int pdg) {
-    return     pdg == ELECTRON
-            || pdg == MUON
-            || pdg == TAU;
+    return pdg == ELECTRON || pdg == MUON || pdg == TAU;
 }
 
 /**
@@ -85,14 +86,16 @@ bool isQuark(int pdg) const {
  * Return if particle have this pdg in absolute.
  */
 bool isAbsPDG(const int pdg, const EVENT::MCParticle* particle) {
-    return pdg == std::abs(particle->getPDG());
+    return pdg == abs(particle->getPDG());
 }
 
 /**
  * Return if p1 have same pdg p2 in absolute.
  */
-bool isSameParticleAbsPDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
-    return std::abs(p1->getPDG()) == std::abs(p2->getPDG());
+bool isSameParticleAbsPDG(
+        const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
+    
+    return abs(p1->getPDG()) == abs(p2->getPDG());
 }
 
 /* NNHProcessor */
@@ -150,10 +153,10 @@ double computeRecoilMass(const fastjet::PseudoJet& particle, float energy) {
  * Search a couple particle in PseudoJet vector's
  * which minimized (invariant mass - targetMass)
  */
-std::array<fastjet::PseudoJet, 2> findParticleByMass(
-            const std::vector<fastjet::PseudoJet> jets,
-            const double                          targetMass,
-            std::vector<fastjet::PseudoJet>&      remainingJets) {
+array<fastjet::PseudoJet, 2> findParticleByMass(
+            const vector<fastjet::PseudoJet> jets,
+            const double                     targetMass,
+            vector<fastjet::PseudoJet>&      remainingJets) {
 
 
     // Search a couple particle which minimized (invariant mass - targetMass)
@@ -164,7 +167,7 @@ std::array<fastjet::PseudoJet, 2> findParticleByMass(
         for (unsigned int j = i + 1; j < jets.size(); ++j) { // auto ? size_t
             
             double m = (jets[i] + jets[j]).m(); // invariant mass, auto ? double
-            double val = std::abs(m - targetMass); // auto ? double
+            double val = abs(m - targetMass); // auto ? double
 
             if (val <= chi2) {
                 chi2 = val;
@@ -173,8 +176,8 @@ std::array<fastjet::PseudoJet, 2> findParticleByMass(
         }
     }
 
-    std::array<fastjet::PseudoJet, 2> toReturn = {
-                jets[goodPair[0]], jets[goodPair[1]]};
+    array<fastjet::PseudoJet, 2> toReturn = {
+            jets[goodPair[0]], jets[goodPair[1]]};
 
     // Save a not "good pair" jets
     for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
@@ -201,7 +204,7 @@ int getChargedLeptonCode(const int pdg) {
     } else if (pdg == TAU) {
         return 3;
     } else {
-        throw std::runtime_error("is not a charged lepton");
+        throw runtime_error("is not a charged lepton");
     }
 }
 
@@ -243,22 +246,22 @@ int getDecayCode(
     auto daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
 
     if (daughter1.size() != 2 || daughter2.size() != 2) {
-        throw std::logic_error(
+        throw logic_error(
                 "weird higgs subdecay for WW or ZZ : " 
-                + std::to_string(daughter1.size() + daughter2.size()) 
+                + to_string(daughter1.size() + daughter2.size()) 
                 + "particles");
     }
 
     // daughter PDG array
-    std::array<int, 4> subDecay = {{
-            std::abs(daughter1[0]->getPDG()), 
-            std::abs(daughter1[1]->getPDG()),
-            std::abs(daughter2[0]->getPDG()), 
-            std::abs(daughter2[1]->getPDG())
+    array<int, 4> subDecay = {{
+            abs(daughter1[0]->getPDG()), 
+            abs(daughter1[1]->getPDG()),
+            abs(daughter2[0]->getPDG()), 
+            abs(daughter2[1]->getPDG())
     }};
 
     // sorting in ascending order by daughter PDG
-    std::sort(subDecay.begin(), subDecay.end());
+    sort(subDecay.begin(), subDecay.end());
 
     // if the first 2 are quark
     if (isQuark(subDecay[1])) { // qq--
@@ -270,7 +273,7 @@ int getDecayCode(
             try {
                 decay2 = getChargedLeptonCode(subDecay[2]);
             } catch(std::exception const& e) {
-                std::cerr << "ERREUR : " << e.what() << std::endl;
+                cerr << "ERREUR : " << e.what() << endl;
             }
             if (isChargedLepton(subDecay[3])) { // qqlv
                 decay2 += 20;
@@ -293,30 +296,30 @@ int getDecayCode(
             try {
                 decay2 = 10 * getChargedLeptonCode(subDecay[0]);
             } catch(std::exception const& e) {
-                std::cerr << "ERREUR : " << e.what() << std::endl;
+                cerr << "ERREUR : " << e.what() << endl;
             }
             try {
                 decay2 = getChargedLeptonCode(subDecay[2]);
             } catch(std::exception const& e) {
-                std::cerr << "ERREUR : " << e.what() << std::endl;
+                cerr << "ERREUR : " << e.what() << endl;
             }
         } else if (nbNu == 2) { // llvv ou lvlv ou vvll
             decay2 = 600;
-            std::vector<int> temp = {};
+            vector<int> temp = {};
             for (const int& i : subDecay) { // auto ? int
                 if (isChargedLepton(i)) {
                     try {
                         temp.push_back(getChargedLeptonCode(i));
                     } catch(std::exception const& e) {
-                        std::cerr << "ERREUR : " << e.what() << std::endl;
+                        cerr << "ERREUR : " << e.what() << endl;
                     }
                 }
             }
 
             if (temp.size() != 2) {
-                throw std::logic_error("weird llvv decay");
+                throw logic_error("weird llvv decay");
             }
-            std::sort(temp.begin(), temp.end());
+            sort(temp.begin(), temp.end());
 
             decay2 = decay2 + 10 * temp[0] + temp[1];
         } 

@@ -40,6 +40,8 @@
 #include <vector>
 #include <iostream>
 
+using namespace std;
+
 /* NNHProcessor */
 
 NNHProcessor aNNHProcessor;
@@ -48,27 +50,31 @@ NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
     
     // Test
     registerProcessorParameter(
-            "RootFileName", "File name for the root output", 
-            rootFileName, std::string("test.root"));
+            "RootFileName", 
+            "File name for the root output", 
+            rootFileName, 
+            string("test.root"));
 
     // MC particles
     registerProcessorParameter(
-            "MCParticlesCollectionName", "Name of the MC particles collection",
-            mcParticleCollectionName, std::string("MCParticlesSkimmed"));
+            "MCParticlesCollectionName", 
+            "Name of the MC particles collection",
+            mcParticleCollectionName, 
+            string("MCParticlesSkimmed"));
 
     // Reconstructed Particles 
     registerProcessorParameter(
             "ReconstructedParticlesCollectionName", 
             "Name of the reconstructed particles collection",
             reconstructedParticleCollectionName, 
-            std::string("PandoraPFOs"));
+            string("PandoraPFOs"));
 
     // Isolated Photons 
     registerProcessorParameter(
             "IsolatedPhotonsCollectionName", 
             "Name of the reconstructed isolated photon collection",
             isolatedPhotonsCollectionName, 
-            std::string("IsolatedPhotons"));
+            string("IsolatedPhotons"));
 
     // Isolated Leptons
     registerProcessorParameter(
@@ -80,13 +86,13 @@ NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
     // Jets
     registerProcessorParameter(
             "2JetsCollectionName", "2 Jets Collection Name", 
-            _2JetsCollectionName, std::string("Refined2Jets"));
+            _2JetsCollectionName, string("Refined2Jets"));
     registerProcessorParameter(
             "3JetsCollectionName", "3 Jets Collection Name", 
-            _3JetsCollectionName, std::string("Refined3Jets"));
+            _3JetsCollectionName, string("Refined3Jets"));
     registerProcessorParameter(
             "4JetsCollectionName", "4 Jets Collection Name", 
-            _4JetsCollectionName, std::string("Refined4Jets"));
+            _4JetsCollectionName, string("Refined4Jets"));
 }
 
 /**
@@ -95,7 +101,7 @@ NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
  */
 void NNHProcessor::init() {
     
-    streamlog_out(MESSAGE) << "NNHProcessor::init()" << std::endl;
+    streamlog_out(MESSAGE) << "NNHProcessor::init()" << endl;
     outputFile = new TFile(rootFileName.c_str(), "RECREATE");
     outputTree = new TTree("tree", "tree");
 
@@ -208,7 +214,7 @@ void NNHProcessor::processISR(
 
     // Exception
     if (!isAbsPDG(PHOTON, gamma0) || !isAbsPDG(PHOTON, gamma1)) {
-        throw std::logic_error("not gammas");
+        throw logic_error("not gammas");
     }
 
     // 4-Vector gammas sum
@@ -244,7 +250,7 @@ void NNHProcessor::processNeutrinos(
     // Exception
     if (!isNeutrino(nu0) || !isNeutrino(nu1) 
             || !isSameParticleAbsPDG(nu0, nu1)) {
-        throw std::logic_error("not neutrinos");
+        throw logic_error("not neutrinos");
     }
 
     //int nu0_flavor = nu0->getPDG();
@@ -300,7 +306,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 
     // Exception
     if (!isAbsPDG(HIGGS, higgs)) {
-        throw std::logic_error("not a higgs");
+        throw logic_error("not a higgs");
     }
 
     CLHEP::HepLorentzVector higgs_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
@@ -311,7 +317,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 
     // We need exactly 2 daughters to continue without error
     if (vec.size() != 2) {
-        throw std::logic_error("weird higgs decay : not 2 particles");
+        throw logic_error("weird higgs decay : not 2 particles");
     }
 
     std::array<int, 2> decay = findDecayMode(vec[0], vec[1]); // auto ? std::array<int, 2>
@@ -369,7 +375,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(
     
     if (!isAbsPDG(PHOTON, part1) && !isAbsPDG(Z0, part1)) {
         if (p1_PDG != p2_PDG) { // ???
-            throw std::logic_error(
+            throw logic_error(
                     "weird higgs decay : " 
                     + std::to_string(p1_PDG) + ", " 
                     + std::to_string(p2_PDG));
@@ -433,7 +439,7 @@ double NNHProcessor::computeSphericity(
     streamlog_out(DEBUG) 
                 << "Sphericity eigenvalues : (" 
                 << val[0] << " " << val[1] << " " << val[2] << ")"
-                << std::endl;
+                << endl;
 
     return 1.5 * (val[0] + val[1]);
 }
@@ -442,7 +448,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     
     clear();
 
-    std::cout << "Event : " << evt->getEventNumber() << std::endl;
+    cout << "Event : " << evt->getEventNumber() << endl;
 
     /* event variables */
     processID = evt->getParameters().getIntVal(std::string("ProcessID"));
@@ -459,11 +465,11 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     const EVENT::MCParticle* mc_gamma1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(7)); // auto ? EVENT::MCParticle*
     try {
         processISR(mc_gamma0, mc_gamma1);
-    } catch (std::logic_error& e) {
-        std::cerr //streamlog_out(DEBUG) 
+    } catch (logic_error& e) {
+        cerr //streamlog_out(DEBUG) 
                 << "Run : " << evt->getRunNumber() << ", "
                 << "Event : " << evt->getEventNumber() << " : "
-                << e.what() << std::endl;
+                << e.what() << endl;
     }
     
     // process Neutrinos
@@ -471,7 +477,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     const EVENT::MCParticle* mc_nu1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(9)); // auto ? EVENT::MCParticle*
     try {
         processNeutrinos(mc_nu0, mc_nu1);
-    } catch (std::logic_error& e) {
+    } catch (logic_error& e) {
         streamlog_out(DEBUG) 
                 << "Run : " << evt->getRunNumber() << ", "
                 << "Event : " << evt->getEventNumber() << " : "
@@ -482,7 +488,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     const EVENT::MCParticle* mc_higgs = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(10)); // auto ? EVENT::MCParticle*
     try {
         processHiggs(mc_higgs);
-    } catch (std::logic_error& e) {
+    } catch (logic_error& e) {
         streamlog_out(DEBUG) 
                 << "Run : " << evt->getRunNumber() << ", "
                 << "Event : " << evt->getEventNumber() << " : "
