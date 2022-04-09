@@ -1,8 +1,9 @@
-# Programme ``processor``
+# ``processor`` program
 
 On traite une première fois les fichiers LCIO dans la partie ``processor`` afin obtenir un fichier ROOT par processus, qui sera placer dans un dossier `RESULTS`.
 
-## Données d'entrée
+## Input files
+
 Le programme ``processor`` nécéssite des fichiers LCIO en entrée. 
 Ici elles sont stockées en locales dans le dossier ``/gridgroup/ilc/nnhAnalysisFiles/AHCAL`` de la façon suivante :
 ```
@@ -149,6 +150,8 @@ python3 launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILE
 ```
 python3 launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
 ```
+
+## Output files
 
 ### Output variables
 
