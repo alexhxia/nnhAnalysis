@@ -7,11 +7,6 @@
 
 #include "ParticleInfo.hh"
 
-// MAKER
-ParticleInfo::ParticleInfo() {
-    _recoParticle = nullptr;
-}
-
 // REQUEST 
 
 EVENT::ReconstructedParticle* ParticleInfo::recoParticle() const { 

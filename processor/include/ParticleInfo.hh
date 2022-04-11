@@ -28,5 +28,5 @@ class ParticleInfo : public fastjet::PseudoJet::UserInfoBase {
         EVENT::ReconstructedParticle* recoParticle() const;
 
     protected:
-        EVENT::ReconstructedParticle* _recoParticle; // = nullptr;
+        EVENT::ReconstructedParticle* _recoParticle = nullptr;
 };
