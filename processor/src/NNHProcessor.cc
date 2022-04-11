@@ -75,7 +75,7 @@ bool isChargedLepton(int pdg) {
 /**
  * Return if particle is a quark.
  */
-bool isQuark(int pdg) const {
+bool isQuark(int pdg) {
     return 1 <=  pdg && pdg <= 9;
 }
 
@@ -89,7 +89,9 @@ bool isAbsPDG(const int pdg, const EVENT::MCParticle* particle) {
 /**
  * Return if p1 have same pdg p2 in absolute.
  */
-bool isSameParticleAbsPDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
+bool isSameParticleAbsPDG(
+        const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
+    
     return std::abs(p1->getPDG()) == std::abs(p2->getPDG());
 }
 
@@ -103,8 +105,8 @@ NNHProcessor aNNHProcessor;
 fastjet::PseudoJet recoParticleToPseudoJet(
         EVENT::ReconstructedParticle* reconstructedParticle) {
     
-    const double* momentum = recoPart->getMomentum();   // auto ? const double*
-    double energy = recoPart->getEnergy();              // auto ? double
+    const double* momentum = reconstructedParticle->getMomentum();   // auto ? const double*
+    double energy = reconstructedParticle->getEnergy();              // auto ? double
 
     fastjet::PseudoJet particle(momentum[0], momentum[1], momentum[2], energy);
     
@@ -402,7 +404,7 @@ void NNHProcessor::processNeutrinos(
     mc_nu_cosBetw = -2;
 
     // Exception
-    if (!isNeutrino(nu0) || !isNeutrino(nu1) 
+    if (!isNeutrino(nu0->getPDG()) || !isNeutrino(nu1->getPDG())
             || !isSameParticleAbsPDG(nu0, nu1)) {
         throw std::logic_error("not neutrinos");
     }
