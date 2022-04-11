@@ -30,6 +30,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     // zeroth element of each array, mom[i][0], will be ignored
     // and operations will be on elements 1,2,3...
 
+    // Init momentum matrix
     Eigen::MatrixXd momentum(m_maxpart, 6); 
 
     double          tmax = 0.;
@@ -46,11 +47,13 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
 
     Eigen::MatrixXd temp(3, 5);
 
+    // Exception
     if (particles.size() > m_maxpart) {
         cerr << "ERROR : Too many particles input to EventShape" << endl;
         return;
     }
 
+    // init momentum matrix particles
     int np = 0; // particle nb counter
     for (const auto& particle : particles) { // auto ? fastjet::PseudoJet
         momentum(np, 1) = particle.px();
@@ -67,6 +70,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
         np++;
     }
 
+    // Stop if it have less 2 particles
     if (np < 2) {
         m_dThrust[1] = -1.0;
         m_dOblateness = -1.0;
@@ -77,13 +81,14 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     // for pass = 2: find major axis.
     for (unsigned int pass = 1; pass < 3; pass++) {
         if (pass == 2) {
+            
             phi = ulAngle(m_dAxes(1, 1), m_dAxes(1, 2));
-            ludbrb(momentum, 0, -phi, 0., 0., 0.);
+            ludbrb(momentum, 0., -phi, 0., 0., 0.);
             for (int i = 0; i < 3; i++) {
                 for (int j = 1; j < 4; j++) {
                     temp(i, j) = m_dAxes(i + 1, j);
                 }
-                temp(i, 4) = 0;
+                temp(i, 4) = 0.;
             }
             ludbrb(temp, 0., -phi, 0., 0., 0.);
             for (int i = 0; i < 3; i++) {
@@ -91,14 +96,16 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
                     m_dAxes(i + 1, j) = temp(i, j);
                 }
             }
+            
             the = ulAngle(m_dAxes(1, 3), m_dAxes(1, 1));
             ludbrb(momentum, -the, 0., 0., 0., 0.);
             for (int i = 0; i < 3; i++) {
                 for (int j = 1; j < 4; j++) {
                     temp(i, j) = m_dAxes(i + 1, j);
                 }
-                temp(i, 4) = 0;
+                temp(i, 4) = 0.;
             }
+            
             ludbrb(temp, -the, 0., 0., 0., 0.);
             for (int i = 0; i < 3; i++) {
                 for (int j = 1; j < 4; j++) {
@@ -108,7 +115,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
         }
 
         for (int ifas = 0; ifas < m_iFast + 1; ifas++) {
-            fast(ifas, 4) = 0.0;
+            fast(ifas, 4) = 0.;
         }
 
         // Find the m_iFast highest momentum particles and
@@ -119,6 +126,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
                 momentum(i, 4) = sqrt(momentum(i, 1) * momentum(i, 1) 
                                     + momentum(i, 2) * momentum(i, 2));
             }
+            
             for (int ifas = m_iFast - 1; ifas > -1; ifas--) {
                 if (momentum(i, 4) > fast(ifas, 4)) {
                     for (int j = 1; j < 6; j++) {
@@ -159,6 +167,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
                     tdi[j] = tdi[j] + sgn * fast(i, j);
                 }
             }
+            
             tds = tdi[1] * tdi[1] + tdi[2] * tdi[2] + tdi[3] * tdi[3];
             for (int iw = std::min(n, 9); iw > -1; iw--) {
                 if (tds > work(iw, 4)) {
@@ -181,7 +190,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
             }
         }
         // Iterate direction of axis until stable maximum.
-        m_dThrust[pass] = 0;
+        m_dThrust[pass] = 0.;
         thp = -99999.;
         int nagree = 0;
         for (int iw = 0; iw < std::min(nc, 10) && nagree < m_iGood; iw++) {
@@ -194,11 +203,13 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
                         tdi[j] = work(iw, j);
                     } else {
                         tdi[j] = tpr[j];
-                        tpr[j] = 0;
+                        tpr[j] = 0.;
                     }
                 }
                 for (int i = 0; i < np; i++) {
-                    sgn = sign(momentum(i, 5), tdi[1] * momentum(i, 1) + tdi[2] * momentum(i, 2) + tdi[3] * momentum(i, 3));
+                    sgn = sign(momentum(i, 5), tdi[1] * momentum(i, 1) 
+                                             + tdi[2] * momentum(i, 2) 
+                                             + tdi[3] * momentum(i, 3));
                     for (unsigned int j = 1; j < 5 - pass; j++) {
                         tpr[j] = tpr[j] + sgn * momentum(i, j);
                     }
@@ -230,7 +241,9 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     thp = 0.;
 
     for (int i = 0; i < np; i++) {
-        thp += momentum(i, 5) * std::abs(m_dAxes(3, 1) * momentum(i, 1) + m_dAxes(3, 2) * momentum(i, 2));
+        thp += momentum(i, 5) * std::abs(
+                  m_dAxes(3, 1) * momentum(i, 1) 
+                + m_dAxes(3, 2) * momentum(i, 2));
     }
 
     m_dThrust[3] = thp / tmax;
@@ -283,6 +296,7 @@ void EventShape::setFast(int nf) {
 }
 
 int EventShape::getFast() const {
+    
     return m_iFast;
 }
 
@@ -352,10 +366,10 @@ void EventShape::ludbrb(
     // Ignore "zeroth" elements in rot,pr,dp.
     // Trying to use physics-like notation.
     Eigen::Matrix4d rot;
-    double          pr[4];
-    double          dp[5];
+    double pr[4];
+    double dp[5];
 
-    auto np = momentum.rows(); // auto ???
+    int np = momentum.rows(); // auto ? int
     if (theta * theta + phi * phi > 1e-20) {
         double ct = std::cos(theta);
         double st = std::sin(theta);
@@ -375,7 +389,7 @@ void EventShape::ludbrb(
         for (unsigned int i = 0; i < np; i++) {
             for (int j = 1; j < 4; j++) {
                 pr[j] = momentum(i, j);
-                momentum(i, j) = 0;
+                momentum(i, j) = 0.;
             }
             for (int jb = 1; jb < 4; jb++) {
                 for (int k = 1; k < 4; k++)
@@ -393,7 +407,7 @@ void EventShape::ludbrb(
                 bz = bz * (0.99999999 / beta);
                 beta = 0.99999999;
             }
-            double gamma = 1.0 / sqrt(1.0 - beta2);
+            double gamma = 1. / sqrt(1. - beta2);
             for (unsigned int i = 0; i < np; i++) {
                 for (int j = 1; j < 5; j++) {
                     dp[j] = momentum(i, j);
@@ -411,6 +425,7 @@ void EventShape::ludbrb(
 }
 
 int EventShape::iPow(int man, int exp) {
+    
     int ans = 1;
     for (int k = 0; k < exp; k++)
         ans = ans * man;
