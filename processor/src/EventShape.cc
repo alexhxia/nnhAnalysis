@@ -344,7 +344,7 @@ double EventShape::sign(double a, double b) const {
 }
 
 void EventShape::ludbrb(
-        Eigen::MatrixXd& momentum, 
+        Eigen::MatrixXd& mom, 
         double theta, double phi, 
         double bx, double by, double bz) {
     
