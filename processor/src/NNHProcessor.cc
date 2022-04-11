@@ -638,7 +638,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
  *          with decay1 = {PDG_PHOTON, PDG_Z0, PDG_HIGGS}
  *          and  decay2 = getDecayCode(part1, part2)       
  */
-std::array<int, 2> NNHProcessor::findDecayMode(
+/*std::array<int, 2> NNHProcessor::findDecayMode(
         const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const {
             
     
@@ -671,7 +671,137 @@ std::array<int, 2> NNHProcessor::findDecayMode(
 
     toReturn = {decay1, decay2};
     return toReturn;
+}*/
+
+std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
+{
+    std::array<int, 2> toReturn{-1, -1};
+
+    auto decay1 = std::abs(part1->getPDG());
+    auto decay2 = std::abs(part2->getPDG());
+
+    if (decay1 != 22 && decay1 != 23)
+    {
+        if (decay1 != decay2)
+            throw std::logic_error("weird higgs decay : " + std::to_string(decay1) + ", " + std::to_string(decay2));
+    }
+
+    if (decay1 != decay2)
+        decay1 = 25;
+
+    decay2 = 0;
+    if (decay1 == 24 || decay1 == 23)
+    {
+        auto vec0 = part1->getDaughters();
+        auto vec1 = part2->getDaughters();
+
+        if (vec0.size() != 2 || vec1.size() != 2)
+            throw std::logic_error("weird higgs subdecay for WW or ZZ : " + std::to_string(vec0.size() + vec1.size()) +
+                                   "particles");
+
+        std::array<int, 4> subDecay = {{std::abs(vec0[0]->getPDG()), std::abs(vec0[1]->getPDG()),
+                                        std::abs(vec1[0]->getPDG()), std::abs(vec1[1]->getPDG())}};
+
+        std::sort(subDecay.begin(), subDecay.end());
+
+        if (subDecay[1] < 10) // qq--
+        {
+            if (subDecay[3] < 10) // qqqq
+                decay2 = 1;
+            else if (subDecay[2] % 2 != 0 && subDecay[3] % 2 != 0) // qqll
+            {
+                if (subDecay[2] == 11)
+                    decay2 = 21;
+                else if (subDecay[2] == 13)
+                    decay2 = 22;
+                else if (subDecay[2] == 15)
+                    decay2 = 23;
+                else
+                    throw std::logic_error("weird qqll decay");
+            }
+            else if (subDecay[2] % 2 == 0 && subDecay[3] % 2 == 0) // qqvv
+            {
+                decay2 = 4;
+            }
+            else // qqlv
+            {
+                if (subDecay[2] == 11)
+                    decay2 = 31;
+                else if (subDecay[2] == 13)
+                    decay2 = 32;
+                else if (subDecay[2] == 15)
+                    decay2 = 33;
+                else
+                    throw std::logic_error("weird qqlv decay");
+            }
+        }
+        else
+        {
+            int nbNu = 0;
+            for (const auto& i : subDecay)
+            {
+                if (i % 2 == 0)
+                    nbNu++;
+            }
+
+            if (nbNu == 0) // llll
+            {
+                decay2 = 500;
+                if (subDecay[0] == 11)
+                    decay2 += 10;
+                else if (subDecay[0] == 13)
+                    decay2 += 20;
+                else if (subDecay[0] == 15)
+                    decay2 += 30;
+                else
+                    throw std::logic_error("weird llll decay");
+
+                if (subDecay[2] == 11)
+                    decay2 += 1;
+                else if (subDecay[2] == 13)
+                    decay2 += 2;
+                else if (subDecay[2] == 15)
+                    decay2 += 3;
+                else
+                    throw std::logic_error("weird llll decay");
+            }
+            else if (nbNu == 2) // llvv
+            {
+                decay2 = 600;
+                std::vector<int> temp = {};
+                for (const auto& i : subDecay)
+                {
+                    if (i % 2 != 0)
+                    {
+                        if (i == 11)
+                            temp.push_back(1);
+                        else if (i == 13)
+                            temp.push_back(2);
+                        else if (i == 15)
+                            temp.push_back(3);
+                        else
+                            throw std::logic_error("weird llvv decay");
+                    }
+                }
+
+                if (temp.size() != 2)
+                    throw std::logic_error("weird llvv decay");
+
+                std::sort(temp.begin(), temp.end());
+
+                decay2 = decay2 + 10 * temp[0] + temp[1];
+            }
+            else // vvvv
+            {
+                decay2 = 7;
+            }
+        }
+    }
+
+    toReturn = {decay1, decay2};
+    return toReturn;
 }
+
 
 /**
  * Compute sphericity tensor.
