@@ -344,7 +344,7 @@ double EventShape::sign(double a, double b) const {
 }
 
 void EventShape::ludbrb(
-        Eigen::MatrixXd& mom, 
+        Eigen::MatrixXd& momentum, 
         double theta, double phi, 
         double bx, double by, double bz) {
     
@@ -354,7 +354,7 @@ void EventShape::ludbrb(
     double          pr[4];
     double          dp[5];
 
-    auto np = mom.rows(); // auto ???
+    auto np = momentum.rows(); // auto ???
     if (theta * theta + phi * phi > 1e-20) {
         double ct = std::cos(theta);
         double st = std::sin(theta);
