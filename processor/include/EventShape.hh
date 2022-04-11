@@ -1,9 +1,3 @@
-/******************************************************************************/
-/**                                                                          **/
-/**               Team : FCC, IP2I, UCBLyon 1, France, 2022                  **/
-/**                                                                          **/
-/******************************************************************************/
-
 #ifndef EVENTSHAPE
 #define EVENTSHAPE
 
@@ -13,87 +7,62 @@
 
 #include <random>
 
-class EventShape {
-    
-    public:
-        EventShape() = default;
-        ~EventShape() = default;
+class EventShape
+{
+  public:
+    EventShape() = default;
+    ~EventShape() = default;
 
-        void setPartList(const std::vector<fastjet::PseudoJet>& particles);
+    void setPartList(const std::vector<fastjet::PseudoJet>& particles);
 
-        void   setThMomPower(double tp);        // setThrustMomentumPower
-        double getThMomPower() const;           // getThrustMomentumPower
-        
-        void   setFast(int nf);
-        int    getFast() const;
+    void   setThMomPower(double tp);
+    double getThMomPower() const;
+    void   setFast(int nf);
+    int    getFast() const;
 
-        CLHEP::Hep3Vector thrustAxis() const;   // getTrustAxis
-        CLHEP::Hep3Vector majorAxis() const;    // getMajorAxis
-        CLHEP::Hep3Vector minorAxis() const;    // getMinorAxis 
+    CLHEP::Hep3Vector thrustAxis() const;
+    CLHEP::Hep3Vector majorAxis() const;
+    CLHEP::Hep3Vector minorAxis() const;
 
-        double thrust() const;                  // getTrust
-        double majorThrust() const;             // getMajorTrust 
-        double minorThrust() const;             // getMajorTrust 
-        // thrust :: Corresponding thrust, major, and minor value.
+    double thrust() const;
+    double majorThrust() const;
+    double minorThrust() const;
+    // thrust :: Corresponding thrust, major, and minor value.
 
-        double oblateness() const;              // getOblateness
+    double oblateness() const;
 
-    private:
-        double ulAngle(double x, double y) const;   // ~polar angle
-        
-        /**
-         * Return : sign(b) * abs(a)
-         */
-        double sign(double a, double b) const;
-        
-        /**
-         * ???
-         */
-        void   ludbrb(
-                Eigen::MatrixXd& mom,               // momentum
-                double theta, double phi,           // angle
-                double bx, double by, double bz);   // coord ?
+  private:
+    double ulAngle(double x, double y) const;
+    double sign(double a, double b) const;
+    void   ludbrb(Eigen::MatrixXd& mom, double theta, double phi, double bx, double by, double bz);
 
-        int iPow(int man, int exp);             // man^{exp}
+    int iPow(int man, int exp);
 
-        /**
-         * PARU(42): Power of momentum dependence in thrust finder.
-         */
-        double m_dDeltaThPower = 0.;
-        /**
-         * MSTU(44): # of initial fastest particles choosen to start search.
-         */ 
-        int m_iFast = 4;
+    double m_dDeltaThPower = 0;
+    // PARU(42): Power of momentum dependence in thrust finder.
 
-        /**
-         * PARU(48): Convergence criteria for axis maximization.
-         */
-        double m_dConv = 0.0001;
+    int m_iFast = 4;
+    // MSTU(44): # of initial fastest particles choosen to start search.
 
-        /**
-         * MSTU(45): # different starting configurations that must converge 
-         * before axis is accepted as correct.
-         */
-        int m_iGood = 2;
+    double m_dConv = 0.0001;
+    // PARU(48): Convergence criteria for axis maximization.
 
-        /**
-         * m_dAxes[1] is the Thrust axis.
-         * m_dAxes[2] is the Major axis.
-         * m_dAxes[3] is the Minor axis.
-         */
-        Eigen::Matrix4d m_dAxes = {};
+    int m_iGood = 2;
+    // MSTU(45): # different starting configurations that must
+    // converge before axis is accepted as correct.
 
+    Eigen::Matrix4d m_dAxes = {};
+    // m_dAxes[1] is the Thrust axis.
+    // m_dAxes[2] is the Major axis.
+    // m_dAxes[3] is the Minor axis.
 
-        std::mt19937_64                 generator = std::mt19937_64();
-        std::uniform_int_distribution<> distribution = std::uniform_int_distribution<>(0, 1);
+    std::mt19937_64                 generator = std::mt19937_64();
+    std::uniform_int_distribution<> distribution = std::uniform_int_distribution<>(0, 1);
 
-        std::array<double, 4> m_dThrust = {};
-        double                m_dOblateness = 0.;
+    std::array<double, 4> m_dThrust = {};
+    double                m_dOblateness = 0;
 
-        /**
-         * Max nb particle
-         */
-        static unsigned int m_maxpart = 1000;
+    static unsigned int m_maxpart;
 };
 
 #endif
