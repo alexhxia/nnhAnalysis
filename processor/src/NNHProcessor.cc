@@ -239,10 +239,8 @@ int getDecayCode(
     
     int decay2 = 0;
             
-    //const MCParticleVec 
-    auto daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
-    //const MCParticleVec 
-    auto daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
+    virtual const MCParticleVec daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
+    virtual const MCParticleVec daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
 
     if (daughter1.size() != 2 || daughter2.size() != 2) {
         throw std::logic_error(
@@ -674,7 +672,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(
     toReturn = {decay1, decay2};
     return toReturn;
 }
-
+/*
 std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
 {
     std::array<int, 2> toReturn{-1, -1};
@@ -803,7 +801,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, c
     toReturn = {decay1, decay2};
     return toReturn;
 }
-
+*/
 
 /**
  * Compute sphericity tensor.
