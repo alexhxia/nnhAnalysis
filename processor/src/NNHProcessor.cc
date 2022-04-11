@@ -37,7 +37,172 @@
 #include <string>
 #include <vector>
 
+enum PGDCode {
+    // Leptons
+    ELECTRON = 11,
+    ELECTRON_NEUTRINO = 12,
+    MUON = 13,
+    MUON_NEUTRINO = 14,
+    TAU = 15,
+    TAU_NEUTRINO = 16,
+
+    // Bosons
+    GLUON = 21,
+    PHOTON = 22,
+    Z0 = 23,
+    W = 24,
+    HIGGS = 25
+};
+
+/**
+ * Return if particle is a neutrino.
+ */
+bool isNeutrino(int pdg) {
+    return     pdg == ELECTRON_NEUTRINO
+            || pdg == MUON_NEUTRINO
+            || pdg == TAU_NEUTRINO;
+}
+
+/**
+ * Return if particle is a charged lepton.
+ */
+bool isChargedLepton(int pdg) {
+    return     pdg == ELECTRON
+            || pdg == MUON
+            || pdg == TAU;
+}
+
+/**
+ * Return if particle is a quark.
+ */
+bool isQuark(int pdg) const {
+    return 1 <=  pdg && pdg <= 9;
+}
+
+/**
+ * Return if particle have this pdg in absolute.
+ */
+bool isAbsPDG(const int pdg, const EVENT::MCParticle* particle) {
+    return pdg == std::abs(particle->getPDG());
+}
+
+/**
+ * Return if p1 have same pdg p2 in absolute.
+ */
+bool isSameParticleAbsPDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2) {
+    return std::abs(p1->getPDG()) == std::abs(p2->getPDG());
+}
+
+/* NNHProcessor */
+
 NNHProcessor aNNHProcessor;
+
+/**
+ * Built 'PseudoJet' with 'ReconstructedParticle'
+ */
+fastjet::PseudoJet recoParticleToPseudoJet(
+        EVENT::ReconstructedParticle* reconstructedParticle) {
+    
+    const double* momentum = recoPart->getMomentum();   // auto ? const double*
+    double energy = recoPart->getEnergy();              // auto ? double
+
+    fastjet::PseudoJet particle(momentum[0], momentum[1], momentum[2], energy);
+    
+    ParticleInfo* particleInfo = new ParticleInfo;      // auto ? ParticleInfo
+    particleInfo->setRecoParticle(reconstructedParticle);
+    
+    particle.set_user_info(particleInfo);
+    
+    return particle;
+}
+
+/**
+ * Compute a recoil mass with a 4-vector and a energy
+ */
+double computeRecoilMass(const CLHEP::HepLorentzVector z4Vector, float energy) {
+    
+    CLHEP::Hep3Vector pTot = CLHEP::Hep3Vector(energy * std::sin(7e-3), 0, 0); // auto ? CLHEP::Hep3Vector
+    pTot = pTot - CLHEP::Hep3Vector(z4Vector.px(), z4Vector.py(), z4Vector.pz());
+    
+    double rm = (energy - z4Vector.e()) * (energy - z4Vector.e()) - pTot.mag2();
+
+    if (rm < 0.) {
+        return 0.;
+    } else {
+        rm = std::sqrt(rm);
+        return rm;
+    }
+}
+
+/**
+ * Compute a recoil mass with a PseudoJet and a energy
+ */
+double computeRecoilMass(const fastjet::PseudoJet& particle, float energy) {
+    
+    const CLHEP::HepLorentzVector vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            particle.px(), particle.py(), particle.pz(), particle.e()); 
+            
+    return computeRecoilMass(vec, energy);
+}
+
+/**
+ * Search a couple particle in PseudoJet vector's
+ * which minimized (invariant mass - targetMass)
+ */
+std::array<fastjet::PseudoJet, 2> findParticleByMass(
+            const std::vector<fastjet::PseudoJet> jets,
+            const double                          targetMass,
+            std::vector<fastjet::PseudoJet>&      remainingJets) {
+
+
+    // Search a couple particle which minimized (invariant mass - targetMass)
+    std::array<unsigned int, 2> goodPair = std::array<unsigned int, 2>{}; // auto ? std::array<unsigned int, 2>
+    double chi2 = std::numeric_limits<double>::max(); // auto ? double
+
+    for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
+        for (unsigned int j = i + 1; j < jets.size(); ++j) { // auto ? size_t
+            
+            double m = (jets[i] + jets[j]).m(); // invariant mass, auto ? double
+            double val = std::abs(m - targetMass); // auto ? double
+
+            if (val <= chi2) {
+                chi2 = val;
+                goodPair = {i, j};
+            }
+        }
+    }
+
+    std::array<fastjet::PseudoJet, 2> toReturn = {
+                jets[goodPair[0]], jets[goodPair[1]]};
+
+    // Save a not "good pair" jets
+    for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
+        if (i != goodPair[0] && i != goodPair[1]) {
+            remainingJets.push_back(jets[i]);
+        }
+    }
+
+    return toReturn;
+}
+
+/**
+ * Return : 1 if pdg is pdg electron's
+ *          2 if muon
+ *          3 if tau
+ *          throw error else.
+ */
+int getChargedLeptonCode(const int pdg) {
+    
+    if (pdg == ELECTRON) {
+        return 1;
+    } else if (pdg == MUON) {
+        return 2;
+    } else if (pdg == TAU) {
+        return 3;
+    } else {
+        throw std::runtime_error("is not a charged lepton");
+    }
+}
 
 NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
     
@@ -188,54 +353,6 @@ void NNHProcessor::init() {
  */
 void NNHProcessor::clear() {
     particles.clear();
-}
-
-/**
- * Built 'PseudoJet' with 'ReconstructedParticle'
- */
-fastjet::PseudoJet recoParticleToPseudoJet(
-        EVENT::ReconstructedParticle* reconstructedParticle) {
-    
-    const double* momentum = recoPart->getMomentum();   // auto ? const double*
-    double energy = recoPart->getEnergy();              // auto ? double
-
-    fastjet::PseudoJet particle(momentum[0], momentum[1], momentum[2], energy);
-    
-    ParticleInfo* particleInfo = new ParticleInfo;      // auto ? ParticleInfo
-    particleInfo->setRecoParticle(reconstructedParticle);
-    
-    particle.set_user_info(particleInfo);
-    
-    return particle;
-}
-
-/**
- * Compute a recoil mass with a 4-vector and a energy
- */
-double computeRecoilMass(const CLHEP::HepLorentzVector z4Vector, float energy) {
-    
-    CLHEP::Hep3Vector pTot = CLHEP::Hep3Vector(energy * std::sin(7e-3), 0, 0); // auto ? CLHEP::Hep3Vector
-    pTot = pTot - CLHEP::Hep3Vector(z4Vector.px(), z4Vector.py(), z4Vector.pz());
-    
-    double rm = (energy - z4Vector.e()) * (energy - z4Vector.e()) - pTot.mag2();
-
-    if (rm < 0.) {
-        return 0.;
-    } else {
-        rm = std::sqrt(rm);
-        return rm;
-    }
-}
-
-/**
- * Compute a recoil mass with a PseudoJet and a energy
- */
-double computeRecoilMass(const fastjet::PseudoJet& particle, float energy) {
-    
-    const CLHEP::HepLorentzVector vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
-            particle.px(), particle.py(), particle.pz(), particle.e()); 
-            
-    return computeRecoilMass(vec, energy);
 }
 
 /**
@@ -394,47 +511,11 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 }
 
 /**
- * Search a couple particle in PseudoJet vector's
- * which minimized (invariant mass - targetMass)
+ * 
  */
-std::array<fastjet::PseudoJet, 2> findParticleByMass(
-            const std::vector<fastjet::PseudoJet> jets,
-            const double                          targetMass,
-            std::vector<fastjet::PseudoJet>&      remainingJets) {
-
-
-    // Search a couple particle which minimized (invariant mass - targetMass)
-    std::array<unsigned int, 2> goodPair = std::array<unsigned int, 2>{}; // auto ? std::array<unsigned int, 2>
-    double chi2 = std::numeric_limits<double>::max(); // auto ? double
-
-    for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
-        for (unsigned int j = i + 1; j < jets.size(); ++j) { // auto ? size_t
-            
-            double m = (jets[i] + jets[j]).m(); // invariant mass, auto ? double
-            double val = std::abs(m - targetMass); // auto ? double
-
-            if (val <= chi2) {
-                chi2 = val;
-                goodPair = {i, j};
-            }
-        }
-    }
-
-    std::array<fastjet::PseudoJet, 2> toReturn = {
-                jets[goodPair[0]], jets[goodPair[1]]};
-
-    // Save a not "good pair" jets
-    for (unsigned int i = 0U; i < jets.size(); ++i) { // auto ? size_t
-        if (i != goodPair[0] && i != goodPair[1]) {
-            remainingJets.push_back(jets[i]);
-        }
-    }
-
-    return toReturn;
-}
-
-std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
-{
+std::array<int, 2> NNHProcessor::findDecayMode(
+        const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const {
+    
     std::array<int, 2> toReturn{-1, -1};
 
     auto decay1 = std::abs(part1->getPDG());
@@ -915,6 +996,7 @@ void NNHProcessor::processEvent(LCEvent* evt)
  * Terminate processus : close tree ROOT and file.
  */
 void NNHProcessor::end() {
+    
     outputTree->Write();
     outputFile->Close();
 }
