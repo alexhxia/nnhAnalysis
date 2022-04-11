@@ -229,7 +229,7 @@ int getChargedLeptonCode(const int pdg) {
  *      m : muon,
  *      t : tau
  *     (l : lepton)
- */
+ *//*
 int getDecayCode(
         const EVENT::MCParticle* particle1, 
         const EVENT::MCParticle* particle2) {
@@ -239,8 +239,8 @@ int getDecayCode(
     
     int decay2 = 0;
             
-    const MCParticleVec* daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
-    const MCParticleVec* daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
+    const MCParticleVec daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
+    const MCParticleVec daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
 
     if (daughter1.size() != 2 || daughter2.size() != 2) {
         throw std::logic_error(
@@ -321,7 +321,7 @@ int getDecayCode(
             decay2 = decay2 + 10 * temp[0] + temp[1];
         } 
     }
-}
+}*/
 
 /**
  * 
@@ -638,7 +638,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
  *          with decay1 = {PDG_PHOTON, PDG_Z0, PDG_HIGGS}
  *          and  decay2 = getDecayCode(part1, part2)       
  */
-std::array<int, 2> NNHProcessor::findDecayMode(
+/*std::array<int, 2> NNHProcessor::findDecayMode(
         const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const {
             
     
@@ -671,8 +671,8 @@ std::array<int, 2> NNHProcessor::findDecayMode(
 
     toReturn = {decay1, decay2};
     return toReturn;
-}
-/*
+}*/
+
 std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
 {
     std::array<int, 2> toReturn{-1, -1};
@@ -801,7 +801,6 @@ std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, c
     toReturn = {decay1, decay2};
     return toReturn;
 }
-*/
 
 /**
  * Compute sphericity tensor.
