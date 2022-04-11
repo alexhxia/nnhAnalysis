@@ -239,8 +239,8 @@ int getDecayCode(
     
     int decay2 = 0;
             
-    const MCParticleVec daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
-    const MCParticleVec daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
+    const MCParticleVec* daughter1 = particle1->getDaughters(); // auto ? const MCParticleVec*
+    const MCParticleVec* daughter2 = particle2->getDaughters(); // auto ? const MCParticleVec*
 
     if (daughter1.size() != 2 || daughter2.size() != 2) {
         throw std::logic_error(
