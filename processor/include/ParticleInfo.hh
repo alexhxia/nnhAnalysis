@@ -1,22 +1,36 @@
+/******************************************************************************/
+/**                                                                          **/
+/**               Team : FCC, IP2I, UCBLyon 1, France, 2022                  **/
+/**                                                                          **/
+/******************************************************************************/
+
 #pragma once
 
 #include <fastjet/PseudoJet.hh>
 
 #include <EVENT/ReconstructedParticle.h>
 
-class ParticleInfo : public fastjet::PseudoJet::UserInfoBase
-{
-  public:
-    ParticleInfo() = default;
-    ~ParticleInfo() = default;
+/**
+ * ParticleInfo class, add to 'fastjet::PseudoJet::UserInfoBase' interface 
+ * once object of 'EVENT::ReconstructedParticle'.
+ */
+class ParticleInfo : public fastjet::PseudoJet::UserInfoBase {
+    
+    public:
+        ParticleInfo() = default;
+        ~ParticleInfo() = default;
 
-    ParticleInfo(const ParticleInfo& toCopy) = delete;
-    void operator=(const ParticleInfo& toCopy) = delete;
+        ParticleInfo(const ParticleInfo& toCopy) = delete;
+        void operator=(const ParticleInfo& toCopy) = delete;
 
-    void setRecoParticle(EVENT::ReconstructedParticle* recoPart) { _recoParticle = recoPart; }
+        void setRecoParticle(EVENT::ReconstructedParticle* recoPart) { 
+            _recoParticle = recoPart; 
+        }
 
-    auto recoParticle() const { return _recoParticle; }
+        auto recoParticle() const { 
+            return _recoParticle; 
+        }
 
-  protected:
-    EVENT::ReconstructedParticle* _recoParticle = nullptr;
+    protected:
+        EVENT::ReconstructedParticle* _recoParticle = nullptr;
 };
