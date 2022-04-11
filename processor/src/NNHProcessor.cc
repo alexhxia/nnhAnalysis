@@ -230,7 +230,7 @@ int getChargedLeptonCode(const int pdg) {
  *      t : tau
  *     (l : lepton)
  */
-/*int getDecayCode(
+int getDecayCode(
         const EVENT::MCParticle* particle1, 
         const EVENT::MCParticle* particle2) {
     
@@ -323,7 +323,7 @@ int getChargedLeptonCode(const int pdg) {
             decay2 = decay2 + 10 * temp[0] + temp[1];
         } 
     }
-}*/
+}
 
 /**
  * 
@@ -640,7 +640,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
  *          with decay1 = {PDG_PHOTON, PDG_Z0, PDG_HIGGS}
  *          and  decay2 = getDecayCode(part1, part2)       
  */
-/*std::array<int, 2> NNHProcessor::findDecayMode(
+std::array<int, 2> NNHProcessor::findDecayMode(
         const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const {
             
     
@@ -673,7 +673,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 
     toReturn = {decay1, decay2};
     return toReturn;
-}*/
+}
 
 std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
 {
