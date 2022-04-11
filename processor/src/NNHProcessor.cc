@@ -230,7 +230,7 @@ int getChargedLeptonCode(const int pdg) {
  *      t : tau
  *     (l : lepton)
  */
-int getDecayCode(
+/*int getDecayCode(
         const EVENT::MCParticle* particle1, 
         const EVENT::MCParticle* particle2) {
     
@@ -323,9 +323,11 @@ int getDecayCode(
             decay2 = decay2 + 10 * temp[0] + temp[1];
         } 
     }
-}
+}*/
 
-
+/**
+ * 
+ */
 NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
     
     // Test
