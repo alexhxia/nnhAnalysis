@@ -14,7 +14,7 @@ unsigned int EventShape::m_maxpart = 1000;
 
 // REQUESTS
 
-virtual Processor* EventShape::newProcessor() { 
+virtual NNHProcessor* EventShape::newProcessor() { 
     return new NNHProcessor; 
 }
 
