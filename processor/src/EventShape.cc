@@ -369,7 +369,7 @@ void EventShape::ludbrb(
     double pr[4];
     double dp[5];
 
-    int np = momentum.rows(); // auto ? int
+    unsigned int np = momentum.rows(); // auto ? int
     if (theta * theta + phi * phi > 1e-20) {
         double ct = std::cos(theta);
         double st = std::sin(theta);
