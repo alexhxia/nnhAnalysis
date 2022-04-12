@@ -708,7 +708,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(
         auto vec2 = particle2->getDaughters();
 
         if (vec1.size() != 2 || vec2.size() != 2) {
-            throw std::logic_error(
+            throw logic_error(
                     "weird higgs subdecay for WW or ZZ : " 
                     + to_string(vec1.size() + vec2.size()) 
                     + "particles");
@@ -746,7 +746,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(
             }
         } else {
             int nbNu = 0;
-            for (const auto& i : subDecay) {
+            for (int i : subDecay) {
                 if (isNeutrino(i)) {
                     nbNu++;
                 }
@@ -768,7 +768,7 @@ std::array<int, 2> NNHProcessor::findDecayMode(
             } else if (nbNu == 2) { // llvv
                 decay2 = 600;
                 vector<int> temp = {};
-                for (const auto& i : subDecay) {
+                for (int i : subDecay) {
                     if (isChargedLepton(i)) {
                         try {
                             temp.push_back(i);
@@ -823,19 +823,19 @@ Eigen::Matrix3d NNHProcessor::computeSphericityTensor(
  * Compute sphericity
  */
 double NNHProcessor::computeSphericity(
-            const std::vector<fastjet::PseudoJet>& particleVec) const {
+            const vector<fastjet::PseudoJet>& particleVec) const {
     
     Eigen::Matrix3d tensor = computeSphericityTensor(particleVec); // auto ? Eigen::Matrix3d
 
     Eigen::Vector3cd eigenVal = tensor.eigenvalues(); // auto ? Eigen::Vector3cd
 
     std::array<double, 3> val = {{
-            std::norm(eigenVal(0)), 
-            std::norm(eigenVal(1)), 
-            std::norm(eigenVal(2))
+            norm(eigenVal(0)), 
+            norm(eigenVal(1)), 
+            norm(eigenVal(2))
     }};
     
-    std::sort(val.begin(), val.end());
+    sort(val.begin(), val.end());
 
     streamlog_out(DEBUG) 
                 << "Sphericity eigenvalues : (" 
@@ -1174,15 +1174,15 @@ double NNHProcessor::computeSphericity(
     }
 }*/
 
-void NNHProcessor::processEvent(LCEvent* evt)
-{
+void NNHProcessor::processEvent(LCEvent* evt) {
+    
     clear();
 
-    std::cout << "Event : " << evt->getEventNumber() << std::endl;
+    cout << "Event : " << evt->getEventNumber() << endl;
 
-    processID = evt->getParameters().getIntVal(std::string("ProcessID"));
-    event = evt->getParameters().getIntVal(std::string("Event Number"));
-    sqrtS = evt->getParameters().getFloatVal(std::string("Energy"));
+    processID = evt->getParameters().getIntVal(string("ProcessID"));
+    event = evt->getParameters().getIntVal(string("Event Number"));
+    sqrtS = evt->getParameters().getFloatVal(string("Energy"));
 
     mcCol = evt->getCollection(mcParticleCollectionName);
     recoCol = evt->getCollection(reconstructedParticleCollectionName);
@@ -1194,32 +1194,31 @@ void NNHProcessor::processEvent(LCEvent* evt)
     const auto mc_nu1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(9));
     const auto mc_higgs = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(10));
 
-    try
-    {
+    try {
         processISR(mc_gamma0, mc_gamma1);
+    } catch (logic_error& e) {
+        streamlog_out(DEBUG) 
+                << "Run : " << evt->getRunNumber() << ", "
+                << "Event : " << evt->getEventNumber() << " : "
+                << e.what() << endl;
     }
-    catch (std::logic_error& e)
-    {
-        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
-                             << e.what() << std::endl;
-    }
-    try
-    {
+    
+    try {
         processNeutrinos(mc_nu0, mc_nu1);
+    } catch (logic_error& e) {
+        streamlog_out(DEBUG) 
+                << "Run : " << evt->getRunNumber() << ", "
+                << "Event : " << evt->getEventNumber() << " : "
+                << e.what() << std::endl;
     }
-    catch (std::logic_error& e)
-    {
-        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
-                             << e.what() << std::endl;
-    }
-    try
-    {
+    
+    try {
         processHiggs(mc_higgs);
-    }
-    catch (std::logic_error& e)
-    {
-        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
-                             << e.what() << std::endl;
+    } catch (logic_error& e) {
+        streamlog_out(DEBUG) 
+                << "Run : " << evt->getRunNumber() << ", "
+                << "Event : " << evt->getEventNumber() << " : "
+                << e.what() << std::endl;
     }
     // end of MC stuff
 
@@ -1234,21 +1233,20 @@ void NNHProcessor::processEvent(LCEvent* evt)
     cosThrust = std::abs(principleThrustAxis.cosTheta());
     oblateness = recoCol->getParameters().getFloatVal("Oblateness");
 
-    if (minorThrust != minorThrust) // handle NaN case
+    if (minorThrust != minorThrust) { // handle NaN case
         minorThrust = 0;
+    }
 
     sphericity = recoCol->getParameters().getFloatVal("sphericity");
 
     // treat isolated leptons
     isolatedLeptons.clear();
     eIsoLep = 0;
-    for (const auto& colName : isolatedLeptonsCollectionNames)
-    {
+    for (const auto& colName : isolatedLeptonsCollectionNames) {
         auto col = evt->getCollection(colName);
-        auto n = col->getNumberOfElements();
+        unsigned int n = col->getNumberOfElements();
 
-        for (auto i = 0; i < n; ++i)
-        {
+        for (unsigned int i = 0; i < n; ++i) {
             auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedLeptons.insert(particle);
             eIsoLep += particle->getEnergy();
@@ -1259,10 +1257,9 @@ void NNHProcessor::processEvent(LCEvent* evt)
     isolatedPhotons.clear();
     {
         auto col = evt->getCollection(isolatedPhotonsCollectionName);
-        auto n = col->getNumberOfElements();
+        unsigned int n = col->getNumberOfElements();
 
-        for (auto i = 0; i < n; ++i)
-        {
+        for (unsigned int i = 0; i < n; ++i) {
             auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedPhotons.insert(particle);
         }
@@ -1273,8 +1270,7 @@ void NNHProcessor::processEvent(LCEvent* evt)
 
     particles.reserve(nParticles);
 
-    for (int index = 0; index < nParticles; ++index)
-    {
+    for (int index = 0; index < nParticles; ++index) {
         auto recoPart = dynamic_cast<EVENT::ReconstructedParticle*>(recoCol->getElementAt(index));
 
         visible_e += recoPart->getEnergy();
@@ -1285,37 +1281,42 @@ void NNHProcessor::processEvent(LCEvent* evt)
 
     // Jets study
 
-    const auto sortJetsByEnergy = [](const EVENT::ReconstructedParticle* a,
-                                     const EVENT::ReconstructedParticle* b) -> bool
-    { return a->getEnergy() > b->getEnergy(); };
+    const auto sortJetsByEnergy = [](
+            const EVENT::ReconstructedParticle* a,
+            const EVENT::ReconstructedParticle* b) -> bool { 
+        return a->getEnergy() > b->getEnergy(); 
+    };
 
     const auto _2JetsCol = evt->getCollection(_2JetsCollectionName);
     const auto _3JetsCol = evt->getCollection(_3JetsCollectionName);
     const auto _4JetsCol = evt->getCollection(_4JetsCollectionName);
 
-    auto _2Jets = std::vector<EVENT::ReconstructedParticle*>{};
-    auto _3Jets = std::vector<EVENT::ReconstructedParticle*>{};
-    auto _4Jets = std::vector<EVENT::ReconstructedParticle*>{};
+    auto _2Jets = vector<EVENT::ReconstructedParticle*>{};
+    auto _3Jets = vector<EVENT::ReconstructedParticle*>{};
+    auto _4Jets = vector<EVENT::ReconstructedParticle*>{};
 
-    for (auto index = 0; index < _2JetsCol->getNumberOfElements(); ++index)
+    for (auto index = 0; index < _2JetsCol->getNumberOfElements(); ++index) {
         _2Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_2JetsCol->getElementAt(index)));
-    for (auto index = 0; index < _3JetsCol->getNumberOfElements(); ++index)
+    }
+    for (auto index = 0; index < _3JetsCol->getNumberOfElements(); ++index) {
         _3Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_3JetsCol->getElementAt(index)));
-    for (auto index = 0; index < _4JetsCol->getNumberOfElements(); ++index)
+    }
+    for (auto index = 0; index < _4JetsCol->getNumberOfElements(); ++index) {
         _4Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_4JetsCol->getElementAt(index)));
+    }
 
-    std::sort(_2Jets.begin(), _2Jets.end(), sortJetsByEnergy);
-    std::sort(_3Jets.begin(), _3Jets.end(), sortJetsByEnergy);
-    std::sort(_4Jets.begin(), _4Jets.end(), sortJetsByEnergy);
+    sort(_2Jets.begin(), _2Jets.end(), sortJetsByEnergy);
+    sort(_3Jets.begin(), _3Jets.end(), sortJetsByEnergy);
+    sort(_4Jets.begin(), _4Jets.end(), sortJetsByEnergy);
 
-    if (_2Jets.size() != 2)
+    if (_2Jets.size() != 2) {
         isValid_bb = false;
-    else
-    {
+    } else {
         isValid_bb = true;
         auto jets = std::vector<fastjet::PseudoJet>{};
-        for (const auto& lcioJet : _2Jets)
+        for (const auto& lcioJet : _2Jets) {
             jets.push_back(recoParticleToPseudoJet(lcioJet));
+        }
 
         const auto higgs = join(jets[0], jets[1]);
         const auto higgs_mom = CLHEP::Hep3Vector(jets[0].px(), jets[0].py(), jets[0].pz());
@@ -1357,30 +1358,31 @@ void NNHProcessor::processEvent(LCEvent* evt)
 
         auto algoBtag = -1;
         auto algoYth = -1;
-        for (auto i = 0U; i < strValues.size(); ++i)
-        {
-            if (strValues[i] == "lcfiplus")
+        for (unsigned int i = 0U; i < strValues.size(); ++i) {
+            if (strValues[i] == "lcfiplus") {
                 algoBtag = intValues[i];
-            if (strValues[i] == "yth")
+            }
+            if (strValues[i] == "yth") {
                 algoYth = intValues[i];
+            }
         }
 
         const auto particle1IDs = _2Jets[0]->getParticleIDs();
         const auto particle2IDs = _2Jets[1]->getParticleIDs();
 
-        for (const auto& particleID : particle1IDs)
-        {
-            if (particleID->getAlgorithmType() == algoYth)
-            {
+        for (const auto& particleID : particle1IDs) {
+            if (particleID->getAlgorithmType() == algoYth) {
                 const auto params = particleID->getParameters();
 
-                auto yCutVec = std::vector<float>{};
-                for (const auto& param : params)
+                auto yCutVec = vector<float>{};
+                for (const auto& param : params) {
                     yCutVec.push_back(param);
+                }
 
-                constexpr float minYCut = std::numeric_limits<float>::min();
-                for (auto& yCut : yCutVec)
+                constexpr float minYCut = numeric_limits<float>::min();
+                for (auto& yCut : yCutVec) {
                     yCut = std::max(yCut, minYCut);
+                }
 
                 y_12 = -log10(yCutVec[1]);
                 y_23 = -log10(yCutVec[2]);
@@ -1390,25 +1392,26 @@ void NNHProcessor::processEvent(LCEvent* evt)
                 y_67 = -log10(yCutVec[6]);
             }
 
-            if (particleID->getAlgorithmType() == algoBtag)
+            if (particleID->getAlgorithmType() == algoBtag) {
                 higgs_bTag1 = particleID->getParameters()[0];
+            }
         }
 
-        for (const auto& particleID : particle2IDs)
-        {
-            if (particleID->getAlgorithmType() == algoBtag)
+        for (const auto& particleID : particle2IDs) {
+            if (particleID->getAlgorithmType() == algoBtag) {
                 higgs_bTag2 = particleID->getParameters()[0];
+            }
         }
     }
 
     // 3 jets study
-    if (_3Jets.size() == 3)
-    {
-        auto jets = std::vector<fastjet::PseudoJet>{};
-        for (const auto& lcioJet : _3Jets)
+    if (_3Jets.size() == 3) {
+        auto jets = vector<fastjet::PseudoJet>{};
+        for (const auto& lcioJet : _3Jets) {
             jets.push_back(recoParticleToPseudoJet(lcioJet));
+        }
 
-        std::vector<fastjet::PseudoJet> osef{};
+        vector<fastjet::PseudoJet> osef{};
 
         auto W_jetPair = findParticleByMass(jets, W_MASS_REF, osef);
         auto W = join(W_jetPair[0], W_jetPair[1]);
@@ -1418,17 +1421,16 @@ void NNHProcessor::processEvent(LCEvent* evt)
     }
 
     // 4 jets study
-    if (_4Jets.size() != 4)
+    if (_4Jets.size() != 4) {
         isValid_ww = false;
-    else
-    {
+    } else {
         isValid_ww = true;
 
-        auto jets = std::vector<fastjet::PseudoJet>{};
+        auto jets = vector<fastjet::PseudoJet>{};
         for (const auto& lcioJet : _4Jets)
             jets.push_back(recoParticleToPseudoJet(lcioJet));
 
-        std::vector<fastjet::PseudoJet> smallW_jetPair{};
+        vector<fastjet::PseudoJet> smallW_jetPair{};
 
         auto bigW_jetPair = findParticleByMass(jets, W_MASS_REF, smallW_jetPair);
 
@@ -1455,7 +1457,7 @@ void NNHProcessor::processEvent(LCEvent* evt)
         higgs_ww_cosBetw = std::cos(bigW_mom.angle(smallW_mom));
 
         // background study
-        std::vector<fastjet::PseudoJet> smallZ_jetPair{};
+        vector<fastjet::PseudoJet> smallZ_jetPair{};
 
         auto bigZ_jetPair = findParticleByMass(jets, Z_MASS_REF, smallZ_jetPair);
 
@@ -1471,7 +1473,7 @@ void NNHProcessor::processEvent(LCEvent* evt)
     nEventsProcessed++;
     if (nEventsProcessed % 10000 == 0) {
         streamlog_out(MESSAGE) 
-                << nEventsProcessed << " events processed" << std::endl;
+                << nEventsProcessed << " events processed" << endl;
     }
 }
 
