@@ -1164,7 +1164,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
         array<fastjet::PseudoJet, 2> bigZ_jetPair = findParticleByMass(
                 jets, Z_MASS_REF, smallZ_jetPair);
 
-        array<fastjet::PseudoJet, 2> bigZ = join(bigZ_jetPair[0], bigZ_jetPair[1]);
+        fastjet::PseudoJet bigZ = join(bigZ_jetPair[0], bigZ_jetPair[1]);
         vector<fastjet::PseudoJet> smallZ = join(smallZ_jetPair[0], smallZ_jetPair[1]);
 
         zz_z1_m = bigZ.m();
