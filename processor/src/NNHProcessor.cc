@@ -37,10 +37,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
-// TOOLS : PDG
-
 enum PGDCode {
     // Leptons
     ELECTRON = 11,
@@ -102,8 +98,6 @@ bool isSameParticleAbsPDG(
 /* NNHProcessor */
 
 NNHProcessor aNNHProcessor;
-
-// TOOLS REQUESTS
 
 /**
  * Built 'PseudoJet' with 'ReconstructedParticle'
@@ -329,10 +323,8 @@ int getDecayCode(
     }
 }*/
 
-// MAKERS
-
 /**
- * Init register.
+ * 
  */
 NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
     
@@ -378,8 +370,6 @@ NNHProcessor::NNHProcessor() : Processor("NNHProcessor") {
             "4JetsCollectionName", "4 Jets Collection Name", 
             _4JetsCollectionName, std::string("Refined4Jets"));
 }
-
-// COMMANDS
 
 /**
  * Create output file and root tree.
@@ -642,8 +632,6 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
     mc_higgs_decay_cosBetw = std::cos(angleBetw);
 }
 
-// REQUESTS
-
 /**
  * AE : (isPhoton(part1) || isZ0Boson(part1)) => (PDG(part1) == PDG(part2))
  * AS : (decay1, decay2)
@@ -685,133 +673,126 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
     return toReturn;
 }*/
 
-/**
- * Find a decay mode.
- * AE : 
- * Return : couple(particles pdg code, decay code)
- */
-std::array<int, 2> NNHProcessor::findDecayMode(
-        const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const {
-            
+std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
+{
     std::array<int, 2> toReturn{-1, -1};
 
-    int decay1 = std::abs(part1->getPDG());
-    int decay2 = std::abs(part2->getPDG());
+    auto decay1 = std::abs(part1->getPDG());
+    auto decay2 = std::abs(part2->getPDG());
 
-    if (decay1 != 22 && decay1 != 23) {
-        if (decay1 != decay2) {
-            throw std::logic_error(
-                    "weird higgs decay : " 
-                    + std::to_string(decay1) + ", " 
-                    + std::to_string(decay2));
-        }
+    if (decay1 != 22 && decay1 != 23)
+    {
+        if (decay1 != decay2)
+            throw std::logic_error("weird higgs decay : " + std::to_string(decay1) + ", " + std::to_string(decay2));
     }
 
-    if (decay1 != decay2) {
+    if (decay1 != decay2)
         decay1 = 25;
-    }
 
     decay2 = 0;
-    if (decay1 == 24 || decay1 == 23) {
-        
+    if (decay1 == 24 || decay1 == 23)
+    {
         auto vec0 = part1->getDaughters();
         auto vec1 = part2->getDaughters();
 
-        if (vec0.size() != 2 || vec1.size() != 2) {
-            throw std::logic_error(
-                    "weird higgs subdecay for WW or ZZ : " 
-                    + std::to_string(vec0.size() + vec1.size()) 
-                    + "particles");
-        }
+        if (vec0.size() != 2 || vec1.size() != 2)
+            throw std::logic_error("weird higgs subdecay for WW or ZZ : " + std::to_string(vec0.size() + vec1.size()) +
+                                   "particles");
 
-        std::array<int, 4> subDecay = {{
-                std::abs(vec0[0]->getPDG()), 
-                std::abs(vec0[1]->getPDG()),
-                std::abs(vec1[0]->getPDG()), 
-                std::abs(vec1[1]->getPDG())
-        }};
+        std::array<int, 4> subDecay = {{std::abs(vec0[0]->getPDG()), std::abs(vec0[1]->getPDG()),
+                                        std::abs(vec1[0]->getPDG()), std::abs(vec1[1]->getPDG())}};
 
         std::sort(subDecay.begin(), subDecay.end());
 
-        if (subDecay[1] < 10) { // qq--
-            if (subDecay[3] < 10) { // qqqq
+        if (subDecay[1] < 10) // qq--
+        {
+            if (subDecay[3] < 10) // qqqq
                 decay2 = 1;
-            } else if (subDecay[2] % 2 != 0 && subDecay[3] % 2 != 0) { // qqll
-                if (subDecay[2] == 11) {
+            else if (subDecay[2] % 2 != 0 && subDecay[3] % 2 != 0) // qqll
+            {
+                if (subDecay[2] == 11)
                     decay2 = 21;
-                } else if (subDecay[2] == 13) {
+                else if (subDecay[2] == 13)
                     decay2 = 22;
-                } else if (subDecay[2] == 15) {
+                else if (subDecay[2] == 15)
                     decay2 = 23;
-                } else {
+                else
                     throw std::logic_error("weird qqll decay");
-                }
-            } else if (subDecay[2] % 2 == 0 && subDecay[3] % 2 == 0) { // qqvv
-                decay2 = 4;
-            } else { // qqlv
-                if (subDecay[2] == 11) {
-                    decay2 = 31;
-                } else if (subDecay[2] == 13) {
-                    decay2 = 32;
-                } else if (subDecay[2] == 15) {
-                    decay2 = 33;
-                } else {
-                    throw std::logic_error("weird qqlv decay");
-                }
             }
-        } else {
+            else if (subDecay[2] % 2 == 0 && subDecay[3] % 2 == 0) // qqvv
+            {
+                decay2 = 4;
+            }
+            else // qqlv
+            {
+                if (subDecay[2] == 11)
+                    decay2 = 31;
+                else if (subDecay[2] == 13)
+                    decay2 = 32;
+                else if (subDecay[2] == 15)
+                    decay2 = 33;
+                else
+                    throw std::logic_error("weird qqlv decay");
+            }
+        }
+        else
+        {
             int nbNu = 0;
-            for (const auto& i : subDecay) {
-                if (i % 2 == 0) {
+            for (const auto& i : subDecay)
+            {
+                if (i % 2 == 0)
                     nbNu++;
-                }
             }
 
-            if (nbNu == 0) { // llll
+            if (nbNu == 0) // llll
+            {
                 decay2 = 500;
-                if (subDecay[0] == 11) {
+                if (subDecay[0] == 11)
                     decay2 += 10;
-                } else if (subDecay[0] == 13) {
+                else if (subDecay[0] == 13)
                     decay2 += 20;
-                } else if (subDecay[0] == 15) {
+                else if (subDecay[0] == 15)
                     decay2 += 30;
-                } else {
+                else
                     throw std::logic_error("weird llll decay");
-                }
-                if (subDecay[2] == 11) {
+
+                if (subDecay[2] == 11)
                     decay2 += 1;
-                } else if (subDecay[2] == 13) {
+                else if (subDecay[2] == 13)
                     decay2 += 2;
-                } else if (subDecay[2] == 15) {
+                else if (subDecay[2] == 15)
                     decay2 += 3;
-                } else {
+                else
                     throw std::logic_error("weird llll decay");
-                }
-            } else if (nbNu == 2) { // llvv
+            }
+            else if (nbNu == 2) // llvv
+            {
                 decay2 = 600;
                 std::vector<int> temp = {};
-                for (const auto& i : subDecay) {
-                    if (i % 2 != 0) {
-                        if (i == 11) {
+                for (const auto& i : subDecay)
+                {
+                    if (i % 2 != 0)
+                    {
+                        if (i == 11)
                             temp.push_back(1);
-                        } else if (i == 13) {
+                        else if (i == 13)
                             temp.push_back(2);
-                        } else if (i == 15) {
+                        else if (i == 15)
                             temp.push_back(3);
-                        } else {
+                        else
                             throw std::logic_error("weird llvv decay");
-                        }
                     }
                 }
 
-                if (temp.size() != 2) {
+                if (temp.size() != 2)
                     throw std::logic_error("weird llvv decay");
-                }
 
                 std::sort(temp.begin(), temp.end());
 
                 decay2 = decay2 + 10 * temp[0] + temp[1];
-            } else { // vvvv
+            }
+            else // vvvv
+            {
                 decay2 = 7;
             }
         }
@@ -1200,11 +1181,8 @@ double NNHProcessor::computeSphericity(
     }
 }*/
 
-/**
- * 
- */
-void NNHProcessor::processEvent(LCEvent* evt) {
-    
+void NNHProcessor::processEvent(LCEvent* evt)
+{
     clear();
 
     std::cout << "Event : " << evt->getEventNumber() << std::endl;
@@ -1223,31 +1201,32 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     const auto mc_nu1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(9));
     const auto mc_higgs = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(10));
 
-    try {
+    try
+    {
         processISR(mc_gamma0, mc_gamma1);
-    } catch (std::logic_error& e) {
-        streamlog_out(DEBUG) 
-                << "Run : " << evt->getRunNumber() << ", "
-                << "Event : " << evt->getEventNumber() << " : "
-                << e.what() << std::endl;
     }
-    
-    try {
+    catch (std::logic_error& e)
+    {
+        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
+                             << e.what() << std::endl;
+    }
+    try
+    {
         processNeutrinos(mc_nu0, mc_nu1);
-    } catch (std::logic_error& e) {
-        streamlog_out(DEBUG) 
-                << "Run : " << evt->getRunNumber() << ", "
-                << "Event : " << evt->getEventNumber() << " : "
-                << e.what() << std::endl;
     }
-    
-    try {
+    catch (std::logic_error& e)
+    {
+        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
+                             << e.what() << std::endl;
+    }
+    try
+    {
         processHiggs(mc_higgs);
-    } catch (std::logic_error& e) {
-        streamlog_out(DEBUG) 
-                << "Run : " << evt->getRunNumber() << ", "
-                << "Event : " << evt->getEventNumber() << " : "
-                << e.what() << std::endl;
+    }
+    catch (std::logic_error& e)
+    {
+        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
+                             << e.what() << std::endl;
     }
     // end of MC stuff
 
@@ -1262,20 +1241,21 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     cosThrust = std::abs(principleThrustAxis.cosTheta());
     oblateness = recoCol->getParameters().getFloatVal("Oblateness");
 
-    if (minorThrust != minorThrust) { // handle NaN case
+    if (minorThrust != minorThrust) // handle NaN case
         minorThrust = 0;
-    }
 
     sphericity = recoCol->getParameters().getFloatVal("sphericity");
 
     // treat isolated leptons
     isolatedLeptons.clear();
     eIsoLep = 0;
-    for (const auto& colName : isolatedLeptonsCollectionNames) {
+    for (const auto& colName : isolatedLeptonsCollectionNames)
+    {
         auto col = evt->getCollection(colName);
         auto n = col->getNumberOfElements();
 
-        for (auto i = 0; i < n; ++i) {
+        for (auto i = 0; i < n; ++i)
+        {
             auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedLeptons.insert(particle);
             eIsoLep += particle->getEnergy();
@@ -1288,7 +1268,8 @@ void NNHProcessor::processEvent(LCEvent* evt) {
         auto col = evt->getCollection(isolatedPhotonsCollectionName);
         auto n = col->getNumberOfElements();
 
-        for (auto i = 0; i < n; ++i) {
+        for (auto i = 0; i < n; ++i)
+        {
             auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedPhotons.insert(particle);
         }
@@ -1299,7 +1280,8 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
     particles.reserve(nParticles);
 
-    for (int index = 0; index < nParticles; ++index) {
+    for (int index = 0; index < nParticles; ++index)
+    {
         auto recoPart = dynamic_cast<EVENT::ReconstructedParticle*>(recoCol->getElementAt(index));
 
         visible_e += recoPart->getEnergy();
@@ -1310,11 +1292,9 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
     // Jets study
 
-    const auto sortJetsByEnergy = [](
-            const EVENT::ReconstructedParticle* a,
-            const EVENT::ReconstructedParticle* b) -> bool { 
-        return a->getEnergy() > b->getEnergy(); 
-    };
+    const auto sortJetsByEnergy = [](const EVENT::ReconstructedParticle* a,
+                                     const EVENT::ReconstructedParticle* b) -> bool
+    { return a->getEnergy() > b->getEnergy(); };
 
     const auto _2JetsCol = evt->getCollection(_2JetsCollectionName);
     const auto _3JetsCol = evt->getCollection(_3JetsCollectionName);
@@ -1324,26 +1304,21 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     auto _3Jets = std::vector<EVENT::ReconstructedParticle*>{};
     auto _4Jets = std::vector<EVENT::ReconstructedParticle*>{};
 
-    for (auto index = 0; index < _2JetsCol->getNumberOfElements(); ++index) {
-        _2Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(
-                _2JetsCol->getElementAt(index)));
-    }
-    for (auto index = 0; index < _3JetsCol->getNumberOfElements(); ++index) {
-        _3Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(
-                _3JetsCol->getElementAt(index)));
-    }
-    for (auto index = 0; index < _4JetsCol->getNumberOfElements(); ++index) {
-        _4Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(
-                _4JetsCol->getElementAt(index)));
-    }
-    
+    for (auto index = 0; index < _2JetsCol->getNumberOfElements(); ++index)
+        _2Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_2JetsCol->getElementAt(index)));
+    for (auto index = 0; index < _3JetsCol->getNumberOfElements(); ++index)
+        _3Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_3JetsCol->getElementAt(index)));
+    for (auto index = 0; index < _4JetsCol->getNumberOfElements(); ++index)
+        _4Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_4JetsCol->getElementAt(index)));
+
     std::sort(_2Jets.begin(), _2Jets.end(), sortJetsByEnergy);
     std::sort(_3Jets.begin(), _3Jets.end(), sortJetsByEnergy);
     std::sort(_4Jets.begin(), _4Jets.end(), sortJetsByEnergy);
 
-    if (_2Jets.size() != 2) {
+    if (_2Jets.size() != 2)
         isValid_bb = false;
-    } else {
+    else
+    {
         isValid_bb = true;
         auto jets = std::vector<fastjet::PseudoJet>{};
         for (const auto& lcioJet : _2Jets)
@@ -1389,20 +1364,21 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
         auto algoBtag = -1;
         auto algoYth = -1;
-        for (auto i = 0U; i < strValues.size(); ++i) {
-            if (strValues[i] == "lcfiplus") {
+        for (auto i = 0U; i < strValues.size(); ++i)
+        {
+            if (strValues[i] == "lcfiplus")
                 algoBtag = intValues[i];
-            }
-            if (strValues[i] == "yth") {
+            if (strValues[i] == "yth")
                 algoYth = intValues[i];
-            }
         }
 
         const auto particle1IDs = _2Jets[0]->getParticleIDs();
         const auto particle2IDs = _2Jets[1]->getParticleIDs();
 
-        for (const auto& particleID : particle1IDs) {
-            if (particleID->getAlgorithmType() == algoYth) {
+        for (const auto& particleID : particle1IDs)
+        {
+            if (particleID->getAlgorithmType() == algoYth)
+            {
                 const auto params = particleID->getParameters();
 
                 auto yCutVec = std::vector<float>{};
@@ -1421,20 +1397,20 @@ void NNHProcessor::processEvent(LCEvent* evt) {
                 y_67 = -log10(yCutVec[6]);
             }
 
-            if (particleID->getAlgorithmType() == algoBtag) {
+            if (particleID->getAlgorithmType() == algoBtag)
                 higgs_bTag1 = particleID->getParameters()[0];
-            }
         }
 
-        for (const auto& particleID : particle2IDs) {
-            if (particleID->getAlgorithmType() == algoBtag) {
+        for (const auto& particleID : particle2IDs)
+        {
+            if (particleID->getAlgorithmType() == algoBtag)
                 higgs_bTag2 = particleID->getParameters()[0];
-            }
         }
     }
 
     // 3 jets study
-    if (_3Jets.size() == 3) {
+    if (_3Jets.size() == 3)
+    {
         auto jets = std::vector<fastjet::PseudoJet>{};
         for (const auto& lcioJet : _3Jets)
             jets.push_back(recoParticleToPseudoJet(lcioJet));
@@ -1449,9 +1425,10 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     }
 
     // 4 jets study
-    if (_4Jets.size() != 4) {
+    if (_4Jets.size() != 4)
         isValid_ww = false;
-    } else {
+    else
+    {
         isValid_ww = true;
 
         auto jets = std::vector<fastjet::PseudoJet>{};
@@ -1499,10 +1476,8 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     outputTree->Fill();
 
     nEventsProcessed++;
-    if (nEventsProcessed % 10000 == 0) {
-        streamlog_out(MESSAGE) 
-                << nEventsProcessed << " events processed" << std::endl;
-    }
+    if (nEventsProcessed % 10000 == 0)
+        streamlog_out(MESSAGE) << nEventsProcessed << " events processed" << std::endl;
 }
 
 
