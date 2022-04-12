@@ -644,10 +644,6 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 
 // REQUESTS
 
-virtual Processor* NNHProcessor::newProcessor() { 
-    return new NNHProcessor; 
-}
-
 /**
  * AE : (isPhoton(part1) || isZ0Boson(part1)) => (PDG(part1) == PDG(part2))
  * AS : (decay1, decay2)
@@ -1277,9 +1273,9 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     eIsoLep = 0;
     for (const auto& colName : isolatedLeptonsCollectionNames) {
         auto col = evt->getCollection(colName);
-        unsigned int n = col->getNumberOfElements();
+        auto n = col->getNumberOfElements();
 
-        for (unsigned int i = 0; i < n; ++i) {
+        for (auto i = 0; i < n; ++i) {
             auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedLeptons.insert(particle);
             eIsoLep += particle->getEnergy();
@@ -1290,9 +1286,9 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     isolatedPhotons.clear();
     {
         auto col = evt->getCollection(isolatedPhotonsCollectionName);
-        unsigned int n = col->getNumberOfElements();
+        auto n = col->getNumberOfElements();
 
-        for (unsigned int i = 0; i < n; ++i) {
+        for (auto i = 0; i < n; ++i) {
             auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedPhotons.insert(particle);
         }
@@ -1393,12 +1389,13 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
         auto algoBtag = -1;
         auto algoYth = -1;
-        for (auto i = 0U; i < strValues.size(); ++i)
-        {
-            if (strValues[i] == "lcfiplus")
+        for (auto i = 0U; i < strValues.size(); ++i) {
+            if (strValues[i] == "lcfiplus") {
                 algoBtag = intValues[i];
-            if (strValues[i] == "yth")
+            }
+            if (strValues[i] == "yth") {
                 algoYth = intValues[i];
+            }
         }
 
         const auto particle1IDs = _2Jets[0]->getParticleIDs();
