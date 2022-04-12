@@ -1165,7 +1165,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
                 jets, Z_MASS_REF, smallZ_jetPair);
 
         fastjet::PseudoJet bigZ = join(bigZ_jetPair[0], bigZ_jetPair[1]);
-        vector<fastjet::PseudoJet> smallZ = join(smallZ_jetPair[0], smallZ_jetPair[1]);
+        fastjet::PseudoJet smallZ = join(smallZ_jetPair[0], smallZ_jetPair[1]);
 
         zz_z1_m = bigZ.m();
         zz_z2_m = smallZ.m();
