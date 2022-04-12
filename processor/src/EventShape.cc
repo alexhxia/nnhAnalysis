@@ -12,6 +12,13 @@ using namespace std;
 
 unsigned int EventShape::m_maxpart = 1000;
 
+// REQUESTS
+
+/*
+virtual NNHProcessor* EventShape::newProcessor() { 
+    return new NNHProcessor; 
+}*/
+
 // COMMANDS
 
 /**
