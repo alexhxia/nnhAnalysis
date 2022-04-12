@@ -1141,7 +1141,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
         CLHEP::Hep3Vector bigW_jet1Mom = CLHEP::Hep3Vector(bigW_jetPair[0].px(), bigW_jetPair[0].py(), bigW_jetPair[0].pz());
         CLHEP::Hep3Vector bigW_jet2Mom = CLHEP::Hep3Vector(bigW_jetPair[1].px(), bigW_jetPair[1].py(), bigW_jetPair[1].pz());
 
-        CLHEP::Hep3Vector smallW = join(smallW_jetPair[0], smallW_jetPair[1]);
+        fastjet::PseudoJet smallW = join(smallW_jetPair[0], smallW_jetPair[1]);
         CLHEP::Hep3Vector smallW_mom = CLHEP::Hep3Vector(smallW.px(), smallW.py(), smallW.pz());
         CLHEP::Hep3Vector smallW_jet1Mom = CLHEP::Hep3Vector(smallW_jetPair[0].px(), smallW_jetPair[0].py(), smallW_jetPair[0].pz());
         CLHEP::Hep3Vector smallW_jet2Mom = CLHEP::Hep3Vector(smallW_jetPair[1].px(), smallW_jetPair[1].py(), smallW_jetPair[1].pz());
