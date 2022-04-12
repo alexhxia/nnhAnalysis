@@ -28,7 +28,7 @@ class NNHProcessor : public marlin::Processor {
         static constexpr float Z_MASS_REF = 91.1876;
 
     public:
-        virtual Processor* newProcessor() { return new NNHProcessor; }
+        virtual Processor* newProcessor();
 
         NNHProcessor();
         virtual void init();

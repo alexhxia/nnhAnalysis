@@ -39,6 +39,9 @@ class EventShape {
         double oblateness() const;              // getOblateness
 
     private:
+    
+        // RESQUETS
+        
         /**
          * Return : polar angle ???
          */
@@ -50,6 +53,13 @@ class EventShape {
         double sign(double a, double b) const;
         
         /**
+         * Result : man^{exp}
+         */
+        int iPow(int man, int exp);
+        
+        // COMMANDS
+        
+        /**
          * ???
          */
         void ludbrb(
@@ -57,11 +67,8 @@ class EventShape {
                 double theta, double phi,
                 double bx, double by, double bz);
 
-        /**
-         * Result : man^{exp}
-         */
-        int iPow(int man, int exp);
-
+        // ATTRIBUTES
+        
         /**
          * PARU(42): Power of momentum dependence in thrust finder.
          */
@@ -99,7 +106,7 @@ class EventShape {
         /**
          * Max nb particle
          */
-        static unsigned int m_maxpart;// = 1000;
+        static unsigned int m_maxpart = 1000;
 };
 
 #endif
