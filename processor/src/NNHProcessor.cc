@@ -1136,7 +1136,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
         array<fastjet::PseudoJet, 2> bigW_jetPair = findParticleByMass(
                 jets, W_MASS_REF, smallW_jetPair);
 
-        CLHEP::Hep3Vector bigW = join(bigW_jetPair[0], bigW_jetPair[1]);
+        fastjet::PseudoJet bigW = join(bigW_jetPair[0], bigW_jetPair[1]);
         CLHEP::Hep3Vector bigW_mom = CLHEP::Hep3Vector(bigW.px(), bigW.py(), bigW.pz());
         CLHEP::Hep3Vector bigW_jet1Mom = CLHEP::Hep3Vector(bigW_jetPair[0].px(), bigW_jetPair[0].py(), bigW_jetPair[0].pz());
         CLHEP::Hep3Vector bigW_jet2Mom = CLHEP::Hep3Vector(bigW_jetPair[1].px(), bigW_jetPair[1].py(), bigW_jetPair[1].pz());
