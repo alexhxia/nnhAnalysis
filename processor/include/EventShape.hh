@@ -40,7 +40,15 @@ class EventShape {
 
     private:
         /**
-         * Return : polar angle ???
+         * Polar angle ???
+         * Return :
+         *      if abs(x) / r < 0.8 then 
+         *          sign(acos(x / r), y)            
+         *      else 
+         *          if x > 0 then 
+         *              asin(y / r)
+         *          else 
+         *              sign(asin(y / r)) * pi - asin(y / r)
          */
         double ulAngle(double x, double y) const;
         

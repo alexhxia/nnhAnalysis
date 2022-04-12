@@ -15,7 +15,7 @@ unsigned int EventShape::m_maxpart = 1000;
 // COMMANDS
 
 /**
- * Change particles list.
+ * Change particles list and attributes
  * AE : particles.size() > (m_maxpart = 1000)
  */
 void EventShape::setPartList(const vector<fastjet::PseudoJet>& particles) {
@@ -376,17 +376,18 @@ void EventShape::ludbrb(
         rot(2, 2) = cp;
         rot(2, 3) = st * sp;
         rot(3, 1) = -st;
-        rot(3, 2) = 0.0;
+        rot(3, 2) = 0.;
         rot(3, 3) = ct;
 
         for (unsigned int i = 0; i < np; i++) {
             for (int j = 1; j < 4; j++) {
                 pr[j] = momentum(i, j);
                 momentum(i, j) = 0.;
-            }
-            for (int jb = 1; jb < 4; jb++) {
-                for (int k = 1; k < 4; k++)
-                    momentum(i, jb) = momentum(i, jb) + rot(jb, k) * pr[k];
+            //}
+            //for (int j = 1; j < 4; j++) {
+                for (int k = 1; k < 4; k++) {
+                    momentum(i, j) = momentum(i, j) + rot(j, k) * pr[k];
+                }
             }
         }
         
@@ -421,8 +422,9 @@ void EventShape::ludbrb(
 int EventShape::iPow(int man, int exp) {
     
     int ans = 1;
-    for (int k = 0; k < exp; k++)
+    for (int k = 0; k < exp; k++) {
         ans = ans * man;
+    }
 
     return ans;
 }
