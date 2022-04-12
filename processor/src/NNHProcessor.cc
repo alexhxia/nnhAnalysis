@@ -677,126 +677,114 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
     return toReturn;
 }*/
 
-std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
-{
-    std::array<int, 2> toReturn{-1, -1};
+std::array<int, 2> NNHProcessor::findDecayMode(
+        const EVENT::MCParticle* particle1, 
+        const EVENT::MCParticle* particle2) const {
+            
+    
+    // Init if error
+    array<int, 2> toReturn{-1, -1};
 
-    auto decay1 = std::abs(part1->getPDG());
-    auto decay2 = std::abs(part2->getPDG());
-
-    if (decay1 != 22 && decay1 != 23)
-    {
-        if (decay1 != decay2)
-            throw std::logic_error("weird higgs decay : " + std::to_string(decay1) + ", " + std::to_string(decay2));
+    // Init conditions
+    if (!isAbsPDG(PHOTON, particle1) && !isAbsPDG(Z0, particle1)) {
+        if (!isSameParticleAbsPDG(particle1, particle2)) {
+            throw std::logic_error(
+                    "weird higgs decay : " + std::to_string(decay1) + ", " 
+                    + std::to_string(decay2));
+        }
     }
 
-    if (decay1 != decay2)
-        decay1 = 25;
+    int decay1, decay2 = 0;
 
-    decay2 = 0;
-    if (decay1 == 24 || decay1 == 23)
-    {
-        auto vec0 = part1->getDaughters();
-        auto vec1 = part2->getDaughters();
+    if (!isSameParticleAbsPDG(particle1, particle2)) {
+        decay1 = HIGGS;
+    } else {
+        decay1 = abs(particle1->getPDG());
+    }
 
-        if (vec0.size() != 2 || vec1.size() != 2)
-            throw std::logic_error("weird higgs subdecay for WW or ZZ : " + std::to_string(vec0.size() + vec1.size()) +
-                                   "particles");
+    if (decay1 == W || decay1 == Z0) {
+        auto vec0 = particle1->getDaughters();
+        auto vec1 = particle2->getDaughters();
 
-        std::array<int, 4> subDecay = {{std::abs(vec0[0]->getPDG()), std::abs(vec0[1]->getPDG()),
-                                        std::abs(vec1[0]->getPDG()), std::abs(vec1[1]->getPDG())}};
-
-        std::sort(subDecay.begin(), subDecay.end());
-
-        if (subDecay[1] < 10) // qq--
-        {
-            if (subDecay[3] < 10) // qqqq
-                decay2 = 1;
-            else if (subDecay[2] % 2 != 0 && subDecay[3] % 2 != 0) // qqll
-            {
-                if (subDecay[2] == 11)
-                    decay2 = 21;
-                else if (subDecay[2] == 13)
-                    decay2 = 22;
-                else if (subDecay[2] == 15)
-                    decay2 = 23;
-                else
-                    throw std::logic_error("weird qqll decay");
-            }
-            else if (subDecay[2] % 2 == 0 && subDecay[3] % 2 == 0) // qqvv
-            {
-                decay2 = 4;
-            }
-            else // qqlv
-            {
-                if (subDecay[2] == 11)
-                    decay2 = 31;
-                else if (subDecay[2] == 13)
-                    decay2 = 32;
-                else if (subDecay[2] == 15)
-                    decay2 = 33;
-                else
-                    throw std::logic_error("weird qqlv decay");
-            }
+        if (vec1.size() != 2 || vec2.size() != 2) {
+            throw std::logic_error(
+                    "weird higgs subdecay for WW or ZZ : " 
+                    + to_string(vec1.size() + vec2.size()) 
+                    + "particles");
         }
-        else
-        {
-            int nbNu = 0;
-            for (const auto& i : subDecay)
-            {
-                if (i % 2 == 0)
-                    nbNu++;
-            }
 
-            if (nbNu == 0) // llll
-            {
-                decay2 = 500;
-                if (subDecay[0] == 11)
-                    decay2 += 10;
-                else if (subDecay[0] == 13)
+        array<int, 4> subDecay = {{
+                abs(vec1[0]->getPDG()), 
+                abs(vec1[1]->getPDG()),
+                abs(vec2[0]->getPDG()), 
+                abs(vec2[1]->getPDG())
+        }};
+
+        sort(subDecay.begin(), subDecay.end());
+
+        if (isQuark(subDecay[1])) { // qq--
+            if (isQuark(subDecay[3])) { // qqqq
+                decay2 = 1;
+            } else if (isChargedLepton(subDecay[2]) 
+                    && isChargedLepton(subDecay[3])) { // qqll
+                try {
+                    decay2 = getChargedLeptonCode(subDecay[2]);
                     decay2 += 20;
-                else if (subDecay[0] == 15)
+                } catch (exception const& e) {
+                    cerr << "ERROR : weird qqll decay" << e.what() << endl;
+                }
+            } else if (isNeutrino(subDecay[2]) && isNeutrino(subDecay[3])) { // qqvv
+                decay2 = 4;
+            } else { // qqlv
+                try {
+                    decay2 = getChargedLeptonCode(subDecay[2]);
                     decay2 += 30;
-                else
-                    throw std::logic_error("weird llll decay");
-
-                if (subDecay[2] == 11)
-                    decay2 += 1;
-                else if (subDecay[2] == 13)
-                    decay2 += 2;
-                else if (subDecay[2] == 15)
-                    decay2 += 3;
-                else
-                    throw std::logic_error("weird llll decay");
+                } catch (exception const& e) {
+                    cerr << "ERROR : weird qqlv decay" << e.what() << endl;
+                }
             }
-            else if (nbNu == 2) // llvv
-            {
+        } else {
+            int nbNu = 0;
+            for (const auto& i : subDecay) {
+                if (isNeutrino(i)) {
+                    nbNu++;
+                }
+            }
+
+            if (nbNu == 0) { // llll
+                decay2 = 500;
+                try {
+                    decay2 = getChargedLeptonCode(subDecay[0]) * 10;
+                } catch (exception const& e) {
+                    cerr << "ERROR : weird llll decay" << e.what() << endl;
+                }
+                
+                try {
+                    decay2 = getChargedLeptonCode(subDecay[2]);
+                } catch (exception const& e) {
+                    cerr << "ERROR : weird llll decay" << e.what() << endl;
+                }
+            } else if (nbNu == 2) { // llvv
                 decay2 = 600;
-                std::vector<int> temp = {};
-                for (const auto& i : subDecay)
-                {
-                    if (i % 2 != 0)
-                    {
-                        if (i == 11)
-                            temp.push_back(1);
-                        else if (i == 13)
-                            temp.push_back(2);
-                        else if (i == 15)
-                            temp.push_back(3);
-                        else
-                            throw std::logic_error("weird llvv decay");
+                vector<int> temp = {};
+                for (const auto& i : subDecay) {
+                    if (isChargedLepton(i)) {
+                        try {
+                            temp.push_back(i);
+                        } catch (exception const& e) {
+                            cerr << "ERROR : weird llvv decay" << e.what() << endl;
+                        }
                     }
                 }
 
-                if (temp.size() != 2)
-                    throw std::logic_error("weird llvv decay");
+                if (temp.size() != 2) {
+                    throw std::logic_error("ERROR : weird llvv decay");
+                }
 
-                std::sort(temp.begin(), temp.end());
+                sort(temp.begin(), temp.end());
 
                 decay2 = decay2 + 10 * temp[0] + temp[1];
-            }
-            else // vvvv
-            {
+            } else { // vvvv
                 decay2 = 7;
             }
         }
