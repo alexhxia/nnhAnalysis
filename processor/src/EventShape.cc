@@ -10,7 +10,7 @@
 
 using namespace std;
 
-//unsigned int EventShape::m_maxpart = 1000;
+unsigned int EventShape::m_maxpart = 1000;
 
 // COMMANDS
 

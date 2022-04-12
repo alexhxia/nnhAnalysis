@@ -106,7 +106,7 @@ class EventShape {
         /**
          * Max nb particle
          */
-        static unsigned int m_maxpart = 1000;
+        static unsigned int m_maxpart;// = 1000;
 };
 
 #endif
