@@ -1114,7 +1114,8 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
         array<fastjet::PseudoJet, 2> W_jetPair = findParticleByMass(
                 jets, W_MASS_REF, osef);
-        array<fastjet::PseudoJet, 2> W = join(W_jetPair[0], W_jetPair[1]);
+        
+        fastjet::PseudoJet W = join(W_jetPair[0], W_jetPair[1]);
 
         sl_w_m = W.m();
         sl_rec_m = computeRecoilMass(W, sqrtS);
