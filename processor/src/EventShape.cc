@@ -207,7 +207,7 @@ void EventShape::setPartList(const vector<fastjet::PseudoJet>& particles) {
                         tpr[j] = tpr[j] + sgn * momentum(i, j);
                     }
                 }
-                thp = qrt(tpr[1] * tpr[1] + tpr[2] * tpr[2] + tpr[3] * tpr[3]) / tmax;
+                thp = sqrt(tpr[1] * tpr[1] + tpr[2] * tpr[2] + tpr[3] * tpr[3]) / tmax;
             }
             // Save good axis. Try new initial axis until enough
             // tries agree.
