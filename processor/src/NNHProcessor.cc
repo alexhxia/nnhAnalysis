@@ -987,15 +987,15 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     vector<EVENT::ReconstructedParticle*> _4Jets 
             = vector<EVENT::ReconstructedParticle*>{};
 
-    for (auto index = 0; index < _2JetsCol->getNumberOfElements(); ++index) {
+    for (int index = 0; index < _2JetsCol->getNumberOfElements(); ++index) {
         _2Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(
                 _2JetsCol->getElementAt(index)));
     }
-    for (auto index = 0; index < _3JetsCol->getNumberOfElements(); ++index) {
+    for (int index = 0; index < _3JetsCol->getNumberOfElements(); ++index) {
         _3Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(
                 _3JetsCol->getElementAt(index)));
     }
-    for (auto index = 0; index < _4JetsCol->getNumberOfElements(); ++index) {
+    for (int index = 0; index < _4JetsCol->getNumberOfElements(); ++index) {
         _4Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(
                 _4JetsCol->getElementAt(index)));
     }
@@ -1004,16 +1004,15 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     sort(_3Jets.begin(), _3Jets.end(), sortJetsByEnergy);
     sort(_4Jets.begin(), _4Jets.end(), sortJetsByEnergy);
 
-    if (_2Jets.size() != 2) {
-        isValid_bb = false;
-    } else {
-        isValid_bb = true;
-        auto jets = std::vector<fastjet::PseudoJet>{};
+    // 2 jets study
+    isValid_bb = (_2Jets.size() == 2);
+    if (isValid_bb) {
+        vector<fastjet::PseudoJet> jets = vector<fastjet::PseudoJet>{};
         for (const auto& lcioJet : _2Jets) {
             jets.push_back(recoParticleToPseudoJet(lcioJet));
         }
 
-        const auto higgs = join(jets[0], jets[1]);
+        const fastjet::PseudoJet higgs = join(jets[0], jets[1]);
         const CLHEP::Hep3Vector higgs_mom = CLHEP::Hep3Vector(
                 jets[0].px(), jets[0].py(), jets[0].pz());
 
@@ -1120,16 +1119,15 @@ void NNHProcessor::processEvent(LCEvent* evt) {
         sl_w_m = W.m();
         sl_rec_m = computeRecoilMass(W, sqrtS);
     }
+    
 
     // 4 jets study
-    if (_4Jets.size() != 4) {
-        isValid_ww = false;
-    } else {
-        isValid_ww = true;
-
+    isValid_ww = (_4Jets.size() == 4);
+    if (isValid_ww) {
         vector<fastjet::PseudoJet> jets = vector<fastjet::PseudoJet>{};
-        for (const auto& lcioJet : _4Jets)
+        for (EVENT::ReconstructedParticle* lcioJet : _4Jets) {
             jets.push_back(recoParticleToPseudoJet(lcioJet));
+        }
 
         vector<fastjet::PseudoJet> smallW_jetPair{};
 
@@ -1137,24 +1135,42 @@ void NNHProcessor::processEvent(LCEvent* evt) {
                 jets, W_MASS_REF, smallW_jetPair);
 
         fastjet::PseudoJet bigW = join(bigW_jetPair[0], bigW_jetPair[1]);
-        CLHEP::Hep3Vector bigW_mom = CLHEP::Hep3Vector(bigW.px(), bigW.py(), bigW.pz());
-        CLHEP::Hep3Vector bigW_jet1Mom = CLHEP::Hep3Vector(bigW_jetPair[0].px(), bigW_jetPair[0].py(), bigW_jetPair[0].pz());
-        CLHEP::Hep3Vector bigW_jet2Mom = CLHEP::Hep3Vector(bigW_jetPair[1].px(), bigW_jetPair[1].py(), bigW_jetPair[1].pz());
+        CLHEP::Hep3Vector bigW_mom = CLHEP::Hep3Vector(
+                bigW.px(), 
+                bigW.py(), 
+                bigW.pz());
+        CLHEP::Hep3Vector bigW_jet1Mom = CLHEP::Hep3Vector(
+                bigW_jetPair[0].px(), 
+                bigW_jetPair[0].py(), 
+                bigW_jetPair[0].pz());
+        CLHEP::Hep3Vector bigW_jet2Mom = CLHEP::Hep3Vector(
+                bigW_jetPair[1].px(), 
+                bigW_jetPair[1].py(), 
+                bigW_jetPair[1].pz());
 
         fastjet::PseudoJet smallW = join(smallW_jetPair[0], smallW_jetPair[1]);
-        CLHEP::Hep3Vector smallW_mom = CLHEP::Hep3Vector(smallW.px(), smallW.py(), smallW.pz());
-        CLHEP::Hep3Vector smallW_jet1Mom = CLHEP::Hep3Vector(smallW_jetPair[0].px(), smallW_jetPair[0].py(), smallW_jetPair[0].pz());
-        CLHEP::Hep3Vector smallW_jet2Mom = CLHEP::Hep3Vector(smallW_jetPair[1].px(), smallW_jetPair[1].py(), smallW_jetPair[1].pz());
+        CLHEP::Hep3Vector smallW_mom = CLHEP::Hep3Vector(
+                smallW.px(), 
+                smallW.py(), 
+                smallW.pz());
+        CLHEP::Hep3Vector smallW_jet1Mom = CLHEP::Hep3Vector(
+                smallW_jetPair[0].px(), 
+                smallW_jetPair[0].py(), 
+                smallW_jetPair[0].pz());
+        CLHEP::Hep3Vector smallW_jet2Mom = CLHEP::Hep3Vector(
+                smallW_jetPair[1].px(), 
+                smallW_jetPair[1].py(), 
+                smallW_jetPair[1].pz());
 
         w1_m = bigW.m();
         w1_pt = bigW.pt();
         w1_e = bigW.e();
-        w1_cosBetw = std::cos(bigW_jet1Mom.angle(bigW_jet2Mom));
+        w1_cosBetw = cos(bigW_jet1Mom.angle(bigW_jet2Mom));
 
         w2_m = smallW.m();
         w2_pt = smallW.pt();
         w2_e = smallW.e();
-        w2_cosBetw = std::cos(smallW_jet1Mom.angle(smallW_jet2Mom));
+        w2_cosBetw = cos(smallW_jet1Mom.angle(smallW_jet2Mom));
 
         higgs_ww_cosBetw = cos(bigW_mom.angle(smallW_mom));
 
@@ -1174,6 +1190,8 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     outputTree->Fill();
 
     nEventsProcessed++;
+    
+    // Print 
     if (nEventsProcessed % 10000 == 0) {
         streamlog_out(MESSAGE) 
                 << nEventsProcessed << " events processed" << endl;
