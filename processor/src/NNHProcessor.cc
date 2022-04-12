@@ -689,8 +689,9 @@ std::array<int, 2> NNHProcessor::findDecayMode(
     if (!isAbsPDG(PHOTON, particle1) && !isAbsPDG(Z0, particle1)) {
         if (!isSameParticleAbsPDG(particle1, particle2)) {
             throw std::logic_error(
-                    "weird higgs decay : " + std::to_string(decay1) + ", " 
-                    + std::to_string(decay2));
+                    "weird higgs decay : " 
+                    + to_string(particle1->getPDG()) + ", " 
+                    + to_string(particle2->getPDG()));
         }
     }
 
