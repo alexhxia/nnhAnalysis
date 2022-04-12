@@ -12,20 +12,13 @@ using namespace std;
 
 unsigned int EventShape::m_maxpart = 1000;
 
-// REQUESTS
-
-/*
-virtual NNHProcessor* EventShape::newProcessor() { 
-    return new NNHProcessor; 
-}*/
-
 // COMMANDS
 
 /**
  * Change particles list.
  * AE : particles.size() > (m_maxpart = 1000)
  */
-void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
+void EventShape::setPartList(const vector<fastjet::PseudoJet>& particles) {
     // To make this look like normal physics notation the
     // zeroth element of each array, mom[i][0], will be ignored
     // and operations will be on elements 1,2,3...
@@ -148,7 +141,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
             work(ie, 4) = 0.;
         }
 
-        int p = std::min(m_iFast, np) - 1;
+        int p = min(m_iFast, np) - 1;
         // Don't trust Math.pow to give right answer always.
         // Want nc = 2**p.
         int nc = iPow(2, p);
@@ -157,7 +150,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
                 tdi[j] = 0.;
             }
 
-            for (int i = 0; i < std::min(m_iFast, n); i++) {
+            for (int i = 0; i < min(m_iFast, n); i++) {
                 sgn = fast(i, 5);
                 if (iPow(2, (i + 1)) * ((n + iPow(2, i)) / iPow(2, (i + 1))) >= i + 1) {
                     sgn = -sgn;
@@ -169,7 +162,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
             }
             
             tds = tdi[1] * tdi[1] + tdi[2] * tdi[2] + tdi[3] * tdi[3];
-            for (int iw = std::min(n, 9); iw > -1; iw--) {
+            for (int iw = min(n, 9); iw > -1; iw--) {
                 if (tds > work(iw, 4)) {
                     for (int j = 1; j < 5; j++) {
                         work(iw + 1, j) = work(iw, j);
@@ -193,7 +186,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
         m_dThrust[pass] = 0.;
         thp = -99999.;
         int nagree = 0;
-        for (int iw = 0; iw < std::min(nc, 10) && nagree < m_iGood; iw++) {
+        for (int iw = 0; iw < min(nc, 10) && nagree < m_iGood; iw++) {
             thp = 0.;
             thps = -99999.;
             while (thp > thps + m_dConv) {
@@ -214,7 +207,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
                         tpr[j] = tpr[j] + sgn * momentum(i, j);
                     }
                 }
-                thp = std::sqrt(tpr[1] * tpr[1] + tpr[2] * tpr[2] + tpr[3] * tpr[3]) / tmax;
+                thp = qrt(tpr[1] * tpr[1] + tpr[2] * tpr[2] + tpr[3] * tpr[3]) / tmax;
             }
             // Save good axis. Try new initial axis until enough
             // tries agree.
@@ -241,7 +234,7 @@ void EventShape::setPartList(const std::vector<fastjet::PseudoJet>& particles) {
     thp = 0.;
 
     for (int i = 0; i < np; i++) {
-        thp += momentum(i, 5) * std::abs(
+        thp += momentum(i, 5) * abs(
                   m_dAxes(3, 1) * momentum(i, 1) 
                 + m_dAxes(3, 2) * momentum(i, 2));
     }
@@ -335,7 +328,7 @@ double EventShape::ulAngle(double x, double y) const {
     
     constexpr double pi = 3.141592653589793;
     double ulangl = 0.;
-    double r = std::sqrt(x * x + y * y);
+    double r = sqrt(x * x + y * y);
     
     if (r > 1e-20) {
         if (abs(x) / r < 0.8) {
@@ -371,10 +364,10 @@ void EventShape::ludbrb(
 
     unsigned int np = momentum.rows(); // auto ? int
     if (theta * theta + phi * phi > 1e-20) {
-        double ct = std::cos(theta);
-        double st = std::sin(theta);
-        double cp = std::cos(phi);
-        double sp = std::sin(phi);
+        double ct = cos(theta);
+        double st = sin(theta);
+        double cp = cos(phi);
+        double sp = sin(phi);
 
         rot(1, 1) = ct * cp;
         rot(1, 2) = -sp;
@@ -397,15 +390,16 @@ void EventShape::ludbrb(
             }
         }
         
+        double betaMax = 0.99999999;
         double beta2 = bx * bx + by * by + bz * bz;
         double beta = sqrt(beta2);
         if (beta2 > 1e-20) {
-            if (beta > 0.99999999) {
+            if (beta > betaMax) {
                 // send message: boost too large, resetting to <~1.0.
-                bx = bx * (0.99999999 / beta);
-                by = by * (0.99999999 / beta);
-                bz = bz * (0.99999999 / beta);
-                beta = 0.99999999;
+                bx = bx * (betaMax / beta);
+                by = by * (betaMax / beta);
+                bz = bz * (betaMax / beta);
+                beta = betaMax;
             }
             double gamma = 1. / sqrt(1. - beta2);
             for (unsigned int i = 0; i < np; i++) {
