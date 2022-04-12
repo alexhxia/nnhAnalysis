@@ -703,8 +703,8 @@ std::array<int, 2> NNHProcessor::findDecayMode(
     }
 
     if (decay1 == W || decay1 == Z0) {
-        auto vec0 = particle1->getDaughters();
-        auto vec1 = particle2->getDaughters();
+        auto vec1 = particle1->getDaughters();
+        auto vec2 = particle2->getDaughters();
 
         if (vec1.size() != 2 || vec2.size() != 2) {
             throw std::logic_error(
