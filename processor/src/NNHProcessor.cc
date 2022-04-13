@@ -776,7 +776,7 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 
     // Exception
     if (!isAbsPDG(HIGGS, higgs)) {
-        throw std::logic_error("not a higgs");
+        throw logic_error("not a higgs");
     }
 
     CLHEP::HepLorentzVector higgs_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
@@ -787,11 +787,18 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
 
     // We need exactly 2 daughters to continue without error
     if (vec.size() != 2) {
-        throw std::logic_error("weird higgs decay : not 2 particles");
+        throw logic_error("weird higgs decay : not 2 particles");
     }
 
-    std::array<int, 2> decay = findDecayMode(vec[0], vec[1]); // auto ? std::array<int, 2>
-
+    std::array<int, 2> decay; 
+    try {
+        decay = findDecayMode(vec[0], vec[1]);
+    } catch (exception const& e) {
+        stringstream str ;
+        str << e.what(); 
+        throw logic_error("Higgz decay: " + str.str());
+    }
+                
     CLHEP::HepLorentzVector decay1_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
             vec[0]->getMomentum()[0], vec[0]->getMomentum()[1],
             vec[0]->getMomentum()[2], vec[0]->getEnergy());
@@ -878,7 +885,7 @@ vector<int> getSubDecayPDGSort(
  *      e : electron,
  *      m : muon,
  *      t : tau
- *     (l : lepton)
+ *     (l : charged lepton)
  */
 int getDecayCode(int decay1,
         const EVENT::MCParticle* particle1, 
@@ -927,7 +934,7 @@ int getDecayCode(int decay1,
             } else { // 
                 throw logic_error("weird qq-- decay");
             }
-        } else { // !!!!!!!! HERE !!!!!!!!!
+        } else { 
             int nbNu = getNeutrinoNb(subDecay);
             if (nbNu == 0) { // llll
                 decay2 = 500;
@@ -1010,7 +1017,13 @@ array<int, 2> NNHProcessor::findDecayMode(
         decay1 = abs(particle1->getPDG());
     }
 
-    decay2 = getDecayCode(decay1, particle1, particle2);
+    try {
+        decay2 = getDecayCode(decay1, particle1, particle2);
+    } catch (exception const& e) {
+        stringstream str ;
+        str << e.what(); 
+        throw logic_error("inconnnu decay: " + str.str());
+    }
 
     toReturn = {decay1, decay2};
     return toReturn;
