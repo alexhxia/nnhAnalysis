@@ -914,7 +914,7 @@ int getDecayCode(int decay1,
                         throw logic_error("weird qql- decay");
                     }
                 } catch (exception const& e) {
-                    throw logic_error("weird qql- decay: " + e.what());
+                    throw logic_error("weird qql- decay: " + e.what().str());
                 }
             } else if (isNeutrino(subDecay[2])) { // qqv-
                 if (isNeutrino(subDecay[3])) { // qqvv
