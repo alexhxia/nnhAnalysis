@@ -3,17 +3,17 @@ Dans ce dépots, le programme permet l'analyse les cannaux :
 - e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
 - e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
 
-# La Branche `original`
+# La Branche `ilcsoft`
 Dans cette branche, on ajoute des petites corrections aux fichiers originaux de `ggarillot` afin de s'adapter à un stockage local.
 
 ## importer 
 Pour importer directement de github :
 ```
-git clone --branch original https://github.com/alexhxia/nnhAnalysis.git original
+git clone --branch ilcsoft https://github.com/alexhxia/nnhAnalysis.git ilcsoft
 ```
 On considère le dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
-export NNH_HOME=$PWD/nnhAnalysis/original
+export NNH_HOME=$PWD/nnhAnalysis/ilcsoft
 ```
 On se place dans le dossier créer :
 ```
