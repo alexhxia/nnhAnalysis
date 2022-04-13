@@ -10,7 +10,75 @@
 
 using namespace std;
 
+// ATTRIBUTES
+
 unsigned int EventShape::m_maxpart = 1000;
+
+// REQUESTS : Returning results
+
+CLHEP::Hep3Vector EventShape::thrustAxis() const {
+    return CLHEP::Hep3Vector(m_dAxes(1, 1), m_dAxes(1, 2), m_dAxes(1, 3));
+}
+
+CLHEP::Hep3Vector EventShape::majorAxis() const {
+    return CLHEP::Hep3Vector(m_dAxes(2, 1), m_dAxes(2, 2), m_dAxes(2, 3));
+}
+
+CLHEP::Hep3Vector EventShape::minorAxis() const {
+    return CLHEP::Hep3Vector(m_dAxes(3, 1), m_dAxes(3, 2), m_dAxes(3, 3));
+}
+
+double EventShape::thrust() const {
+    return m_dThrust[1];
+}
+
+double EventShape::majorThrust() const {
+    return m_dThrust[2];
+}
+
+double EventShape::minorThrust() const {
+    return m_dThrust[3];
+}
+
+double EventShape::oblateness() const {
+    return m_dOblateness;
+}
+
+// Setting and getting parameters.
+
+/**
+ * Set Thrust Momentum Power
+ * AE: Error if sp < 0
+ */
+void EventShape::setThMomPower(double tp) {
+    
+    //assert(sp > 0.); // Error if sp not positive. ???
+
+    if (tp > 0.) {
+        m_dDeltaThPower = tp - 1.;
+    }
+}
+
+double EventShape::getThMomPower() const {
+    return 1.0 + m_dDeltaThPower;
+}
+
+/**
+ * Set Fast
+ * AE: Error if sp < 0
+ */
+void EventShape::setFast(int nf) {
+    
+    //assert(sp >= 0);// Error if sp not positive. ???
+    
+    if (nf > 3)
+        m_iFast = nf;
+}
+
+int EventShape::getFast() const {
+    
+    return m_iFast;
+}
 
 // COMMANDS
 
@@ -55,7 +123,7 @@ void EventShape::setPartList(const vector<fastjet::PseudoJet>& particles) {
         momentum(np, 4) = particle.modp();
 
         if (abs(m_dDeltaThPower) <= 0.001) {
-            momentum(np, 5) = 1.0;
+            momentum(np, 5) = 1.;
         } else {
             momentum(np, 5) = pow(momentum(np, 4), m_dDeltaThPower);
         }
@@ -257,71 +325,10 @@ void EventShape::setPartList(const vector<fastjet::PseudoJet>& particles) {
     m_dOblateness = m_dThrust[2] - m_dThrust[3];
 }
 
-// Setting and getting parameters.
 
-/**
- * Set Thrust Momentum Power
- * AE: Error if sp < 0
- */
-void EventShape::setThMomPower(double tp) {
-    
-    //assert(sp > 0.); // Error if sp not positive. ???
+/* PRIVATE */
 
-    if (tp > 0.) {
-        m_dDeltaThPower = tp - 1.;
-    }
-}
-
-double EventShape::getThMomPower() const {
-    return 1.0 + m_dDeltaThPower;
-}
-
-/**
- * Set Fast
- * AE: Error if sp < 0
- */
-void EventShape::setFast(int nf) {
-    
-    //assert(sp >= 0);// Error if sp not positive. ???
-    
-    if (nf > 3)
-        m_iFast = nf;
-}
-
-int EventShape::getFast() const {
-    
-    return m_iFast;
-}
-
-// Returning results
-
-CLHEP::Hep3Vector EventShape::thrustAxis() const {
-    return CLHEP::Hep3Vector(m_dAxes(1, 1), m_dAxes(1, 2), m_dAxes(1, 3));
-}
-
-CLHEP::Hep3Vector EventShape::majorAxis() const {
-    return CLHEP::Hep3Vector(m_dAxes(2, 1), m_dAxes(2, 2), m_dAxes(2, 3));
-}
-
-CLHEP::Hep3Vector EventShape::minorAxis() const {
-    return CLHEP::Hep3Vector(m_dAxes(3, 1), m_dAxes(3, 2), m_dAxes(3, 3));
-}
-
-double EventShape::thrust() const {
-    return m_dThrust[1];
-}
-
-double EventShape::majorThrust() const {
-    return m_dThrust[2];
-}
-
-double EventShape::minorThrust() const {
-    return m_dThrust[3];
-}
-
-double EventShape::oblateness() const {
-    return m_dOblateness;
-}
+// REQUESTS 
 
 // utilities(from Jetset):
 double EventShape::ulAngle(double x, double y) const {
@@ -350,6 +357,18 @@ double EventShape::sign(double a, double b) const {
     double b_sign = (b < 0.) ? -1. : +1.;
     return b_sign * abs(a);
 }
+
+int EventShape::iPow(int man, int exp) {
+    
+    int ans = 1;
+    for (int k = 0; k < exp; k++) {
+        ans = ans * man;
+    }
+
+    return ans;
+}
+
+// COMMAND
 
 void EventShape::ludbrb(
         Eigen::MatrixXd& momentum, 
@@ -417,14 +436,4 @@ void EventShape::ludbrb(
             }
         }
     }
-}
-
-int EventShape::iPow(int man, int exp) {
-    
-    int ans = 1;
-    for (int k = 0; k < exp; k++) {
-        ans = ans * man;
-    }
-
-    return ans;
 }

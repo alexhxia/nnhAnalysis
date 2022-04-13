@@ -16,17 +16,12 @@
 class EventShape {
     
     public:
+        // MAKER
         EventShape() = default;
         ~EventShape() = default;
-
-        void setPartList(const std::vector<fastjet::PseudoJet>& particles);
-
-        void   setThMomPower(double tp);        // setThrustMomentumPower
-        double getThMomPower() const;           // getThrustMomentumPower
         
-        void   setFast(int nf);
-        int    getFast() const;
-
+        // REQUESTS
+        
         CLHEP::Hep3Vector thrustAxis() const;   // getTrustAxis
         CLHEP::Hep3Vector majorAxis() const;    // getMajorAxis
         CLHEP::Hep3Vector minorAxis() const;    // getMinorAxis 
@@ -37,8 +32,20 @@ class EventShape {
         // thrust :: Corresponding thrust, major, and minor value.
 
         double oblateness() const;              // getOblateness
+        
+        // Setting and getting parameters.
+        void   setThMomPower(double tp);        // setThrustMomentumPower
+        double getThMomPower() const;           // getThrustMomentumPower
+        
+        void   setFast(int nf);
+        int    getFast() const;
+        
+        //  COMMANDS
+        void setPartList(const std::vector<fastjet::PseudoJet>& particles);
 
     private:
+    
+        // REQUESTS 
         /**
          * Polar angle ???
          * Return :
@@ -56,7 +63,14 @@ class EventShape {
          * Return : sign(b) * abs(a)
          */
         double sign(double a, double b) const;
+
+        /**
+         * Result : man^{exp}
+         */
+        int iPow(int man, int exp);
         
+        // COMMANDS
+                
         /**
          * ???
          */
@@ -65,11 +79,8 @@ class EventShape {
                 double theta, double phi,
                 double bx, double by, double bz);
 
-        /**
-         * Result : man^{exp}
-         */
-        int iPow(int man, int exp);
-
+        // ATTRIBUTES
+        
         /**
          * PARU(42): Power of momentum dependence in thrust finder.
          */
@@ -98,11 +109,13 @@ class EventShape {
         Eigen::Matrix4d m_dAxes = {};
 
 
-        std::mt19937_64                 generator = std::mt19937_64();
+        std::mt19937_64 generator = std::mt19937_64();
+        
         std::uniform_int_distribution<> distribution = std::uniform_int_distribution<>(0, 1);
 
         std::array<double, 4> m_dThrust = {};
-        double                m_dOblateness = 0.;
+        
+        double m_dOblateness = 0.;
 
         /**
          * Max nb particle
