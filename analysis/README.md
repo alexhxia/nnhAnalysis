@@ -6,7 +6,8 @@ First of all , what you need to do is merge all the ROOT files for each individu
 
 ```
 mkdir $NNH_HOME/analysis/DATA
-
+```
+```
 hadd $NNH_HOME/analysis/DATA/DATA.root /path/to/single/rootfiles/*.root
 ```
 where ``/path/to/single/rootfiles`` is the folder containing all the single ROOT files outputed by the Marlin processor you previously had to run.
