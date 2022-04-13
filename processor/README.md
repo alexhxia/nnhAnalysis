@@ -77,40 +77,9 @@ Marlin $NNH_HOME/processor/script/NNH_steer.xml
 ```
 
 ### Pour convertir plusieurs dossiers de fichiers LCIO en un fichier ROOT par processus
-
-
-On crée un dossier pour tous les fichiers ROOTs qui seront générer :
+Il s'agit du programme ``launchNNHProcessor`` :
 ```
-mkdir $NNH_HOME/processor/RESULTS
-```
-```
-export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
-```
-Pour rappel, les fichier d'entrée LCIO sont `/gridgroup/ilc/nnhAnalysisFiles/AHCAL` : 
-```
-export NNH_PROCESSOR_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-```
-```
-cd $NNH_HOME/processor/script
-```
-Dans le programme `NNH_steer.xml `, il faut adapter le fichier d'entrée `input.slcio` et  le fichier de sortie `output.root` par les chemins souhaités.
-
-On peut à présent lancer ce programme qui construit un fichier `.root` à partir d'un fichier `.slcio` :
-```
-Marlin NNH_steer.xml 
-```
-
-The [``launchNNHProcessor.py``](./script/launchNNHProcessor.py) is just there to automatize the processing of multiple files. 
-
-Pour exécuter tous les processus :
-```
-mkdir $NNH_PROCESSOR_OUTPUTFILES
-```
-```
-python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
-```
-```
-$ python3 ./script/launchNNHProcessor.py -h
+$ python3 ./launchNNHProcessor.py -h
 > usage: launchNNHProcessor.py [-h] [-n NCORES] [-p PROCESSES [PROCESSES ...]] -i INPUTDIRECTORY
 > [-r] -o OUTPUTDIRECTORY
 > 
@@ -126,6 +95,23 @@ $ python3 ./script/launchNNHProcessor.py -h
 >   -o OUTPUTDIRECTORY, --outputDirectory OUTPUTDIRECTORY
 >                         output directory
 ```
+
+On crée un dossier pour tous les fichiers ROOTs qui seront générer :
+```
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+```
+```
+mkdir $NNH_PROCESSOR_OUTPUTFILES
+```
+Pour rappel, les fichier d'entrée LCIO sont dans ``/gridgroup/ilc/nnhAnalysisFiles/AHCAL``.
+```
+cd $NNH_HOME/processor/script
+```
+Pour lancer le processus sur tous les processus :
+```
+python3 launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+```
+
 For example, it you want to run all the files that are present on lyogrid06 (from a lyoui):
 ```
 python3 script/launchNNHProcessor.py -n 10 -i root://lyogrid06.in2p3.fr/dpm/in2p3.fr/home/calice/garillot/ILD/AHCAL -r -o /path/to/wherever/youwant
@@ -139,17 +125,6 @@ python3 script/launchNNHProcessor.py -n 10 -p 402007 402008 -i /path/to/inputFil
 ```
 
 The ``launchNNHProcessor.py`` script will create one ROOT file per processID (all the results from each mini-DST file are merged). It will also create a ``logs/`` folder in the output directory to check if something wrong happened (the script will output an error message if it has encountered a problem with one file).
-
-
-#### Convertir quelques processus :
-Utiliser le paramètre `-p num_processus`. Par exemple pour les processus `402007` `402008` :
-```
-python3 launchNNHProcessor.py -n 10 -p 402007 402008 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
-```
-#### Convertir tous les processus
-```
-python3 launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
-```
 
 ## Output files
 
@@ -224,7 +199,10 @@ These two variables are useful to distinguish between signal and background:
 - for the  &nu;&nu;h (h &rarr; WW* &rarr; qqqq) study, only the events with ``mc_higgs_decay == 24 && mc_higgs_subDecay == 1`` are signal events
 
 ## Historique
-Dans le dossier ``/gridgroup/ilc/nnhAnalysisFiles/result`` on pourra retrouver des résultats précédents :
+Dans le dossier ``/gridgroup/ilc/nnhAnalysisFiles/result/processor`` on pourra retrouver des résultats précédents :
 ```
 export NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
+```
+```
+cd $NNH_OUTPUTFILES/original/processus
 ```
