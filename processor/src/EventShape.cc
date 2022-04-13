@@ -325,7 +325,6 @@ void EventShape::setPartList(const vector<fastjet::PseudoJet>& particles) {
     m_dOblateness = m_dThrust[2] - m_dThrust[3];
 }
 
-
 /* PRIVATE */
 
 // REQUESTS 

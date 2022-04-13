@@ -28,27 +28,53 @@ class NNHProcessor : public marlin::Processor {
         static constexpr float Z_MASS_REF = 91.1876;
 
     public:
-        virtual Processor* newProcessor() { return new NNHProcessor; }
-
+    
+        // REQUEST
+        virtual Processor* newProcessor() { 
+            return new NNHProcessor; 
+        }
+        
+        // MARKER
         NNHProcessor();
+        
+        // COMMANDS
         virtual void init();
         virtual void processEvent(LCEvent* evt);
         virtual void end();
 
+        // LEGASIES
         NNHProcessor(const NNHProcessor& toCopy) = delete;
         void operator=(const NNHProcessor& toCopy) = delete;
 
     protected:
+    
+        // COMMANDS
+        
         void clear();
 
-        void processISR(const EVENT::MCParticle* gamma0, const EVENT::MCParticle* gamma1);
-        void processNeutrinos(const EVENT::MCParticle* nu0, const EVENT::MCParticle* nu1);
+        void processISR(
+                const EVENT::MCParticle* gamma0, 
+                const EVENT::MCParticle* gamma1);
+                
+        void processNeutrinos(
+                const EVENT::MCParticle* nu0, 
+                const EVENT::MCParticle* nu1);
+                
         void processHiggs(const EVENT::MCParticle* higgs);
 
-        std::array<int, 2> findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const;
+        // REQUESTS
 
-        Eigen::Matrix3d computeSphericityTensor(const std::vector<fastjet::PseudoJet>& particleVec) const;
-        double          computeSphericity(const std::vector<fastjet::PseudoJet>& particleVec) const;
+        std::array<int, 2> findDecayMode(
+                const EVENT::MCParticle* part1, 
+                const EVENT::MCParticle* part2) const;
+
+        Eigen::Matrix3d computeSphericityTensor(
+                const std::vector<fastjet::PseudoJet>& particleVec) const;
+        
+        double computeSphericity(
+                const std::vector<fastjet::PseudoJet>& particleVec) const;
+
+        // ATTRIBUTES
 
         /* steering file parameters */
         std::string rootFileName{};
@@ -65,8 +91,8 @@ class NNHProcessor : public marlin::Processor {
         TFile* outputFile = nullptr;
         TTree* outputTree = nullptr;
 
-        LCCollection* mcCol = nullptr;
-        LCCollection* recoCol = nullptr;
+        LCCollection* mcCol = nullptr;      /// mcParticleCollectionName
+        LCCollection* recoCol = nullptr;    /// reconstructedParticleCollectionName
 
         std::vector<fastjet::PseudoJet> particles{};
 
@@ -75,9 +101,9 @@ class NNHProcessor : public marlin::Processor {
 
         /* event variables */
         
-        int   processID = 0;
-        int   event = 0;
-        float sqrtS = -1.;
+        int   processID = 0;        /// Process ID
+        int   event = 0;            /// Event Nb
+        float sqrtS = -1.;          /// Energy
 
         bool isValid_bb = false;
         bool isValid_ww = false;
