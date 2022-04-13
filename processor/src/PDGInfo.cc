@@ -63,3 +63,15 @@ int getFlavorLeptonAbs(int pdg) {
         throw std::runtime_error("is not a charged lepton");
     }
 }
+
+int getNeutrinoNb(const vector<int> vecPDG) {
+    
+    int nbNu = 0;
+    for (int i : vecPDG) {
+        if (isNeutrino(i)) {
+            nbNu++;
+        }
+    }
+    
+    return nbNu;
+}

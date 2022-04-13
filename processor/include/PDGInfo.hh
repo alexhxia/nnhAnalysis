@@ -71,5 +71,9 @@ bool isTwinParticlePDG(
 */
 int getFlavorLeptonAbs(int pdg);
 
+/**
+ * Return the Neutrino number contains in vecPDG;
+ */
+int getNeutrinoNb(const std::vector<int> vecPDG);
 
 #endif // PDG_INFO_H
