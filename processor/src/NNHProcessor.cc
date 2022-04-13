@@ -914,7 +914,8 @@ int getDecayCode(int decay1,
                         throw logic_error("weird qql- decay");
                     }
                 } catch (exception const& e) {
-                    stringstream str << e.what(); 
+                    stringstream str ;
+                    str << e.what(); 
                     throw logic_error("weird qql- decay: " + str.str());
                 }
             } else if (isNeutrino(subDecay[2])) { // qqv-
@@ -933,13 +934,17 @@ int getDecayCode(int decay1,
                 try {
                     decay2 = getFlavorLeptonAbs(subDecay[0]) * 10;
                 } catch (exception const& e) {
-                    throw logic_error("weird llll decay: " + e.what());
+                    stringstream str ;
+                    str << e.what(); 
+                    throw logic_error("weird llll decay: " + str.str());
                 }
                 
                 try {
                     decay2 = getFlavorLeptonAbs(subDecay[2]);
                 } catch (exception const& e) {
-                    throw logic_error("weird llll decay" + e.what());
+                    stringstream str ;
+                    str << e.what(); 
+                    throw logic_error("weird llll decay" + str.str());
                 }
             } else if (nbNu == 2) { // llvv
                 decay2 = 600;
@@ -949,7 +954,9 @@ int getDecayCode(int decay1,
                         try {
                             temp.push_back(i);
                         } catch (exception const& e) {
-                            throw logic_error("weird llvv decay: " + e.what());
+                            stringstream str ;
+                            str << e.what(); 
+                            throw logic_error("weird llvv decay: " + str.str());
                         }
                     }
                 }
