@@ -1,9 +1,7 @@
-################################################################################
-#                                                                              #
-#                Team : FCC, IP2I, UCBLyon 1, France, 2022                     #
-#                                                                              #
-################################################################################
-
+"""" 
+Team : FCC, IP2I, UCBLyon 1, France, 2022 
+Merge all files for once processus (directory).
+"""
 import threading
 import queue
 import subprocess

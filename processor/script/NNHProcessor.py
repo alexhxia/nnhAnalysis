@@ -1,8 +1,9 @@
-################################################################################
-#                                                                              #
-#                Team : FCC, IP2I, UCBLyon 1, France, 2022                     #
-#                                                                              #
-################################################################################
+"""" 
+Team : FCC, IP2I, UCBLyon 1, France, 2022 
+
+Execute NNH_steer.xml program for once file lcio.
+Entry condition: NNH_HOME exists like environment variables.
+"""
 
 import threading
 import queue
@@ -11,7 +12,6 @@ import subprocess
 import os
 
 from Observer import Observer
-
 
 class Params:
     def __init__(self):

@@ -1,9 +1,9 @@
-################################################################################
-#                                                                              #
-#                Team : FCC, IP2I, UCBLyon 1, France, 2022                     #
-#                                                                              #
-################################################################################
+"""" 
+Team : FCC, IP2I, UCBLyon 1, France, 2022 
 
+Execute NNHProcessor.py program for all files lcio.
+Entry condition: NNH_HOME and MARLIN_DLL exist like environment variables.
+"""
 #!/usr/bin/env python
 import argparse
 import os
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', '--ncores', help='Number of threads', required=False, default=8)
     parser.add_argument('-p', '--processes', help='ProcessIDs to analyse', required=False, nargs='+')
-    parser.add_argument('-i', '--filesDirectory', help='Path of input files', required=True)
+    parser.add_argument('-i', '--inputDirectory', help='Path of input files', required=True)
     parser.add_argument('-r', '--remote', help='indicate that files need to be downloaded', action='store_true', default=False)
     parser.add_argument('-o', '--outputDirectory', help='output directory', required=True)
     args = vars(parser.parse_args())
@@ -249,7 +249,7 @@ if __name__ == "__main__":
             processesID.append(p)
     processesID.sort()
 
-    filesDirectory = args['filesDirectory']
+    filesDirectory = args['inputDirectory']
     remote = False
     if args['remote']:
         remote = True
