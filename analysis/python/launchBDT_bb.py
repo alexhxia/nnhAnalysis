@@ -1,3 +1,8 @@
+""" 
+Ce programme compare les résultats de plusieurs dossiers de sortie du programme 
+launchBDT_xx.py.
+"""
+
 import os
 import sys
 import argparse
@@ -72,8 +77,18 @@ def trainModel(trainData):
 
     print(trainData.info())
 
-    bdt = HistGradientBoostingClassifier(max_iter=300, max_depth=None, max_leaf_nodes=70, learning_rate=0.2, n_iter_no_change=10, validation_fraction=0.3, verbose=2)
-    bdt.fit(trainData[INPUT_NAMES], trainData["isSignal"], sample_weight=trainData['weight'])
+    bdt = HistGradientBoostingClassifier(
+            max_iter=300, 
+            max_depth=None, 
+            max_leaf_nodes=70, 
+            learning_rate=0.2, 
+            n_iter_no_change=10, 
+            validation_fraction=0.3, 
+            verbose=2)
+    
+    bdt.fit(trainData[INPUT_NAMES], 
+            trainData["isSignal"], 
+            sample_weight=trainData['weight'])
 
     return bdt
 
@@ -90,7 +105,8 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
 
     df = r.RDataFrame(tree)
 
-    # read the DATA in batches because converting the whole ROOT TTree into a pandas dataframe at once takes too much memory
+    # read the DATA in batches because converting the whole ROOT TTree 
+    # into a pandas dataframe at once takes too much memory
     BATCH_SIZE = 6_000_000
     nEvents = df.Count().GetValue()
     # nEvents = BATCH_SIZE

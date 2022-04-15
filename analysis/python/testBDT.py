@@ -16,35 +16,28 @@ def testEnv():
         print('ERROR : env variable NNH_HOME is not set')
         sys.exit(1)
 
-def testInputDirectory(directory):
+def testDirectory(directory):
     """Test if input directory exist."""
     
     if not os.path.exists(directory):
-        print('ERROR : input directory not found')
+        print('ERROR : directory not found')
         sys.exit(1)
         
     if not os.path.isdir(directory):
-        print('ERROR : input is not directory')
-        sys.exit(1)
-        
-def testOutputDirectory(directory):
-    """Test if output directory exist."""
-    if not os.path.exists(directory):
-        print('ERROR : output directory not found')
-        sys.exit(1)
-        
-    if not os.path.isdir(directory):
-        print('ERROR : output is not directory')
+        print('ERROR :  is not directory')
         sys.exit(1)
 
 if __name__ == "__main__":
+    
+    testEnv()
+    NNH_HOME = os.environ['NNH_HOME']
     
     parser = argparse.ArgumentParser()
     
     parser.add_argument(
             '-i', '--inputDirectory', 
             help='Path of input directory', 
-            dest="inputDirectory",
+            #dest="inputDirectory",
             required=True)
     
     parser.add_argument(
@@ -55,13 +48,11 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     
     inputDirectory = args['inputDirectory']
-    testInputDirectory(inputDirectory)
+    testDirectory(inputDirectory)
     
     outputDirectory = args['outputDirectory']
-    testOutputDirectory(outputDirectory)
-    
-    testEnv()
-    NNH_HOME = os.environ['NNH_HOME']
+    testDirectory(outputDirectory)
+
     
     runDirectories = os.listdir(inputDirectory)
     for runDirectory in runDirectories:

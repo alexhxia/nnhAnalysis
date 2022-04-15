@@ -1,3 +1,8 @@
+""" 
+Ce programme compare les résultats de plusieurs dossiers de sortie du programme 
+launchBDT_xx.py.
+"""
+
 import os
 import sys
 import argparse

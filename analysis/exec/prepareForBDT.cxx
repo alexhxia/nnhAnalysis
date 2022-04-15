@@ -127,14 +127,23 @@ Channel getChannelWW(int p, int hd, int hsd) {
     }
 }
 
+/**
+ * Create a Friend Tree friendFileName at bigFileName.
+ *  - bool isBB, 
+ *  - float trainProportion, 
+ *  - float ePol --> polarisation, 
+ *  - float pPol --> polarisation
+ */
 void createFriendTree(
         string bigFileName, string friendFileName, 
         bool isBB, float trainProportion, float ePol, float pPol) {
             
             
-    cout    << "Create Friend Tree with ePol = " << ePol << ", "
+    cout    << "Create Friend Tree with "
+            << "ePol = " << ePol << ", "
             << "pPol = " << pPol << ", "
-            << "trainProportion = " << trainProportion << endl;
+            << "trainProportion = " << trainProportion 
+            << endl;
 
     // depending on bb or ww case, add the corresponding signal and background channelIDs
     if (isBB) {
@@ -145,10 +154,10 @@ void createFriendTree(
         CHANNELS_OTHERHIGGS.insert(402173);
     }
 
-    auto bigFile = TFile::Open(bigFileName.c_str(), "READ");
-    auto bigTree = bigFile->Get<TTree>("tree");
+    TFile *bigFile = TFile::Open(bigFileName.c_str(), "READ");
+    TTree* bigTree = bigFile->Get<TTree>("tree");
 
-    auto dataFrame = ROOT::RDataFrame(*bigTree);
+    ROOT::RDataFrame dataFrame = ROOT::RDataFrame(*bigTree);
 
     function<Channel(int, int, int)> getChannel;
 
@@ -176,7 +185,7 @@ void createFriendTree(
     };
 
     // Pre selection
-    vector<std::string> cols;
+    vector<string> cols;
     if (isBB) {
         cols = {"eIsoLep", "higgs_m", "isValid_bb"};
     } else {
@@ -187,19 +196,11 @@ void createFriendTree(
             const float& eIsoLep, 
             const float& higgs_m, 
             const bool& isValid) -> bool {
-        if (!isValid) {
-            return false;
-        }
-        if (eIsoLep > 0) {
-            return false;
-        }
-        if (higgs_m < 70 || higgs_m > 220) {
-            return false;
-        } 
-        return true;
+        
+        return isValid && eIsoLep <= 0 && higgs_m >= 70 && higgs_m <= 220;
     };
 
-    auto df = dataFrame
+     ROOT::RDF::RInterface df = dataFrame            
             .Define("isSignal", lambda_isSignal, 
                     {"processID", "mc_higgs_decay", "mc_higgs_subDecay"})
             .Define("channelType", lambda_getChannel, 
@@ -212,8 +213,8 @@ void createFriendTree(
     df.Snapshot("tempTree", "temp.root", 
             {"isSignal", "channelType", "isTrain", "preSelected"});
 
-    auto tempFile = TFile::Open("temp.root");
-    auto tempTree = tempFile->Get<TTree>("tempTree");
+    TFile* tempFile = TFile::Open("temp.root");
+    TTree* tempTree = tempFile->Get<TTree>("tempTree");
 
     bigTree->AddFriend(tempTree, "temp");
 
@@ -225,12 +226,12 @@ void createFriendTree(
     const string JSON_FILE = toto.str();
 
     ifstream ifs(JSON_FILE);
-    auto json = nlohmann::json::parse(ifs);
+    nlohmann::json json = nlohmann::json::parse(ifs);
 
-    const auto eR = 0.5 * (ePol + 1);
-    const auto eL = 0.5 * (1 - ePol);
-    const auto pR = 0.5 * (pPol + 1);
-    const auto pL = 0.5 * (1 - pPol);
+    const float eR = 0.5 * (ePol + 1.);
+    const float eL = 0.5 * (1. - ePol);
+    const float pR = 0.5 * (pPol + 1.);
+    const float pL = 0.5 * (1. - pPol);
 
     const map<string, float> weightsPol = {
         {"eL.pR", eL * pR}, {"eR.pL", eR * pL}, 
@@ -239,7 +240,7 @@ void createFriendTree(
 
     map<int, float> xSectMap = {};
 
-    const auto allProcesses = {
+    const set<set<int>> allProcesses = {
         CHANNELS_SIGNAL,       CHANNELS_OTHERHIGGS,   CHANNELS_FERMIONS_2_L,
         CHANNELS_FERMIONS_2_H, CHANNELS_FERMIONS_4_H, CHANNELS_FERMIONS_4_SL,
         CHANNELS_FERMIONS_4_L
@@ -247,19 +248,19 @@ void createFriendTree(
 
     set<int> PROCESSES;
 
-    for (const auto& set : allProcesses) {
+    for (set<int> set : allProcesses) {
         PROCESSES.insert(set.begin(), set.end());
     }
 
     // compute event weights
-    for (auto processID : PROCESSES) {
+    for (int processID : PROCESSES) {
         // exclude those two for now because they have overlap with exclusive bb and WW decays
         if (processID == 402007 || processID == 402008) {
             continue;
         }
-        auto channelInfo = json[std::to_string(processID)];
-        auto xSect = channelInfo["xsect"].get<float>();
-        auto polarization = channelInfo["Polarization"].get<std::string>();
+        auto channelInfo = json[to_string(processID)];
+        float xSect = channelInfo["xsect"].get<float>();
+        string polarization = channelInfo["Polarization"].get<string>();
 
         xSectMap[processID] = xSect * weightsPol.at(polarization);
     }
@@ -273,16 +274,17 @@ void createFriendTree(
         const auto channelInfoWW = json[to_string(processWW)];
         const auto channelInfoAll = json[to_string(processAll)];
 
-        const auto xSectBB = channelInfoBB["xsect"].get<float>();
-        const auto xSectWW = channelInfoWW["xsect"].get<float>();
-        const auto xSectIncl = channelInfoAll["xsect"].get<float>() - xSectBB - xSectWW;
+        const float xSectBB = channelInfoBB["xsect"].get<float>();
+        const float xSectWW = channelInfoWW["xsect"].get<float>();
+        const float xSectIncl = channelInfoAll["xsect"].get<float>() - xSectBB - xSectWW;
 
         xSectMap[processAll] = xSectIncl * weightsPol.at(polarization);
     }
 
     cout << "Cross sections : " << endl;
     for (const auto& [processID, xSect] : xSectMap) {
-        cout << "Process : " << processID << ", xSect = " << xSect << endl;
+        cout    << "Process : " << processID << ", "
+                << "xSect = " << xSect << endl;
     }
     
     // Now we count the number of events for each process for the training and the testing sets
@@ -330,7 +332,7 @@ void createFriendTree(
     map<pair<int, bool>, float> weightsMap = {};
 
     for (const auto& [pair, nEvents] : nEventsMap) {
-        const auto processID = pair.first;
+        const int processID = pair.first;
         weightsMap[pair] = xSectMap.at(processID) / nEvents;
     }
 
@@ -353,12 +355,12 @@ void createFriendTree(
     //         std::cout << "Process : " << pair.first << ", weight : " << weight << std::endl;
 
     auto lambda_weights = [&](bool isTrain, int p, int hd) -> float {
-        const auto realProcess = getRealProcess(p, hd);
+        const int realProcess = getRealProcess(p, hd);
         return weightsMap.at({realProcess, isTrain});
     };
 
     // write the weights for all the events (training and testing sets)
-    auto df_firstPassForWeights = df.Define(
+    ROOT::RDF::RInterface df_firstPassForWeights = df.Define(
             "weightFirstPass", 
             lambda_weights, 
             {"isTrain", "processID", "mc_higgs_decay"}
@@ -375,26 +377,26 @@ void createFriendTree(
         return !isSignal && isTrain; 
     };
 
-    const auto sumSignal = df_firstPassForWeights
+    const int sumSignal = df_firstPassForWeights
             .Filter(lambda_isSignalAndTrain, {"isSignal", "isTrain"})
             .Sum("weightFirstPass")
             .GetValue();
-    const auto sumBkg = df_firstPassForWeights
+    const int sumBkg = df_firstPassForWeights
             .Filter(lambda_isNotSignalAndTrain, {"isSignal", "isTrain"})
             .Sum("weightFirstPass")
             .GetValue();
 
     // The correction factor to apply to signal events to equilibrate with the background
-    const auto corr = sumBkg / sumSignal;
+    const float corr = sumBkg / sumSignal;
 
     cout << "sumSignal = " << sumSignal << endl;
     cout << "sumBkg = " << sumBkg << endl;
     cout << "corr = " << corr << endl;
 
     auto lambda_weightCorr = [&](bool isSignal, bool isTrain, int p, int hd) -> float {
-        const auto realProcess = getRealProcess(p, hd);
+        const int realProcess = getRealProcess(p, hd);
 
-        auto weight = weightsMap.at({realProcess, isTrain});
+        float weight = weightsMap.at({realProcess, isTrain});
 
         if (isSignal && isTrain) {
             weight *= corr;
@@ -404,7 +406,7 @@ void createFriendTree(
     };
 
     // write the weights a second time for all the events (with the corrected training weights for signal events)
-    auto finalDF = df_firstPassForWeights.Define(
+    ROOT::RDF::RInterface finalDF = df_firstPassForWeights.Define(
             "weight", lambda_weightCorr,
             {"isSignal", "isTrain", "processID", "mc_higgs_decay"});
 
@@ -412,9 +414,9 @@ void createFriendTree(
     finalDF.Snapshot("tree", friendFileName, 
             {"isSignal", "channelType", "isTrain", "preSelected", "weight"});
 
-    auto finalTrain = finalDF.Filter([](bool b) { return b; }, {"isTrain"});
+    ROOT::RDF::RInterface finalTrain = finalDF.Filter([](bool b) { return b; }, {"isTrain"});
 
-    auto finalTest = finalDF.Filter([](bool b) { return !b; }, {"isTrain"});
+    ROOT::RDF::RInterface finalTest = finalDF.Filter([](bool b) { return !b; }, {"isTrain"});
 
     cout    << "Train : signal = "
             << finalTrain.Filter([](bool b) { return b; }, {"isSignal"})
@@ -442,17 +444,16 @@ void createFriendTree(
 
 int main() {
     
-    const auto trainProp = 0.2f;
+    const float trainProp = 0.2f;
 
-    auto nnhHome = getenv("NNH_HOME");
-
+    const char* nnhHome = getenv("NNH_HOME");
     if (!nnhHome) {
         cerr << "ERROR : NNH_HOME env variable is not set" << endl;
         return 1;
     }
 
-    const auto dataPATH = string(nnhHome) + "/analysis/DATA";
-    const auto bigFileName = dataPATH + "/DATA.root";
+    const string dataPATH = string(nnhHome) + "/analysis/DATA";
+    const string bigFileName = dataPATH + "/DATA.root";
 
     createFriendTree(bigFileName, dataPATH + "/split_bb_e-0.8_p+0.3.root", true, trainProp, -0.8, 0.3);
     createFriendTree(bigFileName, dataPATH + "/split_bb_e+0_p+0.root", true, trainProp, 0, 0);
