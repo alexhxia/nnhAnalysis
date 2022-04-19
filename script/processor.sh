@@ -12,7 +12,7 @@
 #SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
 
 echo
-echo "Start nnh processor..."
+echo "Start processor..."
 
 # environnement
 
@@ -67,5 +67,5 @@ python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUT
 echo "...execution terminate"
 echo
 
-echo "...Terminate nnh processor"
+echo "...Terminate processor"
 echo
