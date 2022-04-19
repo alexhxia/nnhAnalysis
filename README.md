@@ -14,7 +14,7 @@ git clone --branch refactor https://github.com/ggarillot/nnhAnalysis.git
 ```
 On considère ce dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
-export NNH_HOME=$PWD/nnhAnalysis
+export NNH_HOME=~/nnhAnalysis
 ```
 Pour exécuter ce code, on a aussi besoin de préparer l'environnement grâce à :
 ```
@@ -23,9 +23,10 @@ source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
 ## Le Projet personnel
 J'ai divisé ce dépot en 3 branches :
-- `original` qui regroupe les fichiers originaux de `ggarillot` avec de petites modifications pour s'adapter et pour un stockage local.
-- `ilcsoft` amélioration du code `original` toujours pour un stockage local.
-- `fcc` qui s'adapte aux nouvelles contraintes du projet FCC du CERN.
+- ``main``
+- ``original`` qui regroupe les fichiers originaux de ``ggarillot`` avec de petites modifications pour s'adapter et pour un stockage local.
+- ``ilcsoft`` amélioration du code `original` toujours pour un stockage local.
+- ``fcc`` qui s'adapte aux nouvelles contraintes du projet FCC du CERN.
 
 ```
 git clone https://github.com/alexhxia/nnhAnalysis.git
