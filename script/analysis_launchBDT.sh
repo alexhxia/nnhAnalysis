@@ -11,36 +11,39 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
 
-echo
-echo "Start nnh analysis BDT..."
+# paramètres
+
+valid_branchs=(original ilcsoft fcc)
+branch=ilcsoft
+home=~/nnhAnalysis
+
+while getopts h:n:b: flag ; do
+    case "${flag}" in 
+        h)
+            echo "./analysis_launchBDT [-n $NNH_HOME] [-b branch]"
+            exit 0 ;;
+        n)
+            home=${OPTARG};;
+        b)
+            branch=${OPTARG}
+            valid=false
+            for b in "${valid_branchs[@]}" ; do
+                if [ $b == $branch ] ; then
+                    valid=true 
+                fi
+            done
+            if ! $valid ; then
+                exit 1
+            fi
+            ;;
+    esac
+done 
 
 # environnement
 
-echo
-echo "Loading environment..."
-
-branch=ilcsoft
-
-export NNH_HOME=~/nnhAnalysis/$branch
-
-export NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-export NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
-
-export NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES 
-export NNH_PROCESSOR_BUILD=$NNH_HOME/processor/BUILD
-export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
-
-export NNH_ANALYSIS_INPUTFILES=NNH_HOME/processor/RESULTS
-export NNH_ANALYSIS_BUILD=$NNH_HOME/analysis/BUILD
-export NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA
-
-echo "...environment terminate"
-echo
+export NNH_HOME=$home/$branch
 
 # exécution
-
-echo
-echo "Start execution..."
 
 cd $NNH_HOME/analysis
 
@@ -51,29 +54,3 @@ python3 launchBDT_WW.py
 
 conda desactivate
 
-echo "...execution terminate"
-echo
-
-# sauvegarde
-
-echo
-echo "Start moving..."
-
-i=1
-OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/$branch/processor/run_$i
-while [ -d $OUTPUT_DIRECTORY ]; do
-    i=$((i+1))
-    OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/$branch/processor/run_$i
-done 
-echo "-> $i no exist"
-echo "-> sauvegarde in $OUTPUT_DIRECTORY"
-mkdir $OUTPUT_DIRECTORY
-
-#OUTPUT_DIRECTORY=$OUTPUT_DIRECTORY/run_$i
-#echo $OUTPUT_DIRECTORY
-mv $NNH_PROCESSOR_OUTPUTFILES/* $OUTPUT_DIRECTORY
-
-echo "... moving terminate"
-echo
-echo "...Terminate nnh processor"
-echo

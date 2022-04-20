@@ -11,61 +11,80 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
 
-echo
-echo "Start processor..."
+# HELP cmd
+for x in $* ; do
+    if [ $x = "-h" ] || [ $x = "--help" ] ; then
+        echo "./processor -c -n $NNH_HOME -b $branch -i $INPUTDIRECTORY -o $OUTPUTDIRECTORY"
+        exit 0
+    fi
+done 
+
+# paramètres
+valid_branchs=(original ilcsoft fcc)
+
+branch=ilcsoft
+recompile=1
+home=~/nnhAnalysis
+input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+output=$home/processor/RESULTS
+
+while getopts h:c:n:b:i:o: flag ; do
+    case "${flag}" in 
+        h)
+            echo "./processor [-c 0] [-n $NNH_HOME] [-b $branch] [-i $INPUTDIRECTORY] [-o $OUTPUTDIRECTORY]"
+            exit 0 ;;
+        c)
+            recompile=${OPTARG};;
+        n)
+            home=${OPTARG};;
+        b)
+            branch=${OPTARG}
+            valid=false
+            for b in "${valid_branchs[@]}" ; do
+                if [ $b == $branch ] ; then
+                    valid=true 
+                fi
+            done
+            if ! $valid ; then
+                exit 1
+            fi
+            ;;
+        i)
+            input=${OPTARG} 
+            ;;
+        o)
+            output=${OPTARG} 
+            ;;
+    esac
+done 
 
 # environnement
 
-echo
-echo "Loading environment..."
-
-branch=ilcsoft
-
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-
-export NNH_HOME=~/nnhAnalysis/$branch
-
-export NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-export NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result
-
-export NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES 
+export NNH_HOME=$home/$branch
+export NNH_PROCESSOR_INPUTFILES=$input 
+export NNH_PROCESSOR_OUTPUTFILES=$output
 export NNH_PROCESSOR_BUILD=$NNH_HOME/processor/BUILD
-export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
-
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
-
-echo "...environment terminate"
-echo
 
 # compilation
 
-echo
-echo "During compilation..."
+if [ $recompile -eq 0 ]; then
+    if [ -d $NNH_PROCESSOR_BUILD ]; then 
+        rm -R $NNH_PROCESSOR_BUILD
+    fi
 
-if [ -d $NNH_PROCESSOR_BUILD ]; then 
-    rm -R $NNH_PROCESSOR_BUILD
+    mkdir -v $NNH_PROCESSOR_BUILD
+    cd $NNH_PROCESSOR_BUILD
+    cmake -C $ILCSOFT/ILCSoft.cmake .. 
+    make
+    make install
+    echo
 fi
-
-mkdir -v $NNH_PROCESSOR_BUILD
-cd $NNH_PROCESSOR_BUILD
-cmake -C $ILCSOFT/ILCSoft.cmake .. 
-make
-make install
-
-echo "...compilation terminate"
-echo
 
 # exécution
 
-echo
-echo "Start execution..."
-
+[[ -d $NNH_PROCESSOR_OUTPUTFILES ]] && rm $NNH_PROCESSOR_OUTPUTFILES
 mkdir -v $NNH_PROCESSOR_OUTPUTFILES
-#touch $NNH_PROCESSOR_OUTPUTFILES/test.root
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
 
-echo "...execution terminate"
-echo
-
-echo "...Terminate processor"
-echo

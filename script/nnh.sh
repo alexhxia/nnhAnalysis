@@ -11,15 +11,6 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
 
-export NNH_HOME=~/nnhAnalysis/$branch
-
-export NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-export NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result/$branch
-
-export NNH_ANALYSIS_INPUTFILES=NNH_HOME/processor/RESULTS
-export NNH_ANALYSIS_BUILD=$NNH_HOME/analysis/BUILD
-export NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA
-
 valid_branchs=(original ilcsoft fcc)
 
 # HELP cmd
@@ -34,11 +25,13 @@ done
 branch=ilcsoft
 nb_processor=1
 nb_bdt=1
-while getopts h:b:p:a: flag ; do
+home=~/nnhAnalysis/$branch
+while getopts h:b:p:a:n: flag ; do
     case "${flag}" in 
         h)
             echo "nnh.sh -b branch -p nb_processus -t nb_BDT"
-            exit 0 ;;
+            exit 0 
+            ;;
         b)
             branch=${OPTARG}
             valid=false
@@ -48,10 +41,8 @@ while getopts h:b:p:a: flag ; do
                 fi
             done
             if ! $valid ; then
-                #echo "-b $branch : no valid branch"
                 exit 1
             fi
-            #echo "-b $branch : valid branch"
             ;;
         p)
             nb_processor=${OPTARG} 
@@ -67,12 +58,26 @@ while getopts h:b:p:a: flag ; do
                 exit 1
             fi
             ;;
+        n) home=${OPTARG};;
     esac
 done 
 
 echo "branch : $branch"
 echo "processor : $nb_processor"
 echo "bdt : $nb_bdt"
+
+export NNH_HOME=$home
+
+export NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+export NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result/$branch
+
+export NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES 
+export NNH_PROCESSOR_BUILD=$NNH_HOME/processor/BUILD
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+
+export NNH_ANALYSIS_INPUTFILES=NNH_HOME/processor/RESULTS
+export NNH_ANALYSIS_BUILD=$NNH_HOME/analysis/BUILD
+export NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA
 
 echo
 echo "Start nnh on the $branch branch with $nb_bdt BDT for each $nb_processor processors..."
@@ -83,35 +88,42 @@ echo
 
 # processor
 for ((p = 1; p <= $nb_processor; p++)); do
-echo "Start "$p"th processor:"
-#./processor
-
-    # analysis
-    for ((a = 1; a <= $nb_bdt; a++)); do
-        echo "--> Start "$a"th BDT at "$p"th processor:"
-        #./analysis_prepareBDT.sh
-        #./analysis_launchBDT.sh
-        echo
-    done
+    echo "Start "$p"th processor:"
     
-    #sauvegarde
-    echo "--> Start moving..."
+    # search nb run
     i=1
-    OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/$branch/run_$i
+    OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/run_$i
     while [ -d $OUTPUT_DIRECTORY ]; do
         i=$((i+1))
-        OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/$branch/run_$i
+        OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/run_$i
     done 
-    echo "-> sauvegarde in $OUTPUT_DIRECTORY"
-    mkdir $OUTPUT_DIRECTORY
-
-    OUTPUT_DIRECTORY=$OUTPUT_DIRECTORY/run_$i
-    echo $OUTPUT_DIRECTORY
-    mv $NNH_PROCESSOR_OUTPUTFILES/* $OUTPUT_DIRECTORY
-
-    echo
-    echo "............................................."
-    echo
+    
+    # output directory 
+    mkdir -pv $OUTPUT_DIRECTORY/processor
+    
+    # run processor en séquentiel
+    [[ -d $NNH_PROCESSOR_OUTPUTFILES ]] && rm -R $NNH_PROCESSOR_OUTPUTFILES
+    
+    if [ $p = 1 ]; then
+        #./processor -c -n $NNH_HOME -b $branch -o $NNH_PROCESSOR_OUTPUTFILES
+    else
+        #./processor -n $NNH_HOME -b $branch -o $NNH_PROCESSOR_OUTPUTFILES
+    fi 
+    cp $NNH_PROCESSOR_OUTPUTFILES $OUTPUT_DIRECTORY/processor
+    
+    # run analysis en sequentiel
+    mkdir -pv $OUTPUT_DIRECTORY/analysis
+    
+    for ((a = 1; a <= $nb_bdt; a++)); do
+        echo "--> Start "$a"th BDT at "$p"th processor:"
+        [[ -d $NNH_PROCESSOR_OUTPUTFILES ]] && rm -R $NNH_ANALYSIS_OUTPUTFILES
+        #./analysis_prepareBDT.sh -h $NNH_HOME -b $branch -i $NNH_ANALYSIS_INPUTFILES -o $NNH_ANALYSIS_OUTPUTFILES
+        #./analysis_launchBDT.sh -h $NNH_HOME -b $branch
+        mkdir -pv $OUTPUT_DIRECTORY/analysis/run_$i_$a
+        mv $NNH_ANALYSIS_OUTPUTFILES $OUTPUT_DIRECTORY/analysis/run_$i_$a
+        rm -R $NNH_ANALYSIS_OUTPUTFILES
+    done
+    rm -R $NNH_PROCESSOR_OUTPUTFILES
 done
 
 echo "...Terminate nnh"
