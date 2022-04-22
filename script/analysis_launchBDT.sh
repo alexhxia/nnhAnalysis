@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=test
-#SBATCH --output=submit.out
-#SBATCH --error=submit.err
+#SBATCH --job-name=launchBDT
+#SBATCH --output=launchBDT_submit.out
+#SBATCH --error=launchBDT_submit.err
 #
 #SBATCH --ntasks=1
 #SBATCH --time=5:00:00          # means 5h 00m 00s
@@ -74,9 +74,7 @@ cd $NNH_HOME/analysis/python
 
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate env_root_python
-echo "conda activate"
-python3 launchBDT_bb.py &
-python3 launchBDT_WW.py &
 
-wait 
+python3 launchBDT_bb.py 1> bb_std_output.txt 2> bb_error_output.txt 
+python3 launchBDT_WW.py 1> WW_std_output.txt 2> WW_error_output.txt 
 

@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-#SBATCH --job-name=test
-#SBATCH --output=submit.out
-#SBATCH --error=submit.err
+#SBATCH --job-name=nnh
+#SBATCH --output=nnh_submit.out
+#SBATCH --error=nnh_submit.err
 #
 #SBATCH --ntasks=1
-#SBATCH --time=48:00:00          # means 48h 00m 00s
+#SBATCH --time=3-00:00:00          # means 48h 00m 00s
 #SBATCH --mem-per-cpu=1G
 # mail-type=BEGIN, END, FAIL, REQUEUE, ALL, STAGE_OUT, TIME_LIMIT_90
 #SBATCH --mail-type=ALL
@@ -148,13 +148,14 @@ for ((p = 1; p <= $nb_processor; p++)); do
     
     # RUN PROCESSOR
     if [ $p = 1 ]; then #recompile
-        #./processor.sh -n $home -b $branch -o $NNH_PROCESSOR_OUTPUTFILES -i $NNH_PROCESSOR_INPUTFILES #-c
+        ./processor.sh -n $home -b $branch -o $NNH_PROCESSOR_OUTPUTFILES -i $NNH_PROCESSOR_INPUTFILES -c
     else
         ./processor.sh -n $home -b $branch -o $NNH_PROCESSOR_OUTPUTFILES -i $NNH_PROCESSOR_INPUTFILES 
     fi 
     
     # COPY SERVER PROCESSOR
     cp $NNH_PROCESSOR_OUTPUTFILES/*.root $OUTPUT_DIRECTORY/processor
+    mv $NNH_PROCESSOR_OUTPUTFILES/*_output.txt $OUTPUT_DIRECTORY/processor
     echo "Output processor files save in $OUTPUT_DIRECTORY/processor"
     echo
     
@@ -168,11 +169,11 @@ for ((p = 1; p <= $nb_processor; p++)); do
         cp $NNH_ANALYSIS_OUTPUTFILES/* $OUTPUT_DIRECTORY/analysis/run_$k_$a
         echo "Output analysis files save in $OUTPUT_DIRECTORY/processor"
         echo
-        rm -R $NNH_ANALYSIS_OUTPUTFILES
+        #rm -R $NNH_ANALYSIS_OUTPUTFILES
     done
     
     # DELETE OUTPUT DIRECTORY PROCESSOR
-    rm -R $NNH_PROCESSOR_OUTPUTFILES
+    #rm -R $NNH_PROCESSOR_OUTPUTFILES
 done
 
 echo "...Terminate nnh"

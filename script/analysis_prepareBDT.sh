@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=test
-#SBATCH --output=submit.out
-#SBATCH --error=submit.err
+#SBATCH --job-name=prepareBDT
+#SBATCH --output=_prepareBDTsubmit.out
+#SBATCH --error=prepareBDT_submit.err
 #
 #SBATCH --ntasks=1
 #SBATCH --time=1:00:00          # means 1h 00m 00s
@@ -122,5 +122,5 @@ fi
 # exécution analysis
 
 cd $NNH_HOME
-./analysis/bin/prepareForBDT
+./analysis/bin/prepareForBDT 1> bdt_std_output.txt 2> bdt_error_output.txt
 

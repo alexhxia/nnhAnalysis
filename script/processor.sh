@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=test
-#SBATCH --output=submit.out
-#SBATCH --error=submit.err
+#SBATCH --job-name=processor
+#SBATCH --output=processor_submit.out
+#SBATCH --error=processor_submit.err
 #
 #SBATCH --ntasks=1
 #SBATCH --time=1:00:00          # means 1h 00m 00s
@@ -101,5 +101,5 @@ if [ -d $NNH_PROCESSOR_OUTPUTFILES ]; then
 fi    
 mkdir -v $NNH_PROCESSOR_OUTPUTFILES
 
-python3 $NNH_HOME/processor/script/launchNNHProcessor.py -p 402004 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+python3 $NNH_HOME/processor/script/launchNNHProcessor.py -p 402004 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES 1> std_output.txt 2> error_output.txt
 
