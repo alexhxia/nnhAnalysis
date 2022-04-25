@@ -19,9 +19,8 @@ function usage {
     echo '-n [directory]: nnhAnalysis directory'
     echo '-b [name]: branch'
     echo '-i [directory]: input directory'
-    echo '-o [directory]: output directory'
+    #echo '-o [directory]: output directory'
     echo
-    
 }
 
 function error {
@@ -32,41 +31,44 @@ function error {
     exit 1
 }
 
-# paramètres
 valid_branchs=(original ilcsoft fcc)
+function branchValid {
+    valid=false
+    for b in "${valid_branchs[@]}" ; do
+        if [ $b == $1 ] ; then
+            valid=true 
+        fi
+    done
+    if ! $valid ; then
+        error "-b $branch"
+    fi
+}
 
+function homeValid {
+    if ! [ -d $home ]; then 
+        error '-n: home directory no exist'
+    elif ! [ -d $home/$branch ]; then 
+        error '-n: home/branch directory no exist'
+    elif ! [ -d $home/$branch/processor ]; then 
+        error '-n: home/branch/processor directory no exist'
+    fi;
+}
+
+# paramètres
 home=~/nnhAnalysis
 branch=ilcsoft
 input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-output=$home/$branch/processor/RESULTS
 recompile=1
 
-while getopts hcn:b:i:o: flag ; do
+while getopts hcn:b:i: flag ; do
     case "${flag}" in 
-    
-        h)  usage
-            exit 0;;
-            
+        h)  usage && exit 0;;
         c)  recompile=0;;
-        
-        n)  home=${OPTARG};;
-        
+        n)  home=${OPTARG}
+            homeValid;;
         b)  branch=${OPTARG}
-            valid=false
-            for b in "${valid_branchs[@]}" ; do
-                if [ $b == $branch ] ; then
-                    valid=true 
-                fi
-            done
-            if ! $valid ; then
-                exit 1
-            fi
-            ;;
-            
+            branchValid $branch;;
         i)  input=${OPTARG};;
-        
-        o)  output=${OPTARG};;
-        
         *) error 'option no exist';;
     esac
 done 
@@ -76,7 +78,7 @@ done
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 export NNH_HOME=$home/$branch
 export NNH_PROCESSOR_INPUTFILES=$input 
-export NNH_PROCESSOR_OUTPUTFILES=$output
+export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
 # compilation
@@ -86,20 +88,23 @@ if [ $recompile -eq 0 ]; then
         rm -R $NNH_HOME/processor/BUILD
     fi
 
-    mkdir -v $NNH_HOME/processor/BUILD
-    cd $NNH_PROCESSOR_BUILD
+    mkdir $NNH_HOME/processor/BUILD
+    cd $NNH_HOME/processor/BUILD
     cmake -C $ILCSOFT/ILCSoft.cmake .. 
     make
     make install
-    echo
 fi
 
 # exécution
 
 if [ -d $NNH_PROCESSOR_OUTPUTFILES ]; then 
-    #rm -R $NNH_PROCESSOR_OUTPUTFILES
+    rm -R $NNH_PROCESSOR_OUTPUTFILES
 fi    
 mkdir -v $NNH_PROCESSOR_OUTPUTFILES
 
-python3 $NNH_HOME/processor/script/launchNNHProcessor.py -p 402004 -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES 1> std_output.txt 2> error_output.txt
+python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
+        -i $NNH_PROCESSOR_INPUTFILES \
+        -o $NNH_PROCESSOR_OUTPUTFILES \
+        1> $NNH_PROCESSOR_OUTPUTFILES/std_output.txt \
+        2> $NNH_PROCESSOR_OUTPUTFILES/error_output.txt
 

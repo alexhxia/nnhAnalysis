@@ -47,9 +47,32 @@ function error {
     exit 1
 }
 
-#paramètres
-
 valid_branchs=(original ilcsoft fcc)
+function branchValid {
+    valid=false
+    for b in "${valid_branchs[@]}" ; do
+        if [ $b == $1 ] ; then
+            valid=true 
+        fi
+    done
+    if ! $valid ; then
+        error "-b $branch"
+    fi
+}
+
+function homeValid {
+    if ! [ -d $home ]; then 
+        error '-n: home directory no exist'
+    elif ! [ -d $home/$branch ]; then 
+        error '-n: home/branch directory no exist'
+    elif ! [ -d $home/$branch/processor ]; then 
+        error '-n: home/branch/processor directory no exist'
+    elif  ! [ -d $home/$branch/analysis ]; then 
+        error '-n: home/branch/analysis directory no exist'
+    fi;
+}
+
+#paramètres
 
 home=~/nnhAnalysis
 branch=ilcsoft
@@ -61,29 +84,14 @@ recompile=1
 while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
     
-        h)  usage
-            exit 0 ;;
-            
+        h)  usage && exit 0 ;;
         c)  recompile=0;;
-        
-        n)  home=${OPTARG};;
-        
+        n)  home=${OPTARG}
+            homeValid;;
         b)  branch=${OPTARG}
-            valid=false
-            for b in "${valid_branchs[@]}" ; do
-                if [ $b == $branch ] ; then
-                    valid=true 
-                fi
-            done
-            if ! $valid ; then
-                exit 1
-            fi
-            ;;
-            
+            branchValid $branch;;
         i)  input=${OPTARG};;
-        
         o)  output=${OPTARG};;
-        
         *) error 'option no exist';;
     esac
 done 
@@ -104,8 +112,7 @@ print_export
 if [ -d $NNH_ANALYSIS_OUTPUTFILES ]; then
     rm -R $NNH_ANALYSIS_OUTPUTFILES
 fi
-
-mkdir -v $NNH_ANALYSIS_OUTPUTFILES
+mkdir $NNH_ANALYSIS_OUTPUTFILES
 hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
 
 if [ $recompile -eq 0 ]; then
@@ -113,7 +120,7 @@ if [ $recompile -eq 0 ]; then
         rm -R $NNH_HOME/analysis/BUILD
     fi
     mkdir $NNH_HOME/analysis/BUILD
-    cd $NNH_ANALYSIS_BUILD
+    cd $NNH_HOME/analysis/BUILD
     cmake -C $ILCSOFT/ILCSoft.cmake .. 
     make
     make install
