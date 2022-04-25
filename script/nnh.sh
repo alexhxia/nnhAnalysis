@@ -43,6 +43,7 @@ function usage {
     
 }
 
+# Stop program with error
 function error {
     echo
     echo 'Error: no valid option!'

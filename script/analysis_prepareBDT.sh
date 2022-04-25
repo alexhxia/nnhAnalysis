@@ -14,16 +14,9 @@
 function print_export {
     echo
     echo "home : $NNH_HOME"
-    echo "input : $NNH_INPUTFILES"
-    echo "output : $NNH_OUTPUTFILES"
-    echo
-    echo "processor input : $NNH_PROCESSOR_INPUTFILES"
-    echo "processor output : $NNH_PROCESSOR_OUTPUTFILES"
-    echo "processor build : $NNH_PROCESSOR_BUILD"
     echo
     echo "analysis input : $NNH_ANALYSIS_INPUTFILES"
     echo "analysis output : $NNH_ANALYSIS_OUTPUTFILES"
-    echo "analysis build : $NNH_ANALYSIS_BUILD"
     echo
 }
 
@@ -39,6 +32,7 @@ function usage {
     echo
 }
 
+# Stop program with error
 function error {
     echo
     echo 'Error: no valid option!'
@@ -65,14 +59,12 @@ function homeValid {
         error '-n: home directory no exist'
     elif ! [ -d $home/$branch ]; then 
         error '-n: home/branch directory no exist'
-    elif ! [ -d $home/$branch/processor ]; then 
-        error '-n: home/branch/processor directory no exist'
     elif  ! [ -d $home/$branch/analysis ]; then 
         error '-n: home/branch/analysis directory no exist'
     fi;
 }
 
-#paramètres
+# PARAMETERS
 
 home=~/nnhAnalysis
 branch=ilcsoft
@@ -96,7 +88,7 @@ while getopts hcn:b:i:o: flag ; do
     esac
 done 
 
-# environnement
+# ENVIRONMENT
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
@@ -105,9 +97,9 @@ export NNH_HOME=$home/$branch
 export NNH_ANALYSIS_INPUTFILES=$input
 export NNH_ANALYSIS_OUTPUTFILES=$output
 
-print_export
+#print_export
 
-# compilation analysis
+# COMPILATION
 
 if [ -d $NNH_ANALYSIS_OUTPUTFILES ]; then
     rm -R $NNH_ANALYSIS_OUTPUTFILES
@@ -126,8 +118,8 @@ if [ $recompile -eq 0 ]; then
     make install
 fi
 
-# exécution analysis
+# RUN
 
 cd $NNH_HOME
-./analysis/bin/prepareForBDT 1> bdt_std_output.txt 2> bdt_error_output.txt
+./analysis/bin/prepareForBDT 1> $NNH_ANALYSIS_OUTPUTFILES/bdt_std_output.txt 2> $NNH_HOME/analysis/DATA/bdt_error_output.txt
 

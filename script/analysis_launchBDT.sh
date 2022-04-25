@@ -11,18 +11,23 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
 
+function print_export {
+    echo
+    echo "home : $NNH_HOME"
+    echo
+}
+
+
 function usage {
     echo
     echo 'Usage : ./analysis_prepareBDT.sh [options]'
     echo '-h : print help'
-    echo '-c : compile'
     echo '-n [directory]: nnhAnalysis directory'
     echo '-b [name]: branch'
-    echo '-i [directory]: input directory'
-    echo '-o [directory]: output directory'
     echo
 }
 
+# Stop program with error
 function error {
     echo
     echo 'Error: no valid option!'
@@ -31,9 +36,32 @@ function error {
     exit 1
 }
 
-# paramètres
-
 valid_branchs=(original ilcsoft fcc)
+function branchValid {
+    valid=false
+    for b in "${valid_branchs[@]}" ; do
+        if [ $b == $1 ] ; then
+            valid=true 
+        fi
+    done
+    if ! $valid ; then
+        error "-b $branch"
+    fi
+}
+
+function homeValid {
+    if ! [ -d $home ]; then 
+        error '-n: home directory no exist'
+    elif ! [ -d $home/$branch ]; then 
+        error '-n: home/branch directory no exist'
+    elif ! [ -d $home/$branch/analysis ]; then 
+        error '-n: home/branch/analysis directory no exist'
+    elif ! [ -f $home/$branch/analysis/DATA/data.root ]; then 
+        error '-n: home/branch/analysis/DATA/data.root file no exist (prepare BDT first)'
+    fi
+}
+
+# PARAMETERS
 
 home=~/nnhAnalysis
 branch=ilcsoft
@@ -41,40 +69,33 @@ branch=ilcsoft
 while getopts hn:b: flag ; do
     case "${flag}" in 
     
-        h)  usage
-            exit 0 ;;
+        h)  usage && exit 0 ;;
             
         n)  home=${OPTARG};;
-        
-        b)  branch=${OPTARG}
-            valid=false
-            for b in "${valid_branchs[@]}" ; do
-                if [ $b == $branch ] ; then
-                    valid=true 
-                fi
-            done
-            if ! $valid ; then
-                error "-b $branch : no valid branch"
-                exit 1
-            fi
-            ;;
-        
-        *)  error 'option no exist'
-            exit 1;;
+            
+        b)  branch=${OPTARG};;
+            
+        *)  error 'option no exist';;
+            
     esac
 done 
 
-# environnement
+homeValid
+branchValid $branch
+
+# ENVIRONMENT
 
 export NNH_HOME=$home/$branch
 
-# exécution
+#print_export
+
+# RUN
 
 cd $NNH_HOME/analysis/python
 
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate env_root_python
 
-python3 launchBDT_bb.py 1> bb_std_output.txt 2> bb_error_output.txt 
-python3 launchBDT_WW.py 1> WW_std_output.txt 2> WW_error_output.txt 
+python3 launchBDT_bb.py 1> $NNH_HOME/analysis/DATA/bb_std_output.txt 2> $NNH_HOME/analysis/DATA/bb_error_output.txt 
+python3 launchBDT_WW.py 1> $NNH_HOME/analysis/DATA/WW_std_output.txt 2> $NNH_HOME/analysis/DATA/WW_error_output.txt 
 

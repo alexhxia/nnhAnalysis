@@ -23,6 +23,7 @@ function usage {
     echo
 }
 
+# Stop program with error
 function error {
     echo
     echo 'Error: no valid option!'
@@ -54,7 +55,8 @@ function homeValid {
     fi;
 }
 
-# paramètres
+# PARAMETERS
+
 home=~/nnhAnalysis
 branch=ilcsoft
 input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
@@ -73,7 +75,7 @@ while getopts hcn:b:i: flag ; do
     esac
 done 
 
-# environnement
+# ENVIRONMENT
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 export NNH_HOME=$home/$branch
@@ -81,7 +83,7 @@ export NNH_PROCESSOR_INPUTFILES=$input
 export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
-# compilation
+# COMPILATION
 
 if [ $recompile -eq 0 ]; then
     if [ -d $NNH_HOME/processor/BUILD ]; then 
@@ -95,7 +97,7 @@ if [ $recompile -eq 0 ]; then
     make install
 fi
 
-# exécution
+# RUN
 
 if [ -d $NNH_PROCESSOR_OUTPUTFILES ]; then 
     rm -R $NNH_PROCESSOR_OUTPUTFILES
