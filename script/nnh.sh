@@ -5,8 +5,9 @@
 #SBATCH --error=nnh_submit.err
 #
 #SBATCH --ntasks=1
-#SBATCH --time=3-00:00:00          # means 48h 00m 00s
+#SBATCH --time=3-00:00:00 
 #SBATCH --mem-per-cpu=1G
+#SBATCH --partition=long
 # mail-type=BEGIN, END, FAIL, REQUEUE, ALL, STAGE_OUT, TIME_LIMIT_90
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
@@ -101,7 +102,7 @@ while  getopts ":b:p:a:n:i:o:h" option ; do
     esac
 done 
 
-homeValid
+#homeValid
 branchValid $branch
 
 if ! [ -d $input ]; then 
@@ -145,7 +146,7 @@ for ((p = 1; p <= $nb_processor; p++)); do
     k=1
     OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/run_$k
     while [ -d $OUTPUT_DIRECTORY ]; do
-        k=$((k+1))
+        k=$((k + 1))
         OUTPUT_DIRECTORY=$NNH_OUTPUTFILES/run_$k
     done 
     mkdir -pv $OUTPUT_DIRECTORY
@@ -166,13 +167,14 @@ for ((p = 1; p <= $nb_processor; p++)); do
     echo
     
     # analysis
+    
     for ((a = 1; a <= $nb_bdt; a++)); do
-        echo "--> Start "$a"th BDT at "$p"th processor:"
-        mkdir -pv $OUTPUT_DIRECTORY/analysis/run_$k_$a
-        echo "$k : $OUTPUT_DIRECTORY/analysis/run_$k_$a"
-        ./analysis_prepareBDT.sh -c $NNH_HOME -b $branch -i $NNH_ANALYSIS_INPUTFILES -o $NNH_ANALYSIS_OUTPUTFILES
-        ./analysis_launchBDT.sh $NNH_HOME -b $branch
-        cp $NNH_ANALYSIS_OUTPUTFILES/* $OUTPUT_DIRECTORY/analysis/run_$k_$a
+        echo "--> Start "$a"th BDT at "$p"th processor: "
+        outDir=$OUTPUT_DIRECTORY/analysis/run_"$k"_"$a"
+        mkdir -pv $outDir
+        ./analysis_prepareBDT.sh -c -n $NNH_HOME -b $branch -i $NNH_ANALYSIS_INPUTFILES -o $NNH_ANALYSIS_OUTPUTFILES
+        ./analysis_launchBDT.sh -n $NNH_HOME -b $branch
+        cp $NNH_ANALYSIS_OUTPUTFILES/* $outDir
         echo "Output analysis files save in $OUTPUT_DIRECTORY/processor"
         echo
         rm -R $NNH_ANALYSIS_OUTPUTFILES

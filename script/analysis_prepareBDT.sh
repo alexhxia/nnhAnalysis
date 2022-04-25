@@ -77,13 +77,19 @@ while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
     
         h)  usage && exit 0 ;;
+        
         c)  recompile=0;;
+        
         n)  home=${OPTARG}
             homeValid;;
+            
         b)  branch=${OPTARG}
             branchValid $branch;;
+            
         i)  input=${OPTARG};;
+        
         o)  output=${OPTARG};;
+        
         *) error 'option no exist';;
     esac
 done 
