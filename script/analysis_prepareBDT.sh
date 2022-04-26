@@ -1,15 +1,4 @@
 #!/bin/bash
-#
-#SBATCH --job-name=prepareBDT
-#SBATCH --output=_prepareBDTsubmit.out
-#SBATCH --error=prepareBDT_submit.err
-#
-#SBATCH --ntasks=1
-#SBATCH --time=1:00:00          # means 1h 00m 00s
-#SBATCH --mem-per-cpu=1G
-# mail-type=BEGIN, END, FAIL, REQUEUE, ALL, STAGE_OUT, TIME_LIMIT_90
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
 
 function print_export {
     echo
