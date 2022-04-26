@@ -1,16 +1,4 @@
 #!/bin/bash
-#
-#SBATCH --job-name=nnh
-#SBATCH --output=nnh_submit.out
-#SBATCH --error=nnh_submit.err
-#
-#SBATCH --ntasks=1
-#SBATCH --time=3-00:00:00 
-#SBATCH --mem-per-cpu=1G
-#SBATCH --partition=long
-# mail-type=BEGIN, END, FAIL, REQUEUE, ALL, STAGE_OUT, TIME_LIMIT_90
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=a.hocine@ip2i.in2p3.fr
 
 # HELP cmd
 
