@@ -1,0 +1,118 @@
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 91030 entries, 0 to 91029
+Data columns (total 35 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   visible_e         91030 non-null  float32
+ 1   nParticles        91030 non-null  int32  
+ 2   eIsoLep           91030 non-null  float32
+ 3   higgs_e           91030 non-null  float32
+ 4   higgs_pt          91030 non-null  float32
+ 5   higgs_m           91030 non-null  float32
+ 6   higgs_cosTheta    91030 non-null  float32
+ 7   higgs_bTag1       91030 non-null  float32
+ 8   higgs_bTag2       91030 non-null  float32
+ 9   b1_m              91030 non-null  float32
+ 10  b1_pt             91030 non-null  float32
+ 11  b1_e              91030 non-null  float32
+ 12  b2_m              91030 non-null  float32
+ 13  b2_pt             91030 non-null  float32
+ 14  b2_e              91030 non-null  float32
+ 15  higgs_bb_cosBetw  91030 non-null  float32
+ 16  y_12              91030 non-null  float32
+ 17  y_23              91030 non-null  float32
+ 18  y_34              91030 non-null  float32
+ 19  y_45              91030 non-null  float32
+ 20  y_56              91030 non-null  float32
+ 21  y_67              91030 non-null  float32
+ 22  zz_z1_m           91030 non-null  float32
+ 23  zz_z2_m           91030 non-null  float32
+ 24  sl_w_m            91030 non-null  float32
+ 25  sl_rec_m          91030 non-null  float32
+ 26  oblateness        91030 non-null  float32
+ 27  sphericity        91030 non-null  float32
+ 28  cosThrust         91030 non-null  float32
+ 29  principleThrust   91030 non-null  float32
+ 30  majorThrust       91030 non-null  float32
+ 31  minorThrust       91030 non-null  float32
+ 32  weight            91030 non-null  float32
+ 33  isSignal          91030 non-null  bool   
+ 34  channelType       91030 non-null  int32  
+dtypes: bool(1), float32(32), int32(2)
+memory usage: 11.9 MB
+None
+Binning 0.016 GB of training data: 0.456 s
+Binning 0.007 GB of validation data: 0.205 s
+Fitting gradient boosted rounds:
+[1/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.46830, val loss: 0.46939, in 3.946s
+[2/300] 1 tree, 70 leaves, max depth = 9, train loss: 0.38397, val loss: 0.38659, in 3.968s
+[3/300] 1 tree, 70 leaves, max depth = 9, train loss: 0.32571, val loss: 0.32975, in 3.910s
+[4/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.28286, val loss: 0.28860, in 2.240s
+[5/300] 1 tree, 70 leaves, max depth = 8, train loss: 0.25042, val loss: 0.25752, in 3.937s
+[6/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.22545, val loss: 0.23366, in 3.945s
+[7/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.20601, val loss: 0.21536, in 3.876s
+[8/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.19050, val loss: 0.20107, in 4.014s
+[9/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.17792, val loss: 0.18981, in 3.943s
+[10/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.16766, val loss: 0.18100, in 3.932s
+[11/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.15924, val loss: 0.17393, in 3.943s
+[12/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.15216, val loss: 0.16824, in 3.942s
+[13/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.14642, val loss: 0.16378, in 1.623s
+[14/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.14135, val loss: 0.16017, in 3.976s
+[15/300] 1 tree, 70 leaves, max depth = 13, train loss: 0.13694, val loss: 0.15719, in 3.901s
+[16/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.13309, val loss: 0.15490, in 1.405s
+[17/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.12979, val loss: 0.15305, in 3.846s
+[18/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.12673, val loss: 0.15150, in 3.936s
+[19/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.12399, val loss: 0.14999, in 3.942s
+[20/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.12155, val loss: 0.14888, in 2.279s
+[21/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.11936, val loss: 0.14794, in 3.976s
+[22/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.11730, val loss: 0.14702, in 3.954s
+[23/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.11535, val loss: 0.14643, in 3.980s
+[24/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.11334, val loss: 0.14580, in 3.968s
+[25/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.11139, val loss: 0.14544, in 3.989s
+[26/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.10960, val loss: 0.14492, in 3.964s
+[27/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.10796, val loss: 0.14470, in 2.589s
+[28/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.10638, val loss: 0.14437, in 3.961s
+[29/300] 1 tree, 70 leaves, max depth = 13, train loss: 0.10485, val loss: 0.14388, in 1.064s
+[30/300] 1 tree, 70 leaves, max depth = 20, train loss: 0.10345, val loss: 0.14362, in 3.937s
+[31/300] 1 tree, 70 leaves, max depth = 13, train loss: 0.10198, val loss: 0.14347, in 3.500s
+[32/300] 1 tree, 70 leaves, max depth = 17, train loss: 0.10052, val loss: 0.14336, in 4.003s
+[33/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.09917, val loss: 0.14314, in 3.997s
+[34/300] 1 tree, 70 leaves, max depth = 13, train loss: 0.09780, val loss: 0.14335, in 3.977s
+[35/300] 1 tree, 70 leaves, max depth = 13, train loss: 0.09638, val loss: 0.14356, in 3.125s
+[36/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.09509, val loss: 0.14336, in 1.732s
+[37/300] 1 tree, 70 leaves, max depth = 18, train loss: 0.09379, val loss: 0.14331, in 3.992s
+[38/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.09253, val loss: 0.14314, in 4.032s
+[39/300] 1 tree, 70 leaves, max depth = 13, train loss: 0.09140, val loss: 0.14315, in 3.986s
+[40/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.09011, val loss: 0.14289, in 3.878s
+[41/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.08912, val loss: 0.14281, in 3.936s
+[42/300] 1 tree, 70 leaves, max depth = 17, train loss: 0.08815, val loss: 0.14275, in 3.988s
+[43/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.08706, val loss: 0.14267, in 4.030s
+[44/300] 1 tree, 70 leaves, max depth = 21, train loss: 0.08590, val loss: 0.14291, in 4.027s
+[45/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.08477, val loss: 0.14282, in 3.995s
+[46/300] 1 tree, 70 leaves, max depth = 19, train loss: 0.08371, val loss: 0.14263, in 3.262s
+[47/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.08288, val loss: 0.14261, in 3.974s
+[48/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.08200, val loss: 0.14262, in 3.962s
+[49/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.08111, val loss: 0.14263, in 3.971s
+[50/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.08019, val loss: 0.14263, in 3.997s
+[51/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.07917, val loss: 0.14266, in 4.009s
+[52/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.07824, val loss: 0.14280, in 3.958s
+[53/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.07730, val loss: 0.14287, in 1.240s
+[54/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.07646, val loss: 0.14284, in 3.150s
+[55/300] 1 tree, 70 leaves, max depth = 17, train loss: 0.07574, val loss: 0.14299, in 3.979s
+[56/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.07494, val loss: 0.14294, in 3.989s
+[57/300] 1 tree, 70 leaves, max depth = 17, train loss: 0.07423, val loss: 0.14281, in 3.983s
+Fit 57 trees in 206.311 s, (3990 total leaves)
+Time spent computing histograms: 86.666s
+Time spent finding best splits:  56.501s
+Time spent applying splits:      58.738s
+Time spent predicting:           0.254s
+nEvents = 2297901
+2297901 events processed : 100.00 %
+minimization success: True
+bestCut=-0.20257315793943
+bestSignificance=4.275448951664695
+237434 events processed : 100.00 %
+                  channel       stat statPreSel    statSel             sum       sumPreSel          sumSel       selection%
+                   Signal     231731     221741     216000          20.548          19.662          19.153          93.212%
+          Other higgs->bb     836856      37811      12455          11.982           0.549           0.182           1.517%
+              Other higgs     769380     104354       8979          23.373           7.815           0.733           3.137%
