@@ -12,7 +12,7 @@ Dans cette branche, on convertie les fichiers de la branche (`ilcsoft`) `origina
 ## importer 
 Pour importer directement de github :
 ```
-git clone --branch fcc https://github.com/alexhxia/nnhAnalysis.git
+git clone --branch fcc https://github.com/alexhxia/nnhAnalysis.git fcc
 ```
 On considère le dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
 ```
