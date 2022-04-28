@@ -30,7 +30,7 @@ Ce qui est appelé 'branche' correspond au type de projet que vous souhaitez ex�
 
 ### Run
 
-### Avant propos
+#### Avant propos
 
 Les scripts de cette partie peuvent prendre des options afin de personaliser les programmes à vos besoins :
 - 'h' : évidemment pour "help". Cette option détaille le fonctionnement de chaque script.
@@ -45,14 +45,14 @@ Les scripts de cette partie peuvent prendre des options afin de personaliser les
   - `home/branch/processor/RESULTS` pour [`processor.sh`](processor.sh)
   - `/gridgroup/ilc/nnhAnalysisFiles/result/branch/run?/analysis/run??` pour [`prepareBDT.sh`](prepareBDT.sh) et [`launchBDT.sh`](launchBDT.sh) 
 
-### `processus`
+#### `processus`
 C'est le premier programme à exécuter. En effet, il traite les fichiers LCIO (ranger dans le dossier de leur processus) et permet d'obtenir un fichier ROOT par processus. Il s'agit du script :
 ```
 ./processor.sh
 ```
 Il prend les options : 'h', 'c', 'a', 'n', 'b', 'i'
 
-### `analysis`
+#### `analysis`
 Une fois les fichier root générer par `processus`, il faut entrainer la BDT.
 ```
 ./analysis_prepareBDT.sh
