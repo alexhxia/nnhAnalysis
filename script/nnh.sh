@@ -8,13 +8,10 @@ function print_export {
     echo "input : $NNH_INPUTFILES"
     echo "output : $NNH_OUTPUTFILES"
     echo
-    echo "processor input : $NNH_PROCESSOR_INPUTFILES"
     echo "processor output : $NNH_PROCESSOR_OUTPUTFILES"
-    echo "processor build : $NNH_PROCESSOR_BUILD"
     echo
     echo "analysis input : $NNH_ANALYSIS_INPUTFILES"
     echo "analysis output : $NNH_ANALYSIS_OUTPUTFILES"
-    echo "analysis build : $NNH_ANALYSIS_BUILD"
     echo
 }
 
@@ -70,7 +67,7 @@ function homeValid {
 
 # paramètres
 
-home=~/nnhAnalysis
+home=~/nnhAnalysis/nnhHome
 branch=ilcsoft
 input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 output=/gridgroup/ilc/nnhAnalysisFiles/result
@@ -81,19 +78,27 @@ nb_bdt=1
 while  getopts ":b:p:a:n:i:o:h" option ; do
     case "${option}" in 
     
-        h)  usage && exit 0;;
+        h)  usage
+            exit 0;;
+            
         b)  branch=${OPTARG};;
+        
         p)  nb_processor=${OPTARG};;
+        
         a)  nb_bdt=${OPTARG};;
+        
         n)  home=${OPTARG};;
+        
         i)  input=${OPTARG};;
+        
         o)  output=${OPTARG};;
+        
         *) error 'option no exist';;
     esac
 done 
 
-#homeValid
 branchValid $branch
+homeValid
 
 if ! [ -d $input ]; then 
     error '-i: input directory no exist'
@@ -116,7 +121,6 @@ NNH_HOME=$home/$branch
 NNH_INPUTFILES=$input
 NNH_OUTPUTFILES=$output/$branch
 
-NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES 
 NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
 
 NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES
@@ -145,14 +149,14 @@ for ((p = 1; p <= $nb_processor; p++)); do
     
     # RUN PROCESSOR
     if [ $p = 1 ]; then #recompile
-        ./processor.sh -n $home -b $branch -i $NNH_PROCESSOR_INPUTFILES -c
+        ./processor.sh -n $home -b $branch -i $NNH_INPUTFILES -a
     else
-        ./processor.sh -n $home -b $branch -i $NNH_PROCESSOR_INPUTFILES 
+        ./processor.sh -n $home -b $branch -i $NNH_INPUTFILES 
     fi 
     
-    # COPY SERVER PROCESSOR
-    cp $NNH_PROCESSOR_OUTPUTFILES/*.root $OUTPUT_DIRECTORY/processor
-    mv $NNH_PROCESSOR_OUTPUTFILES/*_output.txt $OUTPUT_DIRECTORY/processor
+    # MOVE OUTPUT PROCESSOR DATA IN SERVER 
+    mv $NNH_PROCESSOR_OUTPUTFILES/* $OUTPUT_DIRECTORY/processor
+    rm -R $NNH_PROCESSOR_OUTPUTFILES
     echo "Output processor files save in $OUTPUT_DIRECTORY/processor"
     echo
     
@@ -162,22 +166,17 @@ for ((p = 1; p <= $nb_processor; p++)); do
         echo "--> Start "$a"th BDT at "$p"th processor: "
         outDir=$OUTPUT_DIRECTORY/analysis/run_"$k"_"$a"
         mkdir -pv $outDir
-        ./analysis_prepareBDT.sh -c -n $NNH_HOME -b $branch -i $NNH_ANALYSIS_INPUTFILES -o $NNH_ANALYSIS_OUTPUTFILES
+        ./analysis_prepareBDT.sh -n $NNH_HOME -b $branch -i $OUTPUT_DIRECTORY/processor -o $NNH_ANALYSIS_OUTPUTFILES -a
         ./analysis_launchBDT.sh -n $NNH_HOME -b $branch
-        cp $NNH_ANALYSIS_OUTPUTFILES/* $outDir
+        mv $NNH_ANALYSIS_OUTPUTFILES/* $outDir
         echo "Output analysis files save in $OUTPUT_DIRECTORY/processor"
         echo
         rm -R $NNH_ANALYSIS_OUTPUTFILES
     done
     
-    # DELETE OUTPUT DIRECTORY PROCESSOR
-    rm -R $NNH_PROCESSOR_OUTPUTFILES
 done
 
 echo "...Terminate nnh"
 echo
 echo "Output files is in directory : $OUTPUT_DIRECTORY"
 echo
-
-
-

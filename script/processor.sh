@@ -16,10 +16,10 @@ function syntax {
     echo 'Syntax : ./processor.sh [options]'
     echo 'options:'
     echo '    -h : print help'
-    echo '    -b : build just'
+    echo '    -c : build just'
     echo '    -a : build and run'
     echo '    -n [directory]: nnhHome directory'
-    echo '    -p [name]: type project or branch'
+    echo '    -b [name]: type project or branch'
     echo '    -i [directory]: input directory'
     #echo '    -o [directory]: output directory'
     echo
@@ -69,20 +69,20 @@ recompile=1 # no build
 run=0       # run
 
 # option choice by user
-while getopts hban:p:i: flag ; do
+while getopts hcan:b:i: flag ; do
     case "${flag}" in 
     
         h)  syntax
             exit 0;;
         
-        b)  recompile=0
+        c)  recompile=0
             run=1;;
         
         a)  recompile=0;;
         
         n)  home=${OPTARG};;
             
-        p)  branch=${OPTARG};;
+        b)  branch=${OPTARG};;
             
         i)  input=${OPTARG};;
         

@@ -12,12 +12,14 @@ function print_export {
 function usage {
     echo
     echo 'Usage : ./analysis_prepareBDT.sh [options]'
-    echo '-h : print help'
-    echo '-c : compile'
-    echo '-n [directory]: nnhAnalysis directory'
-    echo '-b [name]: branch'
-    echo '-i [directory]: input directory'
-    echo '-o [directory]: output directory'
+    echo 'options'
+    echo '    -h : print help'
+    echo '    -c : just build'
+    echo '    -a : build and run'
+    echo '    -n [directory]: nnhAnalysis directory'
+    echo '    -b [name]: branch'
+    echo '    -i [directory]: input directory'
+    echo '    -o [directory]: output directory'
     echo
 }
 
@@ -55,19 +57,24 @@ function homeValid {
 
 # PARAMETERS
 
-home=~/nnhAnalysis
+home=~/nnhAnalysis/nnhHome
 branch=ilcsoft
 input=$home/$branch/processor/RESULTS
 output=$home/$branch/analysis/DATA
 
 recompile=1
+run=0
 
 while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
     
         h)  usage && exit 0 ;;
         
-        c)  recompile=0;;
+        c)  recompile=0
+            run=1;;
+        
+        
+        a)  recompile=0;;
         
         n)  home=${OPTARG}
             homeValid;;
@@ -83,6 +90,23 @@ while getopts hcn:b:i:o: flag ; do
     esac
 done 
 
+# TEST PARAMETERS
+
+if ! [ -d $NNH_HOME/analysis/BUILD ]; then
+    recompile=0
+fi
+
+if ! [ -d $NNH_HOME/analysis/bin ]; then
+    recompile=0
+fi
+
+if ! [ -f $NNH_ANALYSIS_OUTPUTFILES/DATA.root ]; then
+    recompile=0
+fi
+
+valid_branchs $branch
+homeValid
+
 # ENVIRONMENT
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
@@ -96,16 +120,17 @@ export NNH_ANALYSIS_OUTPUTFILES=$output
 
 # COMPILATION
 
-if [ -d $NNH_ANALYSIS_OUTPUTFILES ]; then
-    rm -R $NNH_ANALYSIS_OUTPUTFILES
-fi
-mkdir $NNH_ANALYSIS_OUTPUTFILES
-hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
-
 if [ $recompile -eq 0 ]; then
+    if [ -d $NNH_ANALYSIS_OUTPUTFILES ]; then
+        rm -R $NNH_ANALYSIS_OUTPUTFILES
+    fi
+    mkdir $NNH_ANALYSIS_OUTPUTFILES
+    hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
+
     if [ -d $NNH_HOME/analysis/BUILD ]; then
         rm -R $NNH_HOME/analysis/BUILD
     fi
+    
     mkdir $NNH_HOME/analysis/BUILD
     cd $NNH_HOME/analysis/BUILD
     cmake -C $ILCSOFT/ILCSoft.cmake .. 
@@ -114,7 +139,9 @@ if [ $recompile -eq 0 ]; then
 fi
 
 # RUN
-
-cd $NNH_HOME
-./analysis/bin/prepareForBDT 1> $NNH_ANALYSIS_OUTPUTFILES/bdt_std_output.txt 2> $NNH_HOME/analysis/DATA/bdt_error_output.txt
-
+if [ $run -eq 0 ]; then
+    cd $NNH_HOME
+    ./analysis/bin/prepareForBDT \
+            1> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.out \
+            2> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.err
+fi

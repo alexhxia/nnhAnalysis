@@ -11,6 +11,7 @@ function usage {
     echo
     echo 'Usage : ./analysis_prepareBDT.sh [options]'
     echo '-h : print help'
+    echo '-d : deactivate conda'
     echo '-n [directory]: nnhAnalysis directory'
     echo '-b [name]: branch'
     echo
@@ -52,13 +53,16 @@ function homeValid {
 
 # PARAMETERS
 
-home=~/nnhAnalysis
+home=~/nnhAnalysis/nnhHome
 branch=ilcsoft
+conda=0
 
-while getopts hn:b: flag ; do
+while getopts hdn:b: flag ; do
     case "${flag}" in 
     
         h)  usage && exit 0 ;;
+        
+        d)  conda=1
             
         n)  home=${OPTARG};;
             
@@ -82,8 +86,10 @@ export NNH_HOME=$home/$branch
 
 cd $NNH_HOME/analysis/python
 
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate env_root_python
+if [ conda -eq 0 ]; then
+    source ~/miniconda3/etc/profile.d/conda.sh
+    conda activate env_root_python
+fi
 
 python3 launchBDT_bb.py 1> $NNH_HOME/analysis/DATA/bb_std_output.txt 2> $NNH_HOME/analysis/DATA/bb_error_output.txt 
 python3 launchBDT_WW.py 1> $NNH_HOME/analysis/DATA/WW_std_output.txt 2> $NNH_HOME/analysis/DATA/WW_error_output.txt 
