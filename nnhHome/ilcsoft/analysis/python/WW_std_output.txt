@@ -1,0 +1,89 @@
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 90674 entries, 0 to 90673
+Data columns (total 35 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   visible_e         90674 non-null  float32
+ 1   nParticles        90674 non-null  int32  
+ 2   eIsoLep           90674 non-null  float32
+ 3   higgs_e           90674 non-null  float32
+ 4   higgs_pt          90674 non-null  float32
+ 5   higgs_m           90674 non-null  float32
+ 6   higgs_cosTheta    90674 non-null  float32
+ 7   w1_m              90674 non-null  float32
+ 8   w1_pt             90674 non-null  float32
+ 9   w1_e              90674 non-null  float32
+ 10  w1_cosBetw        90674 non-null  float32
+ 11  w2_m              90674 non-null  float32
+ 12  w2_pt             90674 non-null  float32
+ 13  w2_e              90674 non-null  float32
+ 14  w2_cosBetw        90674 non-null  float32
+ 15  higgs_ww_cosBetw  90674 non-null  float32
+ 16  y_12              90674 non-null  float32
+ 17  y_23              90674 non-null  float32
+ 18  y_34              90674 non-null  float32
+ 19  y_45              90674 non-null  float32
+ 20  y_56              90674 non-null  float32
+ 21  y_67              90674 non-null  float32
+ 22  zz_z1_m           90674 non-null  float32
+ 23  zz_z2_m           90674 non-null  float32
+ 24  sl_w_m            90674 non-null  float32
+ 25  sl_rec_m          90674 non-null  float32
+ 26  oblateness        90674 non-null  float32
+ 27  sphericity        90674 non-null  float32
+ 28  cosThrust         90674 non-null  float32
+ 29  principleThrust   90674 non-null  float32
+ 30  majorThrust       90674 non-null  float32
+ 31  minorThrust       90674 non-null  float32
+ 32  weight            90674 non-null  float32
+ 33  isSignal          90674 non-null  bool   
+ 34  channelType       90674 non-null  int32  
+dtypes: bool(1), float32(32), int32(2)
+memory usage: 11.8 MB
+None
+Binning 0.016 GB of training data: 0.456 s
+Binning 0.007 GB of validation data: 0.203 s
+Fitting gradient boosted rounds:
+[1/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.51246, val loss: 0.51844, in 3.989s
+[2/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.43116, val loss: 0.44382, in 2.169s
+[3/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.37332, val loss: 0.39145, in 4.001s
+[4/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.33063, val loss: 0.35334, in 1.227s
+[5/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.29763, val loss: 0.32530, in 2.613s
+[6/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.27181, val loss: 0.30384, in 3.976s
+[7/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.25081, val loss: 0.28798, in 3.945s
+[8/300] 1 tree, 70 leaves, max depth = 10, train loss: 0.23396, val loss: 0.27570, in 3.944s
+[9/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.21984, val loss: 0.26545, in 3.991s
+[10/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.20818, val loss: 0.25717, in 3.965s
+[11/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.19807, val loss: 0.25132, in 3.952s
+[12/300] 1 tree, 70 leaves, max depth = 13, train loss: 0.18981, val loss: 0.24742, in 2.755s
+[13/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.18219, val loss: 0.24416, in 3.563s
+[14/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.17548, val loss: 0.24143, in 3.829s
+[15/300] 1 tree, 70 leaves, max depth = 11, train loss: 0.16974, val loss: 0.23890, in 3.840s
+[16/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.16468, val loss: 0.23760, in 3.982s
+[17/300] 1 tree, 70 leaves, max depth = 14, train loss: 0.16008, val loss: 0.23657, in 3.371s
+[18/300] 1 tree, 70 leaves, max depth = 12, train loss: 0.15582, val loss: 0.23608, in 3.786s
+[19/300] 1 tree, 70 leaves, max depth = 18, train loss: 0.15188, val loss: 0.23666, in 4.007s
+[20/300] 1 tree, 70 leaves, max depth = 17, train loss: 0.14806, val loss: 0.23619, in 4.016s
+[21/300] 1 tree, 70 leaves, max depth = 19, train loss: 0.14485, val loss: 0.23658, in 3.883s
+[22/300] 1 tree, 70 leaves, max depth = 15, train loss: 0.14179, val loss: 0.23700, in 3.949s
+[23/300] 1 tree, 70 leaves, max depth = 18, train loss: 0.13861, val loss: 0.23770, in 1.563s
+[24/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.13592, val loss: 0.23848, in 3.979s
+[25/300] 1 tree, 70 leaves, max depth = 18, train loss: 0.13315, val loss: 0.23955, in 0.751s
+[26/300] 1 tree, 70 leaves, max depth = 19, train loss: 0.13085, val loss: 0.24114, in 3.754s
+[27/300] 1 tree, 70 leaves, max depth = 16, train loss: 0.12841, val loss: 0.24301, in 3.047s
+[28/300] 1 tree, 70 leaves, max depth = 19, train loss: 0.12615, val loss: 0.24423, in 3.939s
+Fit 28 trees in 96.535 s, (1960 total leaves)
+Time spent computing histograms: 40.459s
+Time spent finding best splits:  25.861s
+Time spent applying splits:      27.653s
+Time spent predicting:           0.127s
+nEvents = 2297901
+2297901 events processed : 100.00 %
+minimization success: True
+bestCut=1.6183650319516825
+bestSignificance=1.1682373513771276
+45452 events processed : 100.00 %
+                  channel       stat statPreSel    statSel             sum       sumPreSel          sumSel       selection%
+                   Signal      39391      32390      25442           3.456           2.841           2.232          64.588%
+         Other higgs->WW*     354110      13264       3019           8.504           0.529           0.074           0.871%
+              Other higgs    1445609     318606      16991          43.944          24.648           1.344           3.058%
