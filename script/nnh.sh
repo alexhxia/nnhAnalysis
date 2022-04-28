@@ -20,6 +20,8 @@ function print_export {
 
 function usage {
     echo
+    echo "Run 'processor', 'prepareBDT', and 'analysis'."
+    echo
     echo 'Usage : ./nnh.sh [options]'
     echo '-h : print help'
     echo '-p [integer]: number of processus run'

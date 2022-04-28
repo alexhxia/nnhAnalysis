@@ -1,14 +1,27 @@
 #!/bin/bash
 
-function usage {
+function print_export {
     echo
-    echo 'Usage : ./nnh.sh [options]'
-    echo '-h : print help'
-    echo '-c : recompile'
-    echo '-n [directory]: nnhAnalysis directory'
-    echo '-b [name]: branch'
-    echo '-i [directory]: input directory'
-    #echo '-o [directory]: output directory'
+    echo "home : $NNH_HOME"
+    echo "processor input : $NNH_PROCESSOR_INPUTFILES"
+    echo "processor output : $NNH_PROCESSOR_OUTPUTFILES"
+    echo
+}
+
+# Display Help
+function syntax {
+    echo
+    echo "Run 'processor' program."
+    echo
+    echo 'Syntax : ./processor.sh [options]'
+    echo 'options:'
+    echo '    -h : print help'
+    echo '    -b : build just'
+    echo '    -a : build and run'
+    echo '    -n [directory]: nnhHome directory'
+    echo '    -p [name]: type project or branch'
+    echo '    -i [directory]: input directory'
+    #echo '    -o [directory]: output directory'
     echo
 }
 
@@ -17,10 +30,11 @@ function error {
     echo
     echo 'Error: no valid option!'
     echo $1
-    usage
+    syntax
     exit 1
 }
 
+# Test if name project exist
 valid_branchs=(original ilcsoft fcc)
 function branchValid {
     valid=false
@@ -30,10 +44,11 @@ function branchValid {
         fi
     done
     if ! $valid ; then
-        error "-b $branch"
+        error "-p $branch"
     fi
 }
 
+# Test if project have the good directory
 function homeValid {
     if ! [ -d $home ]; then 
         error '-n: home directory no exist'
@@ -46,23 +61,48 @@ function homeValid {
 
 # PARAMETERS
 
-home=~/nnhAnalysis
+# default value
+home=~/nnhAnalysis/nnhHome
 branch=ilcsoft
 input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
-recompile=1
+recompile=1 # no build
+run=0       # run
 
-while getopts hcn:b:i: flag ; do
+# option choice by user
+while getopts hban:p:i: flag ; do
     case "${flag}" in 
-        h)  usage && exit 0;;
-        c)  recompile=0;;
-        n)  home=${OPTARG}
-            homeValid;;
-        b)  branch=${OPTARG}
-            branchValid $branch;;
+    
+        h)  syntax
+            exit 0;;
+        
+        b)  recompile=0
+            run=1;;
+        
+        a)  recompile=0;;
+        
+        n)  home=${OPTARG};;
+            
+        p)  branch=${OPTARG};;
+            
         i)  input=${OPTARG};;
-        *) error 'option no exist';;
+        
+        *)  error 'option no exist';;
+        
     esac
 done 
+
+# TEST PARAMETER VALUES
+
+branchValid $branch
+homeValid
+
+if ! [ -d $NNH_HOME/processor/BUILD ]; then 
+    recompile=0
+fi
+
+if ! [ -d $NNH_HOME/processor/lib ]; then 
+    recompile=0
+fi
 
 # ENVIRONMENT
 
@@ -78,6 +118,9 @@ if [ $recompile -eq 0 ]; then
     if [ -d $NNH_HOME/processor/BUILD ]; then 
         rm -R $NNH_HOME/processor/BUILD
     fi
+    if [ -d $NNH_HOME/processor/lib ]; then 
+        rm -R $NNH_HOME/processor/lib
+    fi
 
     mkdir $NNH_HOME/processor/BUILD
     cd $NNH_HOME/processor/BUILD
@@ -87,15 +130,15 @@ if [ $recompile -eq 0 ]; then
 fi
 
 # RUN
+if [ $run -eq 0 ]; then
+    if [ -d $NNH_PROCESSOR_OUTPUTFILES ]; then 
+        rm -R $NNH_PROCESSOR_OUTPUTFILES
+    fi    
+    mkdir -v $NNH_PROCESSOR_OUTPUTFILES
 
-if [ -d $NNH_PROCESSOR_OUTPUTFILES ]; then 
-    rm -R $NNH_PROCESSOR_OUTPUTFILES
-fi    
-mkdir -v $NNH_PROCESSOR_OUTPUTFILES
-
-python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
-        -i $NNH_PROCESSOR_INPUTFILES \
-        -o $NNH_PROCESSOR_OUTPUTFILES \
-        1> $NNH_PROCESSOR_OUTPUTFILES/std_output.txt \
-        2> $NNH_PROCESSOR_OUTPUTFILES/error_output.txt
-
+    python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
+            -i $NNH_PROCESSOR_INPUTFILES \
+            -o $NNH_PROCESSOR_OUTPUTFILES \
+            1> $NNH_PROCESSOR_OUTPUTFILES/launchNNHProcessor.out \
+            2> $NNH_PROCESSOR_OUTPUTFILES/launchNNHProcessor.err
+fi
