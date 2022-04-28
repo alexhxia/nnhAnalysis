@@ -16,3 +16,5 @@ Pour l'importer :
 ```
 git clone https://github.com/alexhxia/nnhAnalysis.git
 ```
+
+Des aides a l'éxecution se trouve dans le dossier ``script``.
