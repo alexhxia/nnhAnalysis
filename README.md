@@ -1,33 +1,18 @@
 # nnhAnalysis
-Stage M2 IP2I (CNRS), groupe FCC (CMS)
 
-Dans ce dépots, le programme permet l'analyse des cannaux :
+L'objectif est de développer des programmes d'analyse des cannaux :
 
 - e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
 - e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
 
-## Le Projet initial
-Ce projet est basé sur le travail de `ggarillot`. 
-Pour l'importer directement de son github :
+Ce projet est basé sur le travail de ``ggarillot`` pour ILC (Japon), disponible directement depuis son github :
 ```
 git clone --branch refactor https://github.com/ggarillot/nnhAnalysis.git
 ```
-On considère ce dossier que nous venons de créer comme le `NNH_HOME` de notre projet :
-```
-export NNH_HOME=~/nnhAnalysis
-```
-Pour exécuter ce code, on a aussi besoin de préparer l'environnement grâce à :
-```
-source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-```
 
-## Le Projet personnel
-J'ai divisé ce dépot en 3 branches :
-- ``main``
-- ``original`` qui regroupe les fichiers originaux de ``ggarillot`` avec de petites modifications pour s'adapter et pour un stockage local.
-- ``ilcsoft`` amélioration du code `original` toujours pour un stockage local.
-- ``fcc`` qui s'adapte aux nouvelles contraintes du projet FCC du CERN.
+Il s'agit d'un travail de stage M2 effectuer à l'IP2I, l'Institut de Physique des 2 Infinies (CNRS), dans groupe FCC (sous-groupe de CMS). Ici on cherche à rendre le travail de ``ggarillot`` compatible avec le projet FCC.
 
+Pour l'importer :
 ```
 git clone https://github.com/alexhxia/nnhAnalysis.git
 ```
