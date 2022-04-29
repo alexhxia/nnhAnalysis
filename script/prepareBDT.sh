@@ -68,7 +68,7 @@ run=0
 isInputUser=1
 isOutputUser=1
 
-while getopts hcn:b:i:o: flag ; do
+while getopts hcan:b:i:o: flag ; do
     case "${flag}" in 
     
         h)  usage && exit 0 ;;
