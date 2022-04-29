@@ -60,9 +60,10 @@ conda=0
 while getopts hdn:b: flag ; do
     case "${flag}" in 
     
-        h)  usage && exit 0 ;;
+        h)  usage 
+            exit 0;;
         
-        d)  conda=1
+        d)  conda=1;;
             
         n)  home=${OPTARG};;
             
