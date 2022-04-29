@@ -35,7 +35,7 @@ function error {
 branchsValid=(original ilcsoft fcc)
 function testValidBranch {
     valid=false
-    for b in "${valid_branchs[@]}" ; do
+    for b in "${branchsValid[@]}" ; do
         if [ $b == $1 ] ; then
             valid=true 
         fi
