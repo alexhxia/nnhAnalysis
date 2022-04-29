@@ -104,17 +104,19 @@ fi
 if [ $isOutputUser -eq 1 ]; then 
     output=$home/$branch/$output
 fi
+    
+if [ $run -eq 1 ]; then 
+    if ! [ -d $NNH_HOME/analysis/BUILD ]; then
+        recompile=0
+    fi
 
-if ! [ -d $NNH_HOME/analysis/BUILD ]; then
-    recompile=0
-fi
+    if ! [ -d $NNH_HOME/analysis/bin ]; then
+        recompile=0
+    fi
 
-if ! [ -d $NNH_HOME/analysis/bin ]; then
-    recompile=0
-fi
-
-if ! [ -f $NNH_ANALYSIS_OUTPUTFILES/DATA.root ]; then
-    recompile=0
+    if ! [ -f $NNH_ANALYSIS_OUTPUTFILES/DATA.root ]; then
+        recompile=0
+    fi
 fi
 
 # ENVIRONMENT
