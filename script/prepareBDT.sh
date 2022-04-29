@@ -33,7 +33,7 @@ function error {
 }
 
 branchsValid=(original ilcsoft fcc)
-function testValidBranch {
+function testBranchValid {
     valid=false
     for b in "${branchsValid[@]}" ; do
         if [ $b == $1 ] ; then
@@ -59,11 +59,14 @@ function testHomeValid {
 
 home=~/nnhAnalysis/nnhHome
 branch=ilcsoft
-input=$home/$branch/processor/RESULTS
-output=$home/$branch/analysis/DATA
+input=processor/RESULTS
+output=analysis/DATA
 
 recompile=1
 run=0
+
+isInputUser=1
+isOutputUser=1
 
 while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
@@ -79,9 +82,11 @@ while getopts hcn:b:i:o: flag ; do
             
         b)  branch=${OPTARG};;
             
-        i)  input=${OPTARG};;
+        i)  input=${OPTARG}
+            isInputUser=0;;
         
-        o)  output=${OPTARG};;
+        o)  output=${OPTARG}
+            isOutputUser=0;;
         
         *) error 'option no exist';;
     esac
@@ -89,8 +94,16 @@ done
 
 # TEST PARAMETERS
 
-testValidBranch $branch
+testBranchValid $branch
 testHomeValid
+
+if [ isInputUser -eq 1 ]; then 
+    input=$home/$branch/$input
+fi
+
+if [ isOutputUser -eq 1 ]; then 
+    output=$home/$branch/$output
+fi
 
 if ! [ -d $NNH_HOME/analysis/BUILD ]; then
     recompile=0
