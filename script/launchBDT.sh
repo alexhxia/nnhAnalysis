@@ -46,8 +46,8 @@ function homeValid {
         error '-n: home/branch directory no exist'
     elif ! [ -d $home/$branch/analysis ]; then 
         error '-n: home/branch/analysis directory no exist'
-    elif ! [ -f $home/$branch/analysis/DATA/data.root ]; then 
-        error '-n: home/branch/analysis/DATA/data.root file no exist (prepare BDT first)'
+   # elif ! [ -f $home/$branch/analysis/DATA/data.root ]; then 
+    #    error '-n: home/branch/analysis/DATA/data.root file no exist (prepare BDT first)'
     fi
 }
 
@@ -87,7 +87,7 @@ export NNH_HOME=$home/$branch
 
 cd $NNH_HOME/analysis/python
 
-if [ conda -eq 0 ]; then
+if [ $conda -eq 0 ]; then
     source ~/miniconda3/etc/profile.d/conda.sh
     conda activate env_root_python
 fi

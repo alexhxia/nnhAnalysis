@@ -157,3 +157,5 @@ if [ $run -eq 0 ]; then
             1> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.out \
             2> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.err
 fi
+
+echo "fin $branch"
