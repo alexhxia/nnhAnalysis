@@ -97,11 +97,11 @@ done
 testBranchValid $branch
 testHomeValid
 
-if [ isInputUser -eq 1 ]; then 
+if [ $isInputUser -eq 1 ]; then 
     input=$home/$branch/$input
 fi
 
-if [ isOutputUser -eq 1 ]; then 
+if [ $isOutputUser -eq 1 ]; then 
     output=$home/$branch/$output
 fi
 
