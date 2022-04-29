@@ -32,8 +32,8 @@ function error {
     exit 1
 }
 
-valid_branchs=(original ilcsoft fcc)
-function branchValid {
+branchsValid=(original ilcsoft fcc)
+function testValidBranch {
     valid=false
     for b in "${valid_branchs[@]}" ; do
         if [ $b == $1 ] ; then
@@ -45,7 +45,7 @@ function branchValid {
     fi
 }
 
-function homeValid {
+function testHomeValid {
     if ! [ -d $home ]; then 
         error '-n: home directory no exist'
     elif ! [ -d $home/$branch ]; then 
@@ -73,14 +73,11 @@ while getopts hcn:b:i:o: flag ; do
         c)  recompile=0
             run=1;;
         
-        
         a)  recompile=0;;
         
-        n)  home=${OPTARG}
-            homeValid;;
+        n)  home=${OPTARG};;
             
-        b)  branch=${OPTARG}
-            branchValid $branch;;
+        b)  branch=${OPTARG};;
             
         i)  input=${OPTARG};;
         
@@ -91,6 +88,9 @@ while getopts hcn:b:i:o: flag ; do
 done 
 
 # TEST PARAMETERS
+
+testValidBranch $branch
+testHomeValid
 
 if ! [ -d $NNH_HOME/analysis/BUILD ]; then
     recompile=0
@@ -103,9 +103,6 @@ fi
 if ! [ -f $NNH_ANALYSIS_OUTPUTFILES/DATA.root ]; then
     recompile=0
 fi
-
-valid_branchs $branch
-homeValid
 
 # ENVIRONMENT
 
