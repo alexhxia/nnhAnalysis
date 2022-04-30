@@ -134,7 +134,8 @@ echo
 
 # processor
 for ((p = 1; p <= $nb_processor; p++)); do
-    echo "Start "$p"th processor:"
+    echo
+    echo "    Start "$p"th processor:"
     
     # OUTPUT DIRECTORY IN SERVER 
     k=1
@@ -157,26 +158,24 @@ for ((p = 1; p <= $nb_processor; p++)); do
     # MOVE OUTPUT PROCESSOR DATA IN SERVER 
     mv $NNH_PROCESSOR_OUTPUTFILES/* $OUTPUT_DIRECTORY/processor
     rm -R $NNH_PROCESSOR_OUTPUTFILES
-    echo "Output processor files save in $OUTPUT_DIRECTORY/processor"
-    echo
+    echo "    Output processor files save in $OUTPUT_DIRECTORY/processor"
     
     # analysis
     
     for ((a = 1; a <= $nb_bdt; a++)); do
-        echo "--> Start "$a"th BDT at "$p"th processor: "
+        echo
+        echo "        Start "$a"th BDT at "$p"th processor: "
         outDir=$OUTPUT_DIRECTORY/analysis/run_"$k"_"$a"
         mkdir -pv $outDir
         ./analysis_prepareBDT.sh -n $NNH_HOME -b $branch -i $OUTPUT_DIRECTORY/processor -o $NNH_ANALYSIS_OUTPUTFILES -a
         ./analysis_launchBDT.sh -n $NNH_HOME -b $branch
         mv $NNH_ANALYSIS_OUTPUTFILES/* $outDir
-        echo "Output analysis files save in $OUTPUT_DIRECTORY/processor"
-        echo
+        echo "        Output analysis files save in $OUTPUT_DIRECTORY/processor"
         rm -R $NNH_ANALYSIS_OUTPUTFILES
     done
     
 done
 
-echo "...Terminate nnh"
 echo
-echo "Output files is in directory : $OUTPUT_DIRECTORY"
+echo "...Terminate nnh"
 echo

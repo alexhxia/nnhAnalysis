@@ -6,10 +6,12 @@ function print_export {
     echo
 }
 
-
-function usage {
+function syntax {
     echo
-    echo 'Usage : ./analysis_prepareBDT.sh [options]'
+    echo "Run BDT program."
+    echo
+    echo 'Syntax : ./prepareBDT.sh [options]'
+    echo 'options :'
     echo '-h : print help'
     echo '-d : deactivate conda'
     echo '-n [directory]: nnhAnalysis directory'
@@ -60,7 +62,7 @@ conda=0
 while getopts hdn:b: flag ; do
     case "${flag}" in 
     
-        h)  usage 
+        h)  syntax 
             exit 0;;
         
         d)  conda=1;;
@@ -85,6 +87,10 @@ export NNH_HOME=$home/$branch
 
 # RUN
 
+echo
+echo "--> RUN : launchBDT ($branch) <--"
+echo
+
 cd $NNH_HOME/analysis/python
 
 if [ $conda -eq 0 ]; then
@@ -95,3 +101,6 @@ fi
 python3 launchBDT_bb.py 1> $NNH_HOME/analysis/DATA/launchBDT_bb.out 2> $NNH_HOME/analysis/DATA/launchBDT_bb.err 
 python3 launchBDT_WW.py 1> $NNH_HOME/analysis/DATA/launchBDT_WW.err 2> $NNH_HOME/analysis/DATA/launchBDT_WW.err 
 
+echo
+echo "--> END : launchBDT ($branch) <--"
+echo

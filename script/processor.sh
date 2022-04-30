@@ -3,6 +3,7 @@
 function print_export {
     echo
     echo "home : $NNH_HOME"
+    echo
     echo "processor input : $NNH_PROCESSOR_INPUTFILES"
     echo "processor output : $NNH_PROCESSOR_OUTPUTFILES"
     echo
@@ -87,7 +88,6 @@ while getopts hcan:b:i: flag ; do
         i)  input=${OPTARG};;
         
         *)  error 'option no exist';;
-        
     esac
 done 
 
@@ -96,12 +96,14 @@ done
 branchValid $branch
 homeValid
 
-if ! [ -d $NNH_HOME/processor/BUILD ]; then 
-    recompile=0
-fi
+if [ $run -eq 1 ]; then
+    if ! [ -d $NNH_HOME/processor/BUILD ]; then 
+        recompile=0
+    fi
 
-if ! [ -d $NNH_HOME/processor/lib ]; then 
-    recompile=0
+    if ! [ -d $NNH_HOME/processor/lib ]; then 
+        recompile=0
+    fi
 fi
 
 # ENVIRONMENT
@@ -115,6 +117,9 @@ export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 # COMPILATION
 
 if [ $recompile -eq 0 ]; then
+    echo
+    echo "--> BUILD : processor ($branch) <--"
+    echo
     if [ -d $NNH_HOME/processor/BUILD ]; then 
         rm -R $NNH_HOME/processor/BUILD
     fi
@@ -131,6 +136,9 @@ fi
 
 # RUN
 if [ $run -eq 0 ]; then
+    echo
+    echo "--> RUN : processor ($branch) <--"
+    echo
     if [ -d $NNH_PROCESSOR_OUTPUTFILES ]; then 
         rm -R $NNH_PROCESSOR_OUTPUTFILES
     fi    
@@ -142,3 +150,7 @@ if [ $run -eq 0 ]; then
             1> $NNH_PROCESSOR_OUTPUTFILES/launchNNHProcessor.out \
             2> $NNH_PROCESSOR_OUTPUTFILES/launchNNHProcessor.err
 fi
+
+echo
+echo "--> END : processor ($branch) <--"
+echo

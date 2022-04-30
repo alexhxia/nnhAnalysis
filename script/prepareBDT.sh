@@ -9,9 +9,11 @@ function print_export {
     echo
 }
 
-function usage {
+function syntax {
     echo
-    echo 'Usage : ./analysis_prepareBDT.sh [options]'
+    echo "Prepare BDT program."
+    echo
+    echo 'Syntax : ./prepareBDT.sh [options]'
     echo 'options'
     echo '    -h : print help'
     echo '    -c : just build'
@@ -28,7 +30,7 @@ function error {
     echo
     echo 'Error: no valid option!'
     echo $1
-    usage
+    syntax
     exit 1
 }
 
@@ -71,7 +73,8 @@ isOutputUser=1
 while getopts hcan:b:i:o: flag ; do
     case "${flag}" in 
     
-        h)  usage && exit 0 ;;
+        h)  syntax
+            exit 0 ;;
         
         c)  recompile=0
             run=1;;
@@ -133,6 +136,9 @@ export NNH_ANALYSIS_OUTPUTFILES=$output
 # COMPILATION
 
 if [ $recompile -eq 0 ]; then
+    echo
+    echo "--> BUILD : prepareBDT ($branch) <--"
+    echo
     if [ -d $NNH_ANALYSIS_OUTPUTFILES ]; then
         rm -R $NNH_ANALYSIS_OUTPUTFILES
     fi
@@ -152,10 +158,15 @@ fi
 
 # RUN
 if [ $run -eq 0 ]; then
+    echo
+    echo "--> RUN : prepareBDT ($branch) <--"
+    echo
     cd $NNH_HOME
     ./analysis/bin/prepareForBDT \
             1> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.out \
             2> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.err
 fi
 
-echo "fin $branch"
+echo
+echo "--> END : prepareBDT ($branch) <--"
+echo
