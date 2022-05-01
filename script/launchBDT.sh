@@ -24,7 +24,7 @@ function error {
     echo
     echo 'Error: no valid option!'
     echo $1
-    usage
+    syntax
     exit 1
 }
 
@@ -98,7 +98,7 @@ if [ $conda -eq 0 ]; then
     conda activate env_root_python
 fi
 
-python3 launchBDT_bb.py 1> $NNH_HOME/analysis/DATA/launchBDT_bb.out 2> $NNH_HOME/analysis/DATA/launchBDT_bb.err 
+#python3 launchBDT_bb.py 1> $NNH_HOME/analysis/DATA/launchBDT_bb.out 2> $NNH_HOME/analysis/DATA/launchBDT_bb.err 
 python3 launchBDT_WW.py 1> $NNH_HOME/analysis/DATA/launchBDT_WW.err 2> $NNH_HOME/analysis/DATA/launchBDT_WW.err 
 
 echo
