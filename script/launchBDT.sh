@@ -40,7 +40,7 @@ function error {
 # Test if name project exist
 function test_isValidBranch {
     valid=false
-    for b in "${valid_branchs[@]}" ; do
+    for b in "${branchsValid[@]}" ; do
         if [ $b == $1 ] ; then
             valid=true 
         fi
