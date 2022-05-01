@@ -2,27 +2,39 @@
 
 function print_export {
     echo
-    echo "home : $NNH_HOME"
+    echo "home :             $NNH_HOME"
     echo
-    echo "analysis input : $NNH_ANALYSIS_INPUTFILES"
-    echo "analysis output : $NNH_ANALYSIS_OUTPUTFILES"
+    echo "analysis input :   $NNH_ANALYSIS_INPUT"
+    echo "analysis output :  $NNH_ANALYSIS_OUTPUT"
     echo
 }
 
+# Display Help
 function syntax {
     echo
     echo "Prepare BDT program."
     echo
-    echo 'Syntax : ./prepareBDT.sh [options]'
-    echo 'options'
-    echo '    -h : print help'
-    echo '    -c : just build'
-    echo '    -a : build and run'
-    echo '    -n [directory]: nnhAnalysis directory'
-    echo '    -b [name]: branch'
-    echo '    -i [directory]: input directory'
-    echo '    -o [directory]: output directory'
+    echo 'SYNTAX:'
+    echo '    ./prepareBDT.sh [options]'
     echo
+    echo 'OPTIONS:'
+    echo '   -h                print help'
+    echo 
+    echo '   -c                build and run'
+    echo
+    echo '   -b [name]         branch'
+    echo "                     DEFAULT VALUE: $branch"
+    echo
+    echo '   -n [directory]    nnhAnalysis directory'
+    echo "                     DEFAULT VALUE: $home"
+    echo
+    echo '   -i [directory]    input directory'
+    echo "                     DEFAULT VALUE: $input"
+    echo
+    echo '   -o [directory]    output directory'
+    echo "                     DEFAULT VALUE: $output"
+    echo
+    
 }
 
 # Stop program with error
@@ -34,10 +46,10 @@ function error {
     exit 1
 }
 
-branchsValid=(original ilcsoft fcc)
-function testBranchValid {
+# Test if name project exist
+function test_isValidBranch {
     valid=false
-    for b in "${branchsValid[@]}" ; do
+    for b in "${valid_branchs[@]}" ; do
         if [ $b == $1 ] ; then
             valid=true 
         fi
@@ -47,39 +59,51 @@ function testBranchValid {
     fi
 }
 
-function testHomeValid {
+# Test if the directory home is valid
+function test_isValidHome {
     if ! [ -d $home ]; then 
         error '-n: home directory no exist'
     elif ! [ -d $home/$branch ]; then 
         error '-n: home/branch directory no exist'
-    elif  ! [ -d $home/$branch/analysis ]; then 
+    elif ! [ -d $home/$branch/analysis ]; then 
         error '-n: home/branch/analysis directory no exist'
-    fi;
+    fi
+}
+
+# Test if the directory input is valid
+function test_isValidInputDirectory {
+    if ! [ -d $input ]; then 
+        error '-i: input directory no exist'
+    fi
+}
+
+# Test if the directory output is valid
+function test_isValidOutputDirectory {
+    if ! [ -d $output ]; then 
+        error '-o: output directory no exist'
+    fi
 }
 
 # PARAMETERS
 
+branchsValid=(original ilcsoft fcc)
 home=~/nnhAnalysis/nnhHome
 branch=ilcsoft
 input=processor/RESULTS
 output=analysis/DATA
 
 recompile=1
-run=0
 
 isInputUser=1
 isOutputUser=1
 
-while getopts hcan:b:i:o: flag ; do
+while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
     
         h)  syntax
             exit 0 ;;
         
-        c)  recompile=0
-            run=1;;
-        
-        a)  recompile=0;;
+        c)  recompile=0;;
         
         n)  home=${OPTARG};;
             
@@ -97,18 +121,22 @@ done
 
 # TEST PARAMETERS
 
-testBranchValid $branch
-testHomeValid
+test_isValidBranch $branch
+test_isValidHome
 
 if [ $isInputUser -eq 1 ]; then 
     input=$home/$branch/$input
 fi
 
+test_isValidInputDirectory
+
 if [ $isOutputUser -eq 1 ]; then 
     output=$home/$branch/$output
 fi
+
+test_isValidOutputDirectory
     
-if [ $run -eq 1 ]; then 
+if [ $recompile -eq 1 ]; then 
     if ! [ -d $NNH_HOME/analysis/BUILD ]; then
         recompile=0
     fi
@@ -117,7 +145,7 @@ if [ $run -eq 1 ]; then
         recompile=0
     fi
 
-    if ! [ -f $NNH_ANALYSIS_OUTPUTFILES/DATA.root ]; then
+    if ! [ -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
         recompile=0
     fi
 fi
@@ -125,11 +153,9 @@ fi
 # ENVIRONMENT
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-
 export NNH_HOME=$home/$branch
-
-export NNH_ANALYSIS_INPUTFILES=$input
-export NNH_ANALYSIS_OUTPUTFILES=$output
+export NNH_ANALYSIS_INPUT=$input
+export NNH_ANALYSIS_OUTPUT=$output
 
 #print_export
 
@@ -139,11 +165,11 @@ if [ $recompile -eq 0 ]; then
     echo
     echo "--> BUILD : prepareBDT ($branch) <--"
     echo
-    if [ -d $NNH_ANALYSIS_OUTPUTFILES ]; then
-        rm -R $NNH_ANALYSIS_OUTPUTFILES
+    if [ -d $NNH_ANALYSIS_OUTPUT ]; then
+        rm -R $NNH_ANALYSIS_OUTPUT
     fi
-    mkdir $NNH_ANALYSIS_OUTPUTFILES
-    hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
+    mkdir $NNH_ANALYSIS_OUTPUT
+    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
 
     if [ -d $NNH_HOME/analysis/BUILD ]; then
         rm -R $NNH_HOME/analysis/BUILD
@@ -157,15 +183,13 @@ if [ $recompile -eq 0 ]; then
 fi
 
 # RUN
-if [ $run -eq 0 ]; then
-    echo
-    echo "--> RUN : prepareBDT ($branch) <--"
-    echo
-    cd $NNH_HOME
-    ./analysis/bin/prepareForBDT \
-            1> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.out \
-            2> $NNH_ANALYSIS_OUTPUTFILES/prepareBDT.err
-fi
+echo
+echo "--> RUN : prepareBDT ($branch) <--"
+echo
+cd $NNH_HOME
+./analysis/bin/prepareForBDT \
+        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 
 echo
 echo "--> END : prepareBDT ($branch) <--"

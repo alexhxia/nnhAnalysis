@@ -2,28 +2,35 @@
 
 function print_export {
     echo
-    echo "home : $NNH_HOME"
+    echo "home :             $NNH_HOME"
     echo
-    echo "processor input : $NNH_PROCESSOR_INPUTFILES"
-    echo "processor output : $NNH_PROCESSOR_OUTPUTFILES"
+    echo "processor input :  $NNH_PROCESSOR_INPUT"
+    echo "processor output : $NNH_PROCESSOR_OUTPUT"
     echo
 }
 
 # Display Help
 function syntax {
     echo
-    echo "Run 'processor' program."
+    echo "Run 'processor', 'prepareBDT', and 'analysis'."
     echo
-    echo 'Syntax : ./processor.sh [options]'
-    echo 'options:'
-    echo '    -h : print help'
-    echo '    -c : build just'
-    echo '    -a : build and run'
-    echo '    -n [directory]: nnhHome directory'
-    echo '    -b [name]: type project or branch'
-    echo '    -i [directory]: input directory'
-    #echo '    -o [directory]: output directory'
+    echo 'SYNTAX:'
+    echo '    ./processor.sh [options]'
     echo
+    echo 'OPTIONS:'
+    echo '   -h                print help'
+    echo 
+    echo '   -c                build then run'
+    echo
+    echo '   -b [name]         branch'
+    echo "                     DEFAULT VALUE: $branch"
+    echo
+    echo '   -n [directory]    nnhAnalysis directory'
+    echo "                     DEFAULT VALUE: $home"
+    echo
+    echo '   -i [directory]    input directory'
+    echo "                     DEFAULT VALUE: $input"
+    echo    
 }
 
 # Stop program with error
@@ -36,8 +43,7 @@ function error {
 }
 
 # Test if name project exist
-valid_branchs=(original ilcsoft fcc)
-function branchValid {
+function test_isValidBranch {
     valid=false
     for b in "${valid_branchs[@]}" ; do
         if [ $b == $1 ] ; then
@@ -45,41 +51,46 @@ function branchValid {
         fi
     done
     if ! $valid ; then
-        error "-p $branch"
+        error "-b $branch"
     fi
 }
 
-# Test if project have the good directory
-function homeValid {
+# Test if the directory home is valid
+function test_isValidHome {
     if ! [ -d $home ]; then 
         error '-n: home directory no exist'
     elif ! [ -d $home/$branch ]; then 
         error '-n: home/branch directory no exist'
     elif ! [ -d $home/$branch/processor ]; then 
         error '-n: home/branch/processor directory no exist'
-    fi;
+    fi
+}
+
+# Test if the directory input is valid
+function test_isValidInputDirectory {
+    if ! [ -d $input ]; then 
+        error '-i: input directory no exist'
+    fi
 }
 
 # PARAMETERS
 
 # default value
+
+valid_branchs=(original ilcsoft fcc)
 home=~/nnhAnalysis/nnhHome
 branch=ilcsoft
 input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 recompile=1 # no build
-run=0       # run
 
 # option choice by user
-while getopts hcan:b:i: flag ; do
+while getopts hcn:b:i: flag ; do
     case "${flag}" in 
     
         h)  syntax
             exit 0;;
         
-        c)  recompile=0
-            run=1;;
-        
-        a)  recompile=0;;
+        c)  recompile=0;;
         
         n)  home=${OPTARG};;
             
@@ -91,12 +102,13 @@ while getopts hcan:b:i: flag ; do
     esac
 done 
 
-# TEST PARAMETER VALUES
+# test parameters
 
-branchValid $branch
-homeValid
+test_isValidBranch $branch
+test_isValidHome
+test_isValidInputDirectory
 
-if [ $run -eq 1 ]; then
+if [ $recompile -eq 1 ]; then
     if ! [ -d $NNH_HOME/processor/BUILD ]; then 
         recompile=0
     fi
@@ -110,8 +122,8 @@ fi
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 export NNH_HOME=$home/$branch
-export NNH_PROCESSOR_INPUTFILES=$input 
-export NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+export NNH_PROCESSOR_INPUT=$input 
+export NNH_PROCESSOR_OUTPUT=$NNH_HOME/processor/RESULTS
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
 # COMPILATION
@@ -135,21 +147,21 @@ if [ $recompile -eq 0 ]; then
 fi
 
 # RUN
-if [ $run -eq 0 ]; then
-    echo
-    echo "--> RUN : processor ($branch) <--"
-    echo
-    if [ -d $NNH_PROCESSOR_OUTPUTFILES ]; then 
-        rm -R $NNH_PROCESSOR_OUTPUTFILES
-    fi    
-    mkdir -v $NNH_PROCESSOR_OUTPUTFILES
 
-    python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
-            -i $NNH_PROCESSOR_INPUTFILES \
-            -o $NNH_PROCESSOR_OUTPUTFILES \
-            1> $NNH_PROCESSOR_OUTPUTFILES/launchNNHProcessor.out \
-            2> $NNH_PROCESSOR_OUTPUTFILES/launchNNHProcessor.err
-fi
+echo
+echo "--> RUN : processor ($branch) <--"
+echo
+
+if [ -d $NNH_PROCESSOR_OUTPUT ]; then 
+    rm -R $NNH_PROCESSOR_OUTPUT
+fi    
+mkdir -v $NNH_PROCESSOR_OUTPUT
+
+python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
+        -i $NNH_PROCESSOR_INPUT \
+        -o $NNH_PROCESSOR_OUTPUT \
+        1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
+        2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err
 
 echo
 echo "--> END : processor ($branch) <--"
