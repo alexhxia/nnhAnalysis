@@ -157,7 +157,7 @@ export NNH_HOME=$home/$branch
 export NNH_ANALYSIS_INPUT=$input
 export NNH_ANALYSIS_OUTPUT=$output
 
-#print_export
+#print_export && exit 0
 
 # COMPILATION
 
