@@ -104,7 +104,7 @@ done
 
 # test parameters
 
-test_isValidBranch $branch
+#test_isValidBranch $branch
 test_isValidHome
 test_isValidInputDirectory
 

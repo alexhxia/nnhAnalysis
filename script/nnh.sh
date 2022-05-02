@@ -57,7 +57,7 @@ function error {
     exit 1
 }
 
-# Test if name project exist
+# Test if name project exist (no use now)
 function test_isValidBranch {
     valid=false
     for b in "${branchsValid[@]}" ; do
@@ -83,7 +83,7 @@ function test_isValidHome {
     fi
 }
 
-# Test if the directory input is valid
+# Test if the directory input is valid 
 function test_isValidInputDirectory {
     if ! [ -d $input ]; then 
         error '-i: input directory no exist'
@@ -102,6 +102,7 @@ function test_isValidOutputDirectory {
 valid_branchs=(original ilcsoft fcc)
 branch=ilcsoft
 home=~/nnhAnalysis/nnhHome
+script=~/nnhAnalysis/script
 input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 output=/gridgroup/ilc/nnhAnalysisFiles/result
 nb_processor=1
@@ -129,7 +130,7 @@ while  getopts ":b:p:a:n:i:o:h" option ; do
     esac
 done 
 
-test_isValidBranch $branch
+# test_isValidBranch $branch
 test_isValidHome
 test_isValidInputDirectory
 test_isValidOutputDirectory
@@ -154,10 +155,11 @@ NNH_ANALYSIS_INPUT=$NNH_PROCESSOR_OUTPUT
 NNH_ANALYSIS_OUTPUT=$NNH_HOME/analysis/DATA
 
 #print_export
-
+echo "Option OK"
 echo
 echo "Start nnh on the $branch branch with $nb_bdt BDT for each $nb_processor processors..."
-
+cd $script
+pwd
 ### processor ###
 for ((p = 1; p <= $nb_processor; p++)); do
     echo
@@ -165,7 +167,7 @@ for ((p = 1; p <= $nb_processor; p++)); do
     
     # OUTPUT DIRECTORY IN SERVER 
     k=1
-    OUTPUT_DIRECTORY=$NNH_OUTPUT/run.p_$k
+    OUTPUT_DIRECTORY=$NNH_OUTPUT/run_$k
     while [ -d $OUTPUT_DIRECTORY ]; do
         k=$((k + 1))
         OUTPUT_DIRECTORY=$NNH_OUTPUT/run_$k
@@ -189,15 +191,16 @@ for ((p = 1; p <= $nb_processor; p++)); do
     for ((a = 1; a <= $nb_analysis; a++)); do
         echo
         echo "    Start "$a"th BDT at "$p"th processor: "
-        outDir=$OUTPUT_DIRECTORY/analysis/run.p_"$k".a_"$a"
+        outDir=$OUTPUT_DIRECTORY/analysis/run_"$k"_"$a"
         mkdir -pv $outDir
+        echo "    Prepare BDT..."
         ./analysis_prepareBDT.sh -n $NNH_HOME -b $branch -i $OUTPUT_DIRECTORY/processor -o $NNH_ANALYSIS_OUTPUT -c
+        echo "    Launch  BDT..."
         ./analysis_launchBDT.sh -n $NNH_HOME -b $branch
         mv $NNH_ANALYSIS_OUTPUT/* $outDir
         echo "    Output analysis files save in $OUTPUT_DIRECTORY/processor"
         rm -R $NNH_ANALYSIS_OUTPUT
     done
-    
 done
 
 echo
