@@ -4,24 +4,18 @@
 Ce programme compare les résultats de 2 dossiers de sortie du programme 'processor'.
 """
 
-import argparse
-import os, os.path
-import sys
-import ROOT
+import argparse 
+import os, os.path 
+import sys 
+import ROOT 
+
+from ROOT import TFile, TH1F, TTree
 
 def error(msg):
     """Print error messenger and Stop programme with error"""
     
     print(msg)
     sys.exit(1)
-    
-
-def testEnv():
-    """Test if variable env is set."""
-    
-    if 'NNH_HOME' not in os.environ:
-        print('ERROR : env variable NNH_HOME is not set')
-        sys.exit(1)
 
 def testInputDirectory(directory):
     """Test if input directory exist."""
@@ -53,7 +47,7 @@ if __name__ == "__main__":
     testInputDirectory(p1Directory)
     
     p2Directory = args['processor2']
-    #testInputDirectory(p2Directory)
+    testInputDirectory(p2Directory)
     
     numProcessus = [
         402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
@@ -66,26 +60,45 @@ if __name__ == "__main__":
         500126, 500127, 500128
     ]
     
-    for numP in numProcessus:
-        numP = str(numP) + ".root"
-        path_p1 = os.path.join(p1Directory, numP)
-        path_p2 = os.path.join(p2Directory, numP)
-        if (not os.path.exists(path_p1) or not os.path.exists(path_p2)) :
-            print(numP + " exist for 2")
-        else :
-            ROOT.TFile *file0 ;
-            file0 = ROOT.TFile::Open(numP)
-            TTree *T0  = (TTree*)file0->Get("tree");
-            TFile *file1 = TFile::Open("processor/402002.root")
-            TTree *T1  = (TTree*)file1->Get("tree");
-            T0->Draw("nParticles")
-            TH1F* h=new TH1F("h","n particules",200,0,200)
-            TH1F* hb=new TH1F("hb","n particules",200,0,200)
-            T0->Draw("nParticles>>h")
-            T1->Draw("nParticles>>hb")
-            float k=h->KolmogorovTest(hb,"UON")
+    #for numP in numProcessus:
+    numP = 402173
+    numP = str(numP) + ".root"
+    path_p1 = os.path.join(p1Directory, numP)
+    path_p2 = os.path.join(p2Directory, numP)
+    if not os.path.exists(path_p1) or not os.path.exists(path_p2) :
+        print(numP + "no exist for 2")
+    else :
+        print(numP)
+        file1 = TFile.Open(path_p1)
+        file2 = TFile.Open(path_p2)
         
+        tree1 = file1.Get("tree")
+        tree2 = file2.Get("tree")
         
-    #print(sys.argv)
-    #print(parser.parse_args())
+        branchs1 = tree1.GetListOfBranches()
+        for branch1 in branchs1:
+        
+            nameBranch = branch1.GetName()
+            #nameBranch = "mc_nu_e"
+            branch2 = tree2.GetBranch(nameBranch)
+        
+            tree1.Draw(nameBranch)
+            tree2.Draw(nameBranch)
+        
+            hist1 = TH1F("hist1", nameBranch, 200, 0, 200)
+            hist2 = TH1F("hist2", nameBranch, 200, 0, 200)
+        
+            tree1.Draw(nameBranch + ">>hist1")
+            tree2.Draw(nameBranch + ">>hist2")
+        
+            k = hist1.KolmogorovTest(hist2, "UON")
+            print(nameBranch + ": kolmogorov test = " + str(k))
 
+            del hist1
+            del hist2
+
+        file1.Close()
+        file2.Close()
+    
+
+    print("----- END -----")
