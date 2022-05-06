@@ -61,9 +61,6 @@ if __name__ == "__main__":
     # add num processus if is missing
     processusMissing = list()
     
-    # add if processus 1 and 2 are different tree
-    processusDistinct = {}
-    
     for numP in numProcessus:
         
         numPFileName = str(numP) + ".root"
