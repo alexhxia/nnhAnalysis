@@ -65,51 +65,66 @@ def distinctBranchTree(tree1, tree2):
 
 if __name__ == "__main__":
     
+    print("\n----- BEGIN TEST_2ANALYSIS -----\n")
+
+    
     # PARAMETERS
     
     parser = argparse.ArgumentParser()
     
     parser.add_argument(
-            '-p1', '--processor1', 
-            help='Path of processor directory', 
+            '-a1', '--analysis1', 
+            help='Path of analysis directory', 
             required=True)
     
     parser.add_argument(
-            '-p2', '--processor2', 
-            help='Path of processor directory', 
+            '-a2', '--analysis2', 
+            help='Path of analysis directory', 
             required=True)
             
     args = vars(parser.parse_args())
     
-    p1Directory = args['processor1']
-    testInputDirectory(p1Directory)
+    a1Directory = args['analysis1']
+    testInputDirectory(a1Directory)
     
-    p2Directory = args['processor2']
-    testInputDirectory(p2Directory)
+    a2Directory = args['analysis2']
+    testInputDirectory(a2Directory)
     
-    # FOR ALL PROCESSUS
+    # Get all file name in 2 analysis directory
     
-    numProcessus = [
-        402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
-        402012, 402001, 402002, 402013, 402014, 402003, 402004, 402005, 402006, 
-        500006, 500008, 500010, 500012, 500062, 500064, 500066, 500068, 500070, 
-        500072, 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 
-        500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112, 500086, 
-        500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 
-        500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
-        500126, 500127, 500128
-    ]
+    nameFile1List = os.listdir(a1Directory)
+    nameFile2List = os.listdir(a2Directory)
     
-    # add if processus 1 and 2 are different tree
-    processusDistinct = {}
+    nameFileList = set(nameFile1List + nameFile2List)
     
-    for numP in numProcessus:
+    # Sort file by type in dictionary
+    nameFileByType = {}
+    
+    for nameFile in nameFileList:
         
-        print("\nProcessus " + str(numP) + " in progress...")
-        numPFileName = str(numP) + ".root"
-        path_p1 = os.path.join(p1Directory, numPFileName)
-        path_p2 = os.path.join(p2Directory, numPFileName)
+        nameFileSplit = os.path.splitext(nameFile)
         
+        typeFile=nameFileSplit[1]
+        
+        if typeFile in nameFileByType:
+            t = nameFileByType[typeFile]
+            t.append(nameFile)
+            nameFileByType.update({typeFile: t})
+        else:
+            nameFileByType[typeFile] = [nameFile]
+           
+    # TEST BY FILE TYPE
+    analysisDistinct = []
+    
+    # ROOT files
+    
+    print("\nROOT files... ")
+    rootFiles = nameFileByType[".root"]
+    for rootFile  in rootFiles:
+        path_p1 = os.path.join(a1Directory, rootFile)
+        path_p2 = os.path.join(a2Directory, rootFile)
+    
+        print(rootFile)
         if os.path.exists(path_p1) and os.path.exists(path_p2):
             
             # FOR EACH TREE
@@ -123,7 +138,7 @@ if __name__ == "__main__":
             distinctBranchTreeList = distinctBranchTree(tree1, tree2)
             
             if not len(distinctBranchTreeList) == 0:
-                processusDistinct[numP] = distinctBranchTreeList
+                analysisDistinct[rootFile] = distinctBranchTreeList
             
             file1.Close()
             file2.Close()
@@ -132,9 +147,9 @@ if __name__ == "__main__":
     
     print("\n---- RESULTS -----")
     
-    if len(processusDistinct) == 0:
-        print("\nProcessus1 and Processus2 are same.")
+    if len(analysisDistinct) == 0:
+        print("\nAnalysis1 and Analysis2 are same.")
     else:
-        print("\nProcessus1 and Processus2 are distinct for:\n\t" + str(processusDistinct))
+        print("\nAnalysis1 and Analysis2 are distinct for:\n\t" + str(analysisDistinct))
     
-    print("\n----- END TEST_2PROCESSOR -----\n")
+    print("\n----- END TEST_2ANALYSIS -----\n")
