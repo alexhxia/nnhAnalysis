@@ -8,31 +8,33 @@ source help.sh
 # Display Help
 function syntax {
     echo
-    echo "Run 'processor', 'prepareBDT', and 'analysis'."
+    echo "Run 'prepareBDT', and 'analysis'."
     echo
     echo 'SYNTAX:'
-    echo '    ./nnh.sh [options]'
+    echo '    ./nnhAnalysis.sh [options]'
     echo
     
-    syntaxOption h p a b n i o #help.sh
+    syntaxOption h d p a b n i o #help.sh
 }
 
 ### PARAMETER ###
 
-nb_processor=1
-nb_analysis=1
+# look environement parameters default in export.sh
+num_run=1
+nb_BDT=1
+nb_runByBDT=1
 
-while  getopts ":b:p:a:n:i:o:h" option ; do
+while  getopts ":b:a:d:n:i:o:h" option ; do
     case "${option}" in 
     
         h)  syntax
             exit 0;;
             
         b)  branch=${OPTARG};;
+                
+        d)  nb_BDT=${OPTARG};;
         
-        p)  nb_processor=${OPTARG};;
-        
-        a)  nb_analysis=${OPTARG};;
+        a)  nb_runByBDT=${OPTARG};;
         
         n)  home=${OPTARG};;
         
@@ -49,11 +51,11 @@ test_isValidHome
 test_isValidInputDirectory
 test_isValidOutputDirectory
 
-if [[ $nb_processor -lt 0 ]] ; then
+if [[ $nb_BDT -lt 0 ]] ; then
     error "-p: $nb_processor < 0"
 fi
 
-if [[ $nb_analysis -lt 0 ]] ; then
+if [[ $nb_runByBDT -lt 0 ]] ; then
     error "-a: $nb_bdt < 0"
 fi
 
@@ -66,11 +68,11 @@ echo "Option OK"
 echo
 echo "Start nnh on the $branch branch with $nb_bdt BDT for each $nb_processor processors..."
 cd $script
-pwd
-### processor ###
-for ((p = 1; p <= $nb_processor; p++)); do
+
+### prepare BDT ###
+for ((i = 1; i <= $nb_BDT; i++)); do
     echo
-    echo "    Start "$p"th processor:"
+    echo "    Start "$i"th BDT:"
     
     # OUTPUT DIRECTORY IN SERVER 
     k=1
@@ -95,7 +97,7 @@ for ((p = 1; p <= $nb_processor; p++)); do
     
     ### analysis ###
     
-    for ((a = 1; a <= $nb_analysis; a++)); do
+    for ((a = 1; a <= $nb_runByBDT; a++)); do
         echo
         echo "    Start "$a"th BDT at "$p"th processor: "
         outDir=$OUTPUT_DIRECTORY/analysis/run_"$k"_"$a"

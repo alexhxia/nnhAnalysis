@@ -1,10 +1,9 @@
 #!/bin/bash
 
-function print_export {
-    echo
-    echo "home : $NNH_HOME"
-    echo
-}
+### FUNCTION TOOL ###
+
+source export.sh
+source help.sh
 
 # Display Help
 function syntax {
@@ -14,60 +13,13 @@ function syntax {
     echo 'SYNTAX:'
     echo '    ./launchBDT.sh [options]'
     echo
-    echo 'OPTIONS:'
-    echo '   -h                print help'
-    echo
-    echo '   -d                deactivate conda'
-    echo
-    echo '   -b [name]         branch'
-    echo "                     DEFAULT VALUE: $branch"
-    echo
-    echo '   -n [directory]    nnhAnalysis directory'
-    echo "                     DEFAULT VALUE: $home"
-    echo
     
-}
-
-# Stop program with error
-function error {
-    echo
-    echo 'Error: no valid option!'
-    echo $1
-    syntax
-    exit 1
-}
-
-# Test if name project exist
-function test_isValidBranch {
-    valid=false
-    for b in "${branchsValid[@]}" ; do
-        if [ $b == $1 ] ; then
-            valid=true 
-        fi
-    done
-    if ! $valid ; then
-        error "-b $branch"
-    fi
-}
-
-# Test if the directory home is valid
-function test_isValidHome {
-    if ! [ -d $home ]; then 
-        error '-n: home directory no exist'
-    elif ! [ -d $home/$branch ]; then 
-        error '-n: home/branch directory no exist'
-    elif ! [ -d $home/$branch/analysis ]; then 
-        error '-n: home/branch/analysis directory no exist'
-    #elif ! [ -f $home/$branch/analysis/DATA/data.root ]; then 
-        #error '-n: home/branch/analysis/DATA/data.root file no exist (prepare BDT first)'
-    fi
+    syntaxOption h d b n  #help.sh
 }
 
 # PARAMETERS
 
-valid_branchs=(original ilcsoft fcc)
-home=~/nnhAnalysis/nnhHome
-branch=ilcsoft
+# look environement parameters default in export.sh
 conda=0
 
 while getopts hdn:b: flag ; do
@@ -87,14 +39,13 @@ while getopts hdn:b: flag ; do
     esac
 done 
 
-#test_isValidBranch $branch
 test_isValidHome
 
 # ENVIRONMENT
 
-export NNH_HOME=$home/$branch
-
-#print_export
+nnh_export
+print_export
+exit 0
 
 # RUN
 

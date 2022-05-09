@@ -36,7 +36,7 @@ while getopts hcn:b:i: flag ; do
             
         b)  branch=${OPTARG};;
             
-        i)  input=${OPTARG};;
+        i)  p_input=${OPTARG};;
         
         *)  error 'option no exist';;
     esac

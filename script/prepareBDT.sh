@@ -1,13 +1,12 @@
 #!/bin/bash
 
-function print_export {
-    echo
-    echo "home :             $NNH_HOME"
-    echo
-    echo "analysis input :   $NNH_ANALYSIS_INPUT"
-    echo "analysis output :  $NNH_ANALYSIS_OUTPUT"
-    echo
-}
+### FUNCTION TOOL ###
+
+source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
+
+source export.sh
+source help.sh
+source nnh_toolFunctions.sh
 
 # Display Help
 function syntax {
@@ -17,81 +16,13 @@ function syntax {
     echo 'SYNTAX:'
     echo '    ./prepareBDT.sh [options]'
     echo
-    echo 'OPTIONS:'
-    echo '   -h                print help'
-    echo 
-    echo '   -c                build and run'
-    echo
-    echo '   -b [name]         branch'
-    echo "                     DEFAULT VALUE: $branch"
-    echo
-    echo '   -n [directory]    nnhAnalysis directory'
-    echo "                     DEFAULT VALUE: $home"
-    echo
-    echo '   -i [directory]    input directory'
-    echo "                     DEFAULT VALUE: $input"
-    echo
-    echo '   -o [directory]    output directory'
-    echo "                     DEFAULT VALUE: $output"
-    echo
     
-}
-
-# Stop program with error
-function error {
-    echo
-    echo 'Error: no valid option!'
-    echo $1
-    syntax
-    exit 1
-}
-
-# Test if name project exist
-function test_isValidBranch {
-    valid=false
-    for b in "${branchsValid[@]}" ; do
-        if [ $b == $1 ] ; then
-            valid=true 
-        fi
-    done
-    if ! $valid ; then
-        error "-b $branch"
-    fi
-}
-
-# Test if the directory home is valid
-function test_isValidHome {
-    if ! [ -d $home ]; then 
-        error '-n: home directory no exist'
-    elif ! [ -d $home/$branch ]; then 
-        error '-n: home/branch directory no exist'
-    elif ! [ -d $home/$branch/analysis ]; then 
-        error '-n: home/branch/analysis directory no exist'
-    fi
-}
-
-# Test if the directory input is valid
-function test_isValidInputDirectory {
-    if ! [ -d $input ]; then 
-        error '-i: input directory no exist'
-    fi
-}
-
-# Test if the directory output is valid
-function test_isValidOutputDirectory {
-    if ! [ -d $output ]; then 
-        error '-o: output directory no exist'
-    fi
+    syntaxOption h c b n i o #help.sh
 }
 
 # PARAMETERS
 
-branchsValid=(original ilcsoft fcc)
-home=~/nnhAnalysis/nnhHome
-branch=ilcsoft
-input=processor/RESULTS
-output=analysis/DATA
-
+# look environement parameters default in export.sh
 recompile=1
 
 isInputUser=1
@@ -109,10 +40,10 @@ while getopts hcn:b:i:o: flag ; do
             
         b)  branch=${OPTARG};;
             
-        i)  input=${OPTARG}
+        i)  a_input=${OPTARG}
             isInputUser=0;;
         
-        o)  output=${OPTARG}
+        o)  a_output=${OPTARG}
             isOutputUser=0;;
         
         *) error 'option no exist';;
@@ -121,20 +52,7 @@ done
 
 # TEST PARAMETERS
 
-test_isValidBranch $branch
 test_isValidHome
-
-if [ $isInputUser -eq 1 ]; then 
-    input=$home/$branch/$input
-fi
-
-test_isValidInputDirectory
-
-if [ $isOutputUser -eq 1 ]; then 
-    output=$home/$branch/$output
-fi
-
-test_isValidOutputDirectory
     
 if [ $recompile -eq 1 ]; then 
     if ! [ -d $NNH_HOME/analysis/BUILD ]; then
@@ -152,12 +70,8 @@ fi
 
 # ENVIRONMENT
 
-source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-export NNH_HOME=$home/$branch
-export NNH_ANALYSIS_INPUT=$input
-export NNH_ANALYSIS_OUTPUT=$output
-
-#print_export && exit 0
+nnh_export
+print_export
 
 # COMPILATION
 

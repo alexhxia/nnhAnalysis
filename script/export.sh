@@ -1,27 +1,46 @@
 #!/bin/bash
 
-home=~/nnhAnalysis
-branch=ilcsoft
+home=~/nnhAnalysis/nnhHome
+branch=original
 input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 output=/gridgroup/ilc/nnhAnalysisFiles/result
 
-p_input=$input
-p_output=$NNH_HOME/processor/RESULTS
-p_build=$NNH_HOME/processor/BUILD
+p_input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
+p_output=$home/$branch/processor/RESULTS
+a_input=p_output
+a_output=$home/$branch/analysis/DATA
 
-a_input=$NNH_HOME/analysis/DATA
-a_output=$NNH_HOME/processor/RESULTS
-a_build=$NNH_HOME/analysis/BUILD
+function print_export {
+    echo
+    echo "home :             $NNH_HOME"
+    echo "input :            $NNH_INPUT"
+    echo "output :           $NNH_OUTPUT"
+    echo
+    echo "processor input :  $NNH_PROCESSOR_INPUT"
+    echo "processor output : $NNH_PROCESSOR_OUTPUT"
+    echo
+    echo "analysis input :   $NNH_ANALYSIS_INPUT"
+    echo "analysis output :  $NNH_ANALYSIS_OUTPUT"
+    echo
+}
 
-export NNH_HOME=$home/$branch
+function nnh_export {
+    
+    # HOME
+    export NNH_HOME=$home/$branch
 
-export NNH_INPUT=$input
-export NNH_OUTPUT=$output/$branch
+    # SERVER
+    export NNH_INPUT=$input
+    export NNH_OUTPUT=$output/$branch
 
-export NNH_PROCESSOR_INPUT=$p_input 
-export NNH_PROCESSOR_BUILD=$p_build
-export NNH_PROCESSOR_OUTPUT=$p_output
+    # FOR RUN PROCESSOR
+    export NNH_PROCESSOR_INPUT=$p_input
+    export NNH_PROCESSOR_OUTPUT=$p_output
 
-export NNH_ANALYSIS_INPUT=$a_input
-export NNH_ANALYSIS_BUILD=a_output
-export NNH_ANALYSIS_OUTPUT=$a_output
+    # FOR RUN ANALYSIS
+    export NNH_ANALYSIS_INPUT=$a_input
+    export NNH_ANALYSIS_OUTPUT=$a_output
+}
+
+#nnh_export
+#print_export
