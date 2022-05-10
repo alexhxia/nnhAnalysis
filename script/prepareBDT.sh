@@ -4,9 +4,9 @@
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
-source export.sh
-source help.sh
-source nnh_toolFunctions.sh
+source tools/functions.sh
+source tools/export.sh 
+source tools/help.sh
 
 # Display Help
 function syntax {
@@ -50,14 +50,12 @@ while getopts hcn:b:i:o: flag ; do
     esac
 done 
 
-# TEST PARAMETERS
-
-test_isValidHome
-
 # ENVIRONMENT
 
 nnh_export
-print_export
+test_isValidHome
+
+#print_export
 
 # COMPILATION
 

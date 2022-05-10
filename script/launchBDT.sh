@@ -2,8 +2,9 @@
 
 ### FUNCTION TOOL ###
 
-source export.sh
-source help.sh
+source tools/export.sh
+source tools/help.sh
+source tools/functions.sh
 
 # Display Help
 function syntax {
@@ -45,7 +46,7 @@ done
 
 nnh_export
 test_isValidHome
-
+exit 0
 # RUN
 
 echo
@@ -60,12 +61,12 @@ if [ $conda -eq 0 ]; then
     echo "    conda activate"
 fi
 
-particles = (bb WW)
-for p in particles; do
-    echo "    launch launchBDT_$p "
-    python3 launchBDT_"$p".py \
-            1> $NNH_HOME/analysis/DATA/launchBDT_"$p".out \
-            2> $NNH_HOME/analysis/DATA/launchBDT_"$p".err 
+particles=("WW" "bb")
+for p in $particles; do
+    echo "    launch launchBDT_$p"
+    python3 launchBDT_$p.py \
+            1> $NNH_HOME/analysis/DATA/launchBDT_$p.out \
+            2> $NNH_HOME/analysis/DATA/launchBDT_$p.err 
 done 
 
 if [ $conda -eq 0 ]; then
