@@ -28,3 +28,7 @@ Dans ce dossiers se trouve les codes des différents projets.
 ## [`script`](script)
 
 Dans ce dossier vous trouverez des scripts permettent d'automatiser la compilation, l'exécution et la gestion des données générées par les programmes.
+
+## [`test`](test)
+
+Dans ce dossier vous trouverez des programmes python qui permettent de vérifier les données générées par les programmes.
