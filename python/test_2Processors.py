@@ -9,8 +9,7 @@ import argparse
 import os, os.path 
 import sys 
 import ROOT 
-import warnings
-#warnings.filterwarnings("ignore", category=RuntimeWarning) 
+
 from ROOT import TCanvas, TFile, TH1F, TTree
 
 def error(msg):
@@ -28,30 +27,25 @@ def testInputDirectory(directory):
     if not os.path.isdir(directory):
         error('ERROR : directory is not ' + directory)
 
-def isSameTTree(tree1, tree2):
-    """Test if 2 root trees are same with Kolmogorov definition."""
+def distinctBranchTree(tree1, tree2):
+    """Return branch name list what are different with Kolmogorov definition."""
     
-    #w = 600;
-    #h = 600;
-    #canvas = TCanvas("canvas", "canvas", w, h);
-    
-    isEgalProcessus = True
+    nameBranchDistinct = list()
     
     branchs1 = tree1.GetListOfBranches()
     branchs2 = tree2.GetListOfBranches()
     branchs = set(branchs1 + branchs2)
-    print(str(branchs))
     
     for branch in branchs:
     
-        nameBranch = branch1.GetName()
-        branch2 = tree2.GetBranch(nameBranch)
+        nameBranch = branch.GetName()
+        
         tree1.Draw(nameBranch)
+        
         htemp=ROOT.gPad.GetPrimitive("htemp")
         xAxis=htemp.GetXaxis()
         xmin=xAxis.GetXmin()
         xmax=xAxis.GetXmax()
-        del htemp
     
         hist1 = TH1F("hist1", nameBranch, 200, xmin, xmax)
         hist2 = TH1F("hist2", nameBranch, 200, xmin, xmax)
@@ -61,10 +55,12 @@ def isSameTTree(tree1, tree2):
     
         k = hist1.KolmogorovTest(hist2, "UON")
         if not k == 1.:
-            print(nameBranch + ": kolmogorov test = " + str(k))
+            nameBranchDistinct.append(nameBranch)
 
         del hist1
         del hist2
+            
+    return nameBranchDistinct
 
 if __name__ == "__main__":
     
@@ -100,32 +96,33 @@ if __name__ == "__main__":
         500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112, 500086, 
         500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 
         500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
-        500126, 500127, 500128
+        500126, 500127, 500128, 454865
     ]
     
     # add num processus if is missing
-    processusMissing1 = []
-    processusMissing2 = []
+    processusMissing1 = list()
+    processusMissing2 = list()
     
-    # for processus 1 and 2 are different tree
-    processusDistinct = []
+    # add if processus 1 and 2 are different tree
+    processusDistinct = {}
     
     for numP in numProcessus:
         
+        print("\nProcessus " + str(numP) + " in progress...")
         numPFileName = str(numP) + ".root"
         path_p1 = os.path.join(p1Directory, numPFileName)
         path_p2 = os.path.join(p2Directory, numPFileName)
         
-        if not os.path.exists(path_p1) or not os.path.exists(path_p2):
+        if (not os.path.exists(path_p1)) or (not os.path.exists(path_p2)):
             
             if not os.path.exists(path_p1):
-                processusMissing1.apprend(numP)
+                processusMissing1.append(numP)
+                print("\tMissing for processus 1")
             
             if not os.path.exists(path_p2):
-                processusMissing2.apprend(numP)
-            
-            print("\n" + numP + "no exist for 2")
-            
+                processusMissing2.append(numP)
+                print("\tMissing for processus 2")
+                        
         else :
             
             # FOR ALL TREE
@@ -136,27 +133,31 @@ if __name__ == "__main__":
             tree1 = file1.Get("tree")
             tree2 = file2.Get("tree")
             
-            if not isSameTTree(tree1, tree2):
-                processusDistinct.append(numP)
+            distinctBranchTreeList = distinctBranchTree(tree1, tree2)
+            
+            if not len(distinctBranchTreeList) == 0:
+                processusDistinct[numP] = distinctBranchTreeList
             
             file1.Close()
             file2.Close()
     
     # OUTPUT
     
+    print("\n---- RESULTS -----")
+    
     if len(processusMissing1) == 0:
-        print("Processus1 is complete.")
+        print("\nProcessus1 is complete.")
     else:
-        print("Processus Missing for -p1:\n" + str(processusMissing1))
+        print("\nProcessus Missing for Processus1:\n\t" + str(processusMissing1))
         
     if len(processusMissing2) == 0:
-        print("Processus2 is complete.")
+        print("\nProcessus2 is complete.")
     else:
-        print("Processus Missing for -p2:\n" + str(processusMissing2))
+        print("\nProcessus Missing for Processus2:\n\t" + str(processusMissing2))
     
     if len(processusDistinct) == 0:
-        print("Processus1 and Processus are same.")
+        print("\nProcessus1 and Processus2 are same.")
     else:
-        print("Processus1 and Processus are distinct" + str(processusDistinct))
+        print("\nProcessus1 and Processus are distinct for:\n\t" + str(processusDistinct))
     
     print("\n----- END TEST_2PROCESSOR -----\n")

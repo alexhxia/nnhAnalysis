@@ -7,7 +7,7 @@ output=/gridgroup/ilc/nnhAnalysisFiles/result
 
 p_input=/gridgroup/ilc/nnhAnalysisFiles/AHCAL
 p_output=$home/$branch/processor/RESULTS
-a_input=p_output
+a_input=$p_output
 a_output=$home/$branch/analysis/DATA
 
 function print_export {

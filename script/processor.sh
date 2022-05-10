@@ -2,10 +2,15 @@
 
 ### FUNCTION TOOL ###
 
-source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
+init_err = source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh ||
+export_err = source export.sh 
+help_err = source help.sh
 
-source export.sh
-source help.sh
+if ! init_err || ! export_err || ! help_err; then 
+    echo("import error")
+    exit 1
+fi
+
 
 # Display Help
 function syntax {

@@ -1,0 +1,145 @@
+
+home :             /home/ilc/ahocine/nnhAnalysis/nnhHome/original
+input :            /gridgroup/ilc/nnhAnalysisFiles/AHCAL
+output :           /gridgroup/ilc/nnhAnalysisFiles/result/original
+
+processor input :  /gridgroup/ilc/nnhAnalysisFiles/AHCAL
+processor output : /home/ilc/ahocine/nnhAnalysis/nnhHome/original/processor/RESULTS
+
+analysis input :   /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor
+analysis output :  /home/ilc/ahocine/nnhAnalysis/nnhHome/original/analysis/DATA
+
+
+--> BUILD : prepareBDT (original) <--
+
+hadd Target file: /home/ilc/ahocine/nnhAnalysis/nnhHome/original/analysis/DATA/DATA.root
+hadd compression setting for all output: 1
+hadd Source file 1: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402001.root
+hadd Source file 2: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402002.root
+hadd Source file 3: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402003.root
+hadd Source file 4: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402004.root
+hadd Source file 5: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402005.root
+hadd Source file 6: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402006.root
+hadd Source file 7: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402007.root
+hadd Source file 8: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402008.root
+hadd Source file 9: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402009.root
+hadd Source file 10: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402010.root
+hadd Source file 11: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402011.root
+hadd Source file 12: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402012.root
+hadd Source file 13: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402013.root
+hadd Source file 14: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402014.root
+hadd Source file 15: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402173.root
+hadd Source file 16: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402176.root
+hadd Source file 17: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402182.root
+hadd Source file 18: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/402185.root
+hadd Source file 19: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500006.root
+hadd Source file 20: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500008.root
+hadd Source file 21: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500010.root
+hadd Source file 22: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500012.root
+hadd Source file 23: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500062.root
+hadd Source file 24: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500064.root
+hadd Source file 25: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500066.root
+hadd Source file 26: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500068.root
+hadd Source file 27: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500070.root
+hadd Source file 28: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500072.root
+hadd Source file 29: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500074.root
+hadd Source file 30: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500076.root
+hadd Source file 31: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500078.root
+hadd Source file 32: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500080.root
+hadd Source file 33: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500082.root
+hadd Source file 34: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500084.root
+hadd Source file 35: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500086.root
+hadd Source file 36: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500088.root
+hadd Source file 37: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500090.root
+hadd Source file 38: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500092.root
+hadd Source file 39: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500094.root
+hadd Source file 40: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500096.root
+hadd Source file 41: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500098.root
+hadd Source file 42: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500100.root
+hadd Source file 43: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500101.root
+hadd Source file 44: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500102.root
+hadd Source file 45: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500103.root
+hadd Source file 46: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500104.root
+hadd Source file 47: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500105.root
+hadd Source file 48: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500106.root
+hadd Source file 49: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500107.root
+hadd Source file 50: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500108.root
+hadd Source file 51: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500110.root
+hadd Source file 52: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500112.root
+hadd Source file 53: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500113.root
+hadd Source file 54: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500114.root
+hadd Source file 55: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500115.root
+hadd Source file 56: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500116.root
+hadd Source file 57: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500117.root
+hadd Source file 58: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500118.root
+hadd Source file 59: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500119.root
+hadd Source file 60: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500120.root
+hadd Source file 61: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500122.root
+hadd Source file 62: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500124.root
+hadd Source file 63: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500125.root
+hadd Source file 64: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500126.root
+hadd Source file 65: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500127.root
+hadd Source file 66: /gridgroup/ilc/nnhAnalysisFiles/result/original/run_2/processor/500128.root
+hadd Target path: /home/ilc/ahocine/nnhAnalysis/nnhHome/original/analysis/DATA/DATA.root:/
+loading initial cache file /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/ILCSoft.cmake
+-- The C compiler identification is GNU 8.2.0
+-- The CXX compiler identification is GNU 8.2.0
+-- Check for working C compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/8.2.0-3fa06/x86_64-centos7/bin/gcc
+-- Check for working C compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/8.2.0-3fa06/x86_64-centos7/bin/gcc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/8.2.0-3fa06/x86_64-centos7/bin/g++
+-- Check for working CXX compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/8.2.0-3fa06/x86_64-centos7/bin/g++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Check for ILCUTIL (1.6.2)
+-- Found ILCSOFT_CMAKE_MODULES: /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/ilcutil/v01-06-02/cmakemodules  
+-- Found ILCUTIL: /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/ilcutil/v01-06-02  
+-- FLAGS -Wall;-Wextra;-Wshadow;-Weffc++;-pedantic;-Wno-long-long;-Wuninitialized;-Wl,-no-undefined
+-- Performing Test CXX_FLAG_WORKS__Wall
+-- Performing Test CXX_FLAG_WORKS__Wall - Success
+-- Adding -Wall to CXX_FLAGS
+-- Performing Test CXX_FLAG_WORKS__Wextra
+-- Performing Test CXX_FLAG_WORKS__Wextra - Success
+-- Adding -Wextra to CXX_FLAGS
+-- Performing Test CXX_FLAG_WORKS__Wshadow
+-- Performing Test CXX_FLAG_WORKS__Wshadow - Success
+-- Adding -Wshadow to CXX_FLAGS
+-- Performing Test CXX_FLAG_WORKS__WeffcPP
+-- Performing Test CXX_FLAG_WORKS__WeffcPP - Success
+-- Adding -Weffc++ to CXX_FLAGS
+-- Performing Test CXX_FLAG_WORKS__pedantic
+-- Performing Test CXX_FLAG_WORKS__pedantic - Success
+-- Adding -pedantic to CXX_FLAGS
+-- Performing Test CXX_FLAG_WORKS__Wno_long_long
+-- Performing Test CXX_FLAG_WORKS__Wno_long_long - Success
+-- Adding -Wno-long-long to CXX_FLAGS
+-- Performing Test CXX_FLAG_WORKS__Wuninitialized
+-- Performing Test CXX_FLAG_WORKS__Wuninitialized - Success
+-- Adding -Wuninitialized to CXX_FLAGS
+-- Performing Test CXX_FLAG_WORKS__Wl,_no_undefined
+-- Performing Test CXX_FLAG_WORKS__Wl,_no_undefined - Success
+-- Adding -Wl,-no-undefined to CXX_FLAGS
+-- NOT building with CXX11 standard
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ilc/ahocine/nnhAnalysis/nnhHome/original/analysis/BUILD
+Scanning dependencies of target prepareForBDT
+[ 50%] Building CXX object CMakeFiles/prepareForBDT.dir/exec/prepareForBDT.cxx.o
+[100%] Linking CXX executable bin/prepareForBDT
+[100%] Built target prepareForBDT
+[100%] Built target prepareForBDT
+Install the project...
+-- Install configuration: "RelWithDebInfo"
+-- Installing: /home/ilc/ahocine/nnhAnalysis/nnhHome/original/analysis/bin/prepareForBDT
+-- Set runtime path of "/home/ilc/ahocine/nnhAnalysis/nnhHome/original/analysis/bin/prepareForBDT" to "/home/ilc/ahocine/nnhAnalysis/nnhHome/original/analysis/lib:/cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/root/6.18.04/lib"
+
+--> RUN : prepareBDT (original) <--
+
+
+--> END : prepareBDT (original) <--
+

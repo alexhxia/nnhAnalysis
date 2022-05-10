@@ -8,7 +8,9 @@ source help.sh
 # Display Help
 function syntax {
     echo
-    echo "Run 'processor', 'prepareBDT', and 'analysis'."
+    echo    "With processor root files, "\
+            "create analysis/DATA/DATA.root " \
+            "and run 'analysis/bin/prepareBDT'."
     echo
     echo 'SYNTAX:'
     echo '    ./launchBDT.sh [options]'
@@ -39,13 +41,10 @@ while getopts hdn:b: flag ; do
     esac
 done 
 
-test_isValidHome
-
 # ENVIRONMENT
 
 nnh_export
-print_export
-exit 0
+test_isValidHome
 
 # RUN
 
@@ -60,12 +59,14 @@ if [ $conda -eq 0 ]; then
     conda activate env_root_python
     echo "    conda activate"
 fi
-echo "    launch launchBDT_bb "
-python3 launchBDT_bb.py \
-        1> $NNH_HOME/analysis/DATA/launchBDT_bb.out \
-        2> $NNH_HOME/analysis/DATA/launchBDT_bb.err 
-echo "    launch launchBDT_WW "
-python3 launchBDT_WW.py 1> $NNH_HOME/analysis/DATA/launchBDT_WW.err 2> $NNH_HOME/analysis/DATA/launchBDT_WW.err 
+
+particles = (bb WW)
+for p in particles; do
+    echo "    launch launchBDT_$p "
+    python3 launchBDT_"$p".py \
+            1> $NNH_HOME/analysis/DATA/launchBDT_"$p".out \
+            2> $NNH_HOME/analysis/DATA/launchBDT_"$p".err 
+done 
 
 if [ $conda -eq 0 ]; then
     conda deactivate

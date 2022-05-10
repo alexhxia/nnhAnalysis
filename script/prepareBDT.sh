@@ -17,7 +17,7 @@ function syntax {
     echo '    ./prepareBDT.sh [options]'
     echo
     
-    syntaxOption h c b n i o #help.sh
+    syntaxOption h c b n i # o #help.sh
 }
 
 # PARAMETERS
@@ -43,8 +43,8 @@ while getopts hcn:b:i:o: flag ; do
         i)  a_input=${OPTARG}
             isInputUser=0;;
         
-        o)  a_output=${OPTARG}
-            isOutputUser=0;;
+        #o)  a_output=${OPTARG}
+         #   isOutputUser=0;;
         
         *) error 'option no exist';;
     esac
@@ -53,20 +53,6 @@ done
 # TEST PARAMETERS
 
 test_isValidHome
-    
-if [ $recompile -eq 1 ]; then 
-    if ! [ -d $NNH_HOME/analysis/BUILD ]; then
-        recompile=0
-    fi
-
-    if ! [ -d $NNH_HOME/analysis/bin ]; then
-        recompile=0
-    fi
-
-    if ! [ -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
-        recompile=0
-    fi
-fi
 
 # ENVIRONMENT
 
@@ -75,10 +61,26 @@ print_export
 
 # COMPILATION
 
+if [ $recompile -eq 1 ]; then 
+    if ! [ -f "$NNH_HOME/analysis/bin/prepareForBDT" ]; then
+        recompile=0
+        echo "$NNH_HOME/analysis/bin/prepareForBDT"
+        echo "BUILD FORCE (prepareForBDT program no exist)"
+    fi
+
+    if ! [ -f "$NNH_ANALYSIS_OUTPUT/DATA.root" ]; then
+        recompile=0
+        echo "$NNH_ANALYSIS_OUTPUT/DATA.root"
+        echo "BUILD FORCE (DATA.root file no exist)"
+    fi
+fi
+
 if [ $recompile -eq 0 ]; then
+
     echo
     echo "--> BUILD : prepareBDT ($branch) <--"
     echo
+    
     if [ -d $NNH_ANALYSIS_OUTPUT ]; then
         rm -R $NNH_ANALYSIS_OUTPUT
     fi
@@ -101,8 +103,8 @@ echo
 echo "--> RUN : prepareBDT ($branch) <--"
 echo
 
-cd $NNH_HOME
-./analysis/bin/prepareForBDT \
+cd $NNH_HOME/analysis/bin
+./prepareForBDT \
         1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
         2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 
