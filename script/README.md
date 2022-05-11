@@ -93,7 +93,7 @@ Il recompile tout seul si la bibliotèque `$NNH_HOME/processor/lib/libnnhProcess
 Attention : avant de l'utiliser, sachez qu'il effacera tout le dossier `RESULTS` avant de s'exécuter.
 
 #### `nnhAnalysis.sh`
-Une fois les fichier root générer par `processus`, il faut entrainer la BDT avant de lancer l'a lancé. Il va donc exécuter 2 scripts :
+Une fois les fichiers root générer par `processus`, il faut entrainer la BDT avant de lancer l'a lancé. Il va donc exécuter 2 scripts :
 ```
 ./analysis_prepareBDT.sh
 ```
