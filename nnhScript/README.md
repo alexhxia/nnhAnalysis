@@ -5,30 +5,6 @@ Le but étant l'analyse des cannaux :
 - e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
 - e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
 
-## Fonctionnement général du projet 
-
-### Données initiales
-Les données LCIO sont stockées localement dans le dossier : `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`.
-Puis chaque fichier est trié dans des sous-dossiers en fonction de leur numéro de processus.
-```
-inputFiles
-└───402001
-|   | 402001_file_0_mini-DST.slcio
-|   | 402001_file_1_mini-DST.slcio
-|   | ...
-└───402002
-|   | 402002_file_0_mini-DST.slcio
-|   | 402002_file_1_mini-DST.slcio
-|   | ...
-└───402003
-|   | 402003_file_0_mini-DST.slcio
-|   | 402003_file_1_mini-DST.slcio
-|   | ...
-...
-```
-### [`nnhHome`](../nnhHome) directory 
-Il contient les différents branches. Ce que j'appelle 'branche' correspond à un nom de projet : `ìlcsoft`, `fcc`... Sachant que ces projets numériques sont idépendants les uns, les autres. C'est pourquoi chacune doit au moins contenir un dossier `processus` et `analysis`, qui contient les codes du programmes.
-
 ### [`nnhScript`](.)
 
 #### [`tools`](tools) directory
