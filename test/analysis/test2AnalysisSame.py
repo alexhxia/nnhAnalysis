@@ -114,12 +114,13 @@ if __name__ == "__main__":
             nameFileByType[typeFile] = [nameFile]
            
     # TEST BY FILE TYPE
-    analysisDistinct = []
+    analysisDistinct = {}
     
     # ROOT files
     
     print("\nROOT files... ")
     rootFiles = nameFileByType[".root"]
+    i=0
     for rootFile  in rootFiles:
         path_p1 = os.path.join(a1Directory, rootFile)
         path_p2 = os.path.join(a2Directory, rootFile)
@@ -142,7 +143,8 @@ if __name__ == "__main__":
             
             file1.Close()
             file2.Close()
-    
+        i=i+1
+            
     # OUTPUT
     
     print("\n---- RESULTS -----")
@@ -150,6 +152,10 @@ if __name__ == "__main__":
     if len(analysisDistinct) == 0:
         print("\nAnalysis1 and Analysis2 are same.")
     else:
-        print("\nAnalysis1 and Analysis2 are distinct for:\n\t" + str(analysisDistinct))
+        print("\nAnalysis1 and Analysis2 are distinct for:\n")
+        
+        keys = analysisDistinct.keys()
+        for key in analysisDistinct:
+            print("\t" + str(analysisDistinct[key]))
     
     print("\n----- END TEST_2ANALYSIS -----\n")
