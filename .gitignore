@@ -1,0 +1,16 @@
+.cache/
+.vscode/
+
+*.root
+*.pkl
+*.joblib
+*.png
+
+*BUILD/
+*lib/
+*bin/
+
+*logs/
+
+*DATA/
+*RESULTS/
