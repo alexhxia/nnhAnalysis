@@ -4,10 +4,9 @@ Ces petits scripts batch sont des outils de factorisation de code (limite la red
 
 Pour utiliser toutes ces fonctions outils, il suffit ajouter dans votre script bash :
 ```
-export NNH_SCRIPT=/path/to/nnhScript
-source $NNH_SCRIPT/tools/function.sh
-source $NNH_SCRIPT/tools/export.sh 
-source $NNH_SCRIPT/tools/help.sh
+source tools/function.sh
+source tools/export.sh 
+source tools/help.sh
 ```
 
 ## `export.sh` script
