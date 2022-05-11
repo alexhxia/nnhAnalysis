@@ -6,21 +6,21 @@ C'est le premier programme à exécuter. Pour rappel, il traite les fichiers LCI
 ```
 ./nnhProcessor.sh
 ```
-Il prend les options : 'h', 'c', 'n', 'b', 'i'
+Il prend les options : 'h', 'c', 'n', 'b', 'i' (cf [help options](tools/README.md)).
 
 Il recompile tout seul si la bibliotèque `$NNH_HOME/processor/lib/libnnhProcessor.so` n'existe pas.
 
 Attention : avant de l'utiliser, sachez qu'il effacera tout le dossier `RESULTS` avant de s'exécuter.
 
 ## `nnhAnalysis.sh`
-Une fois les fichiers root générer par `processus`, il faut entrainer la BDT avant de lancer l'a lancé. Il va donc exécuter 2 scripts :
+Une fois les fichiers roots générés par `processus`, il faut entrainer la BDT avant de lancer l'analyse. Il va donc exécuter 2 scripts :
 ```
 ./analysis_prepareBDT.sh
 ```
-Qui prend les options : 'h', 'c', 'a', 'n', 'b', 'i', 'o'
+Qui prend les options : 'h', 'c', 'a', 'n', 'b', 'i', 'o' (cf [help options](tools/README.md)).
 
 Ensuite on peut analyser nos résultats grâce à :
 ```
 ./analysis_launchBDT.sh
 ```
-Qui prend les options : 'h', 'n', 'b'
+Qui prend les options : 'h', 'n', 'b' (cf [help options](tools/README.md)).
