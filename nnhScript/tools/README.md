@@ -10,7 +10,7 @@ source $NNH_SCRIPT/tools/export.sh
 source $NNH_SCRIPT/tools/help.sh
 ```
 
-##### `export.sh` script
+## `export.sh` script
 `export.sh` stocke les variables de chemin vers les dossiers utilisés par les autres scripts :
 - `home` le chemin vers le dossier `nnhHome`
 - `branche` le nom de la branche
@@ -30,7 +30,7 @@ Grâce à la méthode `nnh_export`, ce script permet de mettre à jour les varia
 
 Vous pouvez les afficher avec la méthode `print_export`.
 
-##### `help.sh` script
+## `help.sh` script
 `help.sh` permet l'affichage des options qui sont les mêmes des tous les scripts, grâce à la méthode `syntaxOption`.
 
 Donc les scripts de cette partie peuvent prendre des options afin de personaliser les programmes à vos besoins :
@@ -46,6 +46,6 @@ Donc les scripts de cette partie peuvent prendre des options afin de personalise
   - `home/branch/processor/RESULTS` pour [`processor.sh`](processor.sh)
   - `/gridgroup/ilc/nnhAnalysisFiles/result/branch/run?/analysis/run??` pour [`prepareBDT.sh`](prepareBDT.sh) et [`launchBDT.sh`](launchBDT.sh) 
 
-##### `function.sh` script
+## `function.sh` script
 Regroupe des méthodes utiles :
 - `error msg` qui affiche le message d'error passer en paramètres et arrête le programme avec 1
