@@ -1,13 +1,7 @@
-# `script`
-
+# [`nnhScript`](.)
 Ces programmes scripts bash cherchent à rendre l'utilisation des différents programmes plus simple pour l'utilisateur. 
-Le but étant l'analyse des cannaux :
-- e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
-- e+e- &rarr; &nu;&nu;h (h &rarr; b bbar)
 
-### [`nnhScript`](.)
-
-### `nnhProcessus.sh`
+## `nnhProcessus.sh`
 C'est le premier programme à exécuter. Pour rappel, il traite les fichiers LCIO (ranger dans le dossier de leur numéro de processus) et permet d'obtenir un fichier ROOT par processus. Il s'agit du script :
 ```
 ./nnhProcessor.sh
@@ -18,7 +12,7 @@ Il recompile tout seul si la bibliotèque `$NNH_HOME/processor/lib/libnnhProcess
 
 Attention : avant de l'utiliser, sachez qu'il effacera tout le dossier `RESULTS` avant de s'exécuter.
 
-### `nnhAnalysis.sh`
+## `nnhAnalysis.sh`
 Une fois les fichiers root générer par `processus`, il faut entrainer la BDT avant de lancer l'a lancé. Il va donc exécuter 2 scripts :
 ```
 ./analysis_prepareBDT.sh
