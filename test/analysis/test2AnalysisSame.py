@@ -56,7 +56,7 @@ def distinctBranchTree(tree1, tree2):
     
         k = hist1.KolmogorovTest(hist2, "UON")
         if not k == 1.:
-            nameBranchDistinct.append(nameBranch)
+            nameBranchDistinct.append(nameBranch + " = " + str(k))
 
         del hist1
         del hist2
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     
     print("\nROOT files... ")
     rootFiles = nameFileByType[".root"]
-    i=0
+
     for rootFile  in rootFiles:
         path_p1 = os.path.join(a1Directory, rootFile)
         path_p2 = os.path.join(a2Directory, rootFile)
@@ -143,7 +143,6 @@ if __name__ == "__main__":
             
             file1.Close()
             file2.Close()
-        i=i+1
             
     # OUTPUT
     
@@ -156,6 +155,6 @@ if __name__ == "__main__":
         
         keys = analysisDistinct.keys()
         for key in analysisDistinct:
-            print("\t" + str(analysisDistinct[key]))
+            print("\t" + key + ": " + str(analysisDistinct[key]))
     
     print("\n----- END TEST_2ANALYSIS -----\n")
