@@ -176,8 +176,8 @@ void createFriendTree(
     };
 
     // RNG for train and test split
-    random_device                    rd;
-    mt19937_64                       gen(rd());
+    random_device rd;
+    mt19937_64 gen(rd());
     uniform_real_distribution<float> dis(0.0f, 1.0f);
 
     auto lambda_isTrain = [&]() -> bool { 
@@ -419,17 +419,21 @@ void createFriendTree(
     ROOT::RDF::RInterface finalTest = finalDF.Filter([](bool b) { return !b; }, {"isTrain"});
 
     cout    << "Train : signal = "
-            << finalTrain.Filter([](bool b) { return b; }, {"isSignal"})
+            << finalTrain
+                    .Filter([](bool b) { return b; }, {"isSignal"})
                     .Sum("weight").GetValue()
-            << ", bkg = " << finalTrain
+            << ", bkg = " 
+            << finalTrain
                     .Filter([](bool b) { return !b; }, {"isSignal"})
                     .Sum("weight").GetValue()
             << endl;
 
-    cout    << "Test : signal = " << finalTest
+    cout    << "Test : signal = " 
+            << finalTest
                     .Filter([](bool b) { return b; }, {"isSignal"})
                     .Sum("weight").GetValue()
-            << ", bkg = " << finalTest
+            << ", bkg = " 
+            << finalTest
                     .Filter([](bool b) { return !b; }, {"isSignal"})
                     .Sum("weight").GetValue()
             << endl;

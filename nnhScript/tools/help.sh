@@ -17,7 +17,6 @@ function syntaxOption {
             c)  echo '   -c                build then run program';;
             
             d)  echo '   -d                desactivate conda command';;
-            #d)  echo '   -d                activate conda command';;
             
             # With argument
             b)  echo '   -b [name]         branch (name projet) - example : fcc, ilcsoft'
@@ -35,10 +34,10 @@ function syntaxOption {
             p)  echo '   -p [integer]      number of processus run'
                 echo "                     DEFAULT VALUE: $nb_runProcessor" ;;   
 
-            t)  echo '   -t [integer]      number of prepareBDT run'
+            a)  echo '   -a [integer]      number of prepareBDT run'
                 echo "                     DEFAULT VALUE: $nb_BDT";;
                 
-            a)  echo '   -a [integer]      number of launchBDT run by BDT'
+            t)  echo '   -t [integer]      number of launchBDT run by BDT'
                 echo "                     DEFAULT VALUE: $nb_runByBDT";;
             
             *) echo 'option unidentified';;

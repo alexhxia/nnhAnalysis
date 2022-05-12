@@ -1,10 +1,19 @@
 #!/bin/bash
 
-### FUNCTION TOOL ###
+# This program run BDT.
+#
+# BEFORE : run processor and prepareForBDT part
+# INPUT: directory with once root file by processus 
+# OUTPUT: 
+#   * stats_XX_eXX_pXX.json
+
+### INCLUDE TOOL ###
 
 source tools/export.sh
 source tools/help.sh
 source tools/functions.sh
+
+### FUNCTION TOOL ###
 
 # Display Help
 function syntax {
@@ -20,11 +29,11 @@ function syntax {
     syntaxOption h d b n  #help.sh
 }
 
-# PARAMETERS
+### ENVIRONMENT + in export.sh ###
 
-# look environement parameters default in export.sh
 conda=0
 
+# option choice by user
 while getopts hdn:b: flag ; do
     case "${flag}" in 
     
@@ -42,12 +51,11 @@ while getopts hdn:b: flag ; do
     esac
 done 
 
-# ENVIRONMENT
+nnh_export # && print_export
 
-nnh_export
 test_isValidHome
-exit 0
-# RUN
+
+### RUN ###
 
 echo
 echo "--> RUN : launchBDT ($branch) <--"

@@ -1,6 +1,17 @@
 #!/bin/bash
 
-### FUNCTION TOOL ###
+# This program build and run prepare for BDT.
+#
+# BEFORE : run processor part
+# INPUT: directory with once root file by processus 
+# OUTPUT: 
+#   * DATA.root
+#   * split_XX_eXX_pXX.root
+#   * model_XX_eXX_pXX.root
+#   * scrore_XX_eXX_pXX.root
+#   * bestSelection_XX_eXX_pXX.root
+
+### INCLUDE TOOL ###
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
@@ -8,26 +19,43 @@ source tools/functions.sh
 source tools/export.sh 
 source tools/help.sh
 
+### FUNCTION TOOL ###
+
 # Display Help
 function syntax {
     echo
-    echo "Prepare BDT program."
+    echo "Prepare for BDT program."
     echo
     echo 'SYNTAX:'
     echo '    ./prepareBDT.sh [options]'
     echo
     
-    syntaxOption h c b n i # o #help.sh
+    syntaxOption h c b n i #help.sh
 }
 
-# PARAMETERS
+# Test if it need build
+function testNeedBuild {
+    
+    if [ $recompile -eq 1 ]; then
+        if ! [ -f $NNH_HOME/analysis/bin/prepareForBDT ]; then 
+            echo "prepareForBDT no exist"
+            recompile=0
+        fi
+        if ! [ -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then 
+            echo "DATA.root no exist"
+            recompile=0
+        fi
+    fi
+} 
 
-# look environement parameters default in export.sh
+### ENVIRONMENT + in export.sh ###
+
 recompile=1
 
 isInputUser=1
 isOutputUser=1
 
+# option choice by user
 while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
     
@@ -43,35 +71,16 @@ while getopts hcn:b:i:o: flag ; do
         i)  a_input=${OPTARG}
             isInputUser=0;;
         
-        #o)  a_output=${OPTARG}
-         #   isOutputUser=0;;
-        
         *) error 'option no exist';;
     esac
 done 
 
-# ENVIRONMENT
+nnh_export && print_export
 
-nnh_export
 test_isValidHome
+testNeedBuild
 
-# print_export
-
-# COMPILATION
-
-if [ $recompile -eq 1 ]; then 
-    if ! [ -f "$NNH_HOME/analysis/bin/prepareForBDT" ]; then
-        recompile=0
-        echo "$NNH_HOME/analysis/bin/prepareForBDT"
-        echo "BUILD FORCE (prepareForBDT program no exist)"
-    fi
-
-    if ! [ -f "$NNH_ANALYSIS_OUTPUT/DATA.root" ]; then
-        recompile=0
-        echo "$NNH_ANALYSIS_OUTPUT/DATA.root"
-        echo "BUILD FORCE (DATA.root file no exist)"
-    fi
-fi
+### BUILD ###
 
 if [ $recompile -eq 0 ]; then
 
@@ -96,11 +105,12 @@ if [ $recompile -eq 0 ]; then
     make install
 fi
 
-# RUN
+### RUN ###
+
 echo
 echo "--> RUN : prepareBDT ($branch) <--"
 echo
-print_export
+
 cd $NNH_HOME/analysis/bin
 ./prepareForBDT \
         1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \

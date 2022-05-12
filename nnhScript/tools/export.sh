@@ -2,6 +2,7 @@
 
 # HOME
 home=~/nnhAnalysis/nnhHome
+script=~/nnhAnalysis/nnhScript
 branch=original
 
 # SERVER
@@ -21,6 +22,7 @@ a_output=$home/$branch/analysis/DATA
 function print_export {
     echo
     echo "home :             $NNH_HOME"
+    echo "script :           $NNH_SCRIPT"
     echo "input :            $NNH_INPUT"
     echo "output :           $NNH_OUTPUT"
     echo
@@ -37,6 +39,7 @@ function nnh_export {
     
     # HOME
     export NNH_HOME=$home/$branch
+    export NNH_SCRIPT=$script
 
     # SERVER
     export NNH_INPUT=$input
@@ -57,7 +60,7 @@ function test_isValidHome {
     if ! [ -d $home ]; then 
         error '-n: home directory no exist'
     elif ! [ -d $home/$branch ]; then 
-        error '-n: home/branch directory no exist'
+        error '-b: home/branch directory no exist'
     elif ! [ -d $home/$branch/analysis ]; then 
         error '-n: home/branch/analysis directory no exist'
     elif ! [ -d $home/$branch/processor ]; then 

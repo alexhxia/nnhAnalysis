@@ -1,10 +1,31 @@
 #!/bin/bash
 
-### FUNCTION TOOL ###
+# This program build and run all analysis part !
+#   * prepareForBDT
+#   * launchBDT_XX.py with XX = {WW, bb}
+#
+# INPUT: directory with processus root
+#   * 402001.root
+#   * 402002.root
+#   * 402003.root
+#   * ...
+# OUTPUT:
+#   * prepareForBDT
+#       -> DATA.root
+#       -> split_XX_eXX_pXX.root
+#       -> model_XX_eXX_pXX.root
+#       -> scrore_XX_eXX_pXX.root
+#       -> bestSelection_XX_eXX_pXX.root
+#   * launchBDT_XX.py with XX = {WW ou bb}
+#       -> stats_XX_eXX_pXX.json
 
-source tools/function.sh
+### INCLUDE TOOL ###
+
+source tools/functions.sh
 source tools/export.sh 
 source tools/help.sh
+
+### FUNCTION TOOL ###
 
 # Display Help
 function syntax {
@@ -18,14 +39,14 @@ function syntax {
     syntaxOption h d p a b n i o #help.sh
 }
 
-### PARAMETER ###
+### ENVIRONMENT + in export.sh ###
 
-# look environement parameters default in export.sh
-num_run=1
+num_processus=1
 nb_BDT=1
 nb_runByBDT=1
 
-while  getopts ":b:a:d:n:i:o:h" option ; do
+# option choice by user
+while  getopts ":b:a:d:n:i:p:o:h" option ; do
     case "${option}" in 
     
         h)  syntax
@@ -39,6 +60,8 @@ while  getopts ":b:a:d:n:i:o:h" option ; do
         
         n)  home=${OPTARG};;
         
+        p)  num_processus=${OPTARG};;
+        
         i)  input=${OPTARG};;
         
         o)  output=${OPTARG};;
@@ -46,11 +69,6 @@ while  getopts ":b:a:d:n:i:o:h" option ; do
         *) error 'option no exist';;
     esac
 done 
-
-# test_isValidBranch $branch
-test_isValidHome
-test_isValidInputDirectory
-test_isValidOutputDirectory
 
 if [[ $nb_BDT -lt 0 ]] ; then
     error "-p: $nb_processor < 0"
@@ -60,58 +78,63 @@ if [[ $nb_runByBDT -lt 0 ]] ; then
     error "-a: $nb_bdt < 0"
 fi
 
-nnh_export
-print_export
-exit 0
+outputDir=$NNH_OUTPUT/run_$num_processus
+if ! [[ -d $outputDir ]]; then
+    error "-p : processor number no exist"
+elif ! [[ -d $outputDir/processor ]]; then
+    error "-p : processor directory no exist"
+fi
 
-#print_export
-echo "Option OK"
+nnh_export # && print_export
+
+test_isValidHome
+
 echo
-echo "Start nnh on the $branch branch with $nb_bdt BDT for each $nb_processor processors..."
+echo "Start nnh on the $branch branch with $nb_bdt BDT for "$num_processus"th processors..."
 cd $script
 
-### prepare BDT ###
-for ((i = 1; i <= $nb_BDT; i++)); do
-    echo
-    echo "    Start "$i"th BDT:"
-    
-    # OUTPUT DIRECTORY IN SERVER 
-    k=1
-    OUTPUT_DIRECTORY=$NNH_OUTPUT/run_$k
-    while [ -d $OUTPUT_DIRECTORY ]; do
+### RUN ###
+
+k=1
+
+if ! [[ -d $outputDir/analysis ]]; then
+    mkdir -v $outputDir/analysis
+else
+    outputDirA=$outputDir/analysis/run_"$num_processus"_"$k"
+    while [ -d outputDirA ]; do
         k=$((k + 1))
-        OUTPUT_DIRECTORY=$NNH_OUTPUT/run_$k
+        outputDirA=$outputDir/analysis/run_"$num_processus"_"$k"
     done 
-    mkdir -v $OUTPUT_DIRECTORY $OUTPUT_DIRECTORY/processor $OUTPUT_DIRECTORY/analysis
+fi
+
+for ((a = 1; a <= $nb_BDT; a++)); do
+
+    # prepareBDT
+    echo
+    echo "    Start "$a"th BDT at "$num_processus"th processor: "
+    outputDirA=$outputDir/analysis/run_"$num_processus"_"$k"
+    mkdir -v $outputDirA
     
-    # RUN PROCESSOR
-    if [ $p = 1 ]; then #recompile
-        ./processor.sh -n $home -b $branch -i $NNH_INPUT -c
-    else
-        ./processor.sh -n $home -b $branch -i $NNH_INPUT
-    fi 
+    echo "      -> Prepare BDT: ..."
+    ./prepareBDT.sh -n $NNH_HOME -b $branch -i $outputDir/processor -o $NNH_ANALYSIS_OUTPUT -c
+    cp $NNH_ANALYSIS_OUTPUT $outputDirA
     
-    # MOVE OUTPUT PROCESSOR DATA IN SERVER 
-    mv $NNH_PROCESSOR_OUTPUT/* $OUTPUT_DIRECTORY/processor
-    rm -R $NNH_PROCESSOR_OUTPUT
-    echo "    Output processor files save in $OUTPUT_DIRECTORY/processor"
+    # launchBDT
+    for ((t = 1; t <= $nb_BDT; t++)); do
+        echo "      -> Launch  BDT: "$t"..."
+        ./launchBDT.sh -n $NNH_HOME -b $branch
+        outputDirAT=outputDirA/run_"$k"_"$a"_"$t"
+        mkdir -v $outputDirAT
+        cp $NNH_ANALYSIS_OUTPUT/* $outputDirAT
+        echo "      -> Save result in $outputDirAT"
+    done 
+    rm -R $NNH_ANALYSIS_OUTPUT
     
-    ### analysis ###
-    
-    for ((a = 1; a <= $nb_runByBDT; a++)); do
-        echo
-        echo "    Start "$a"th BDT at "$p"th processor: "
-        outDir=$OUTPUT_DIRECTORY/analysis/run_"$k"_"$a"
-        mkdir -pv $outDir
-        echo "    Prepare BDT..."
-        ./analysis_prepareBDT.sh -n $NNH_HOME -b $branch -i $OUTPUT_DIRECTORY/processor -o $NNH_ANALYSIS_OUTPUT -c
-        echo "    Launch  BDT..."
-        ./analysis_launchBDT.sh -n $NNH_HOME -b $branch
-        mv $NNH_ANALYSIS_OUTPUT/* $outDir
-        echo "    Output analysis files save in $OUTPUT_DIRECTORY/processor"
-        rm -R $NNH_ANALYSIS_OUTPUT
-    done
+    mv $NNH_ANALYSIS_OUTPUT/* $outDir
+    echo "      -> Save result in $outputDirA"
+    rm -R $NNH_ANALYSIS_OUTPUT
 done
+
 
 echo
 echo "...Terminate nnh"

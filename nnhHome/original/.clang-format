@@ -1,0 +1,13 @@
+﻿---
+AlignConsecutiveDeclarations: true
+AllowShortFunctionsOnASingleLine: Inline
+AlwaysBreakTemplateDeclarations: Yes
+BinPackParameters: false
+BreakConstructorInitializersBeforeComma: true
+BreakConstructorInitializers: BeforeColon
+BasedOnStyle: Microsoft
+BreakBeforeBraces: Allman
+IndentWidth: 4
+PointerAlignment: Left
+SpaceBeforeParens: ControlStatements
+...

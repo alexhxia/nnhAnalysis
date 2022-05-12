@@ -20,11 +20,12 @@ from sklearn.experimental import enable_hist_gradient_boosting
 from sklearn.ensemble import HistGradientBoostingClassifier
 
 
-INPUT_NAMES = ["visible_e",   "nParticles",       "eIsoLep",     "higgs_e",    "higgs_pt", "higgs_m",    "higgs_cosTheta",
-               "higgs_bTag1", "higgs_bTag2",      "b1_m",        "b1_pt",      "b1_e",     "b2_m",       "b2_pt",
-               "b2_e",        "higgs_bb_cosBetw", "y_12",        "y_23",       "y_34",     "y_45",       "y_56",
-               "y_67",        "zz_z1_m",          "zz_z2_m",     "sl_w_m",     "sl_rec_m", "oblateness", "sphericity",
-               "cosThrust",   "principleThrust",  "majorThrust", "minorThrust"]
+INPUT_NAMES = [
+        "visible_e",   "nParticles",       "eIsoLep",     "higgs_e",    "higgs_pt", "higgs_m",    "higgs_cosTheta",
+        "higgs_bTag1", "higgs_bTag2",      "b1_m",        "b1_pt",      "b1_e",     "b2_m",       "b2_pt",
+        "b2_e",        "higgs_bb_cosBetw", "y_12",        "y_23",       "y_34",     "y_45",       "y_56",
+        "y_67",        "zz_z1_m",          "zz_z2_m",     "sl_w_m",     "sl_rec_m", "oblateness", "sphericity",
+        "cosThrust",   "principleThrust",  "majorThrust", "minorThrust"]
 
 NNH_HOME = ""
 dataPath = ""
@@ -61,7 +62,10 @@ def getTrainTree(bigFileName, friendFileName):
     # transform the ROOT RDataFrame into a format usable by scikit-learn
     npData = df.AsNumpy(columns=INPUT_NAMES+['weight', 'isSignal', 'channelType'])
     npData['isSignal'] = npData['isSignal'].astype('bool')
-    data = pd.DataFrame(data=npData, copy=False, columns=INPUT_NAMES+['weight', 'isSignal', 'channelType'])
+    data = pd.DataFrame(
+            data=npData, 
+            copy=False, 
+            columns=INPUT_NAMES+['weight', 'isSignal', 'channelType'])
 
     # I had a problem with NaN values previously so I put them at 0 instead
     # no sure if the problem persists but I kept this anyway
@@ -145,7 +149,14 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
             chan = str(chan)
 
             if not chan in statsDict:
-                statsDict[chan] = {'stat': 0, 'sum': 0.0, 'statPreSel': 0, 'sumPreSel': 0.0, 'statSel': 0, 'sumSel': 0.0}
+                statsDict[chan] = {
+                    'stat': 0, 
+                    'sum': 0.0, 
+                    'statPreSel': 0, 
+                    'sumPreSel': 0.0, 
+                    'statSel': 0, 
+                    'sumSel': 0.0
+                }
 
             count = group.count()
             sum = group.sum()
@@ -172,7 +183,13 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
         print(f'{batchEnd} events processed : {100.*batchEnd/nEvents:.2f} %')
         batchBegin = batchEnd
 
-    b = {'BDTscore': BDT_scores, 'weight': weights, 'isSignal': isSignal, 'isTrain': isTrain, 'preSelected': isPreSelected}
+    b = {
+        'BDTscore': BDT_scores, 
+        'weight': weights, 
+        'isSignal': isSignal, 
+        'isTrain': isTrain, 
+        'preSelected': isPreSelected
+    }
     temp = pd.DataFrame(data=b, copy=False)
 
     # search for the BDT cut that maximizes significance

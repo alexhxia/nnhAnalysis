@@ -5,6 +5,8 @@
 *.pkl
 *.joblib
 *.png
+*.out
+*.err
 
 *BUILD/
 *lib/

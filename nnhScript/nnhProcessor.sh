@@ -1,12 +1,20 @@
 #!/bin/bash
 
-### FUNCTION TOOL ###
+# This program build and run for all processus project.
+#
+# INPUT: directory with processus directory with LCIO files
+# OUTPUT: directory with once root file by processus number
+
+
+### INCLUDE TOOL ###
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
 source tools/functions.sh
 source tools/export.sh 
 source tools/help.sh
+
+### FUNCTION TOOL ###
 
 # Display Help
 function syntax {
@@ -17,7 +25,7 @@ function syntax {
     echo "Exit: one files ROOT by processus number"
     echo
     echo 'SYNTAX:'
-    echo '    ./processor.sh [options]'
+    echo '    ./nnhProcessor.sh [options]'
     
     syntaxOption h c n b i #help.sh
 }
@@ -32,9 +40,8 @@ function testNeedBuild {
     fi
 } 
 
-# PARAMETERS
+### ENVIRONMENT + in export.sh ###
 
-# look environement parameters default in export.sh
 recompile=1 # no build
 
 # option choice by user
@@ -56,18 +63,13 @@ while getopts hcn:b:i: flag ; do
     esac
 done 
 
-# test parameters
-
-
-# ENVIRONMENT
-
-nnh_export
-test_isValidHome
-#print_export
-
+nnh_export # && print_export
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
-# COMPILATION
+test_isValidHome
+testNeedBuild
+
+### BUILD ###
 
 if [ $recompile -eq 0 ]; then
     echo
@@ -87,7 +89,7 @@ if [ $recompile -eq 0 ]; then
     make install
 fi
 
-# RUN
+### RUN ###
 
 echo
 echo "--> RUN : processor ($branch) <--"
@@ -96,7 +98,7 @@ echo
 if [ -d $NNH_PROCESSOR_OUTPUT ]; then 
     rm -R $NNH_PROCESSOR_OUTPUT
 fi    
-mkdir -v $NNH_PROCESSOR_OUTPUT
+mkdir $NNH_PROCESSOR_OUTPUT
 
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
         -i $NNH_PROCESSOR_INPUT \
