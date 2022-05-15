@@ -17,7 +17,7 @@
 *DATA/
 *RESULTS/
 
-% LaTeX
+# LaTeX
 *.log
 *.aux
 *.bbl
