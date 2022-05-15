@@ -16,3 +16,11 @@
 
 *DATA/
 *RESULTS/
+
+% LaTeX
+*.log
+*.aux
+*.bbl
+*.blg
+*.synctex.gz
+*.toc
