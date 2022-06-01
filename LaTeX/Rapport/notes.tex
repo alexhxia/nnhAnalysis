@@ -1,0 +1,70 @@
+\documentclass[10pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{xspace}
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+% biblio
+\usepackage{biblatex}
+\addbibresource{biblio.bib}
+
+% Page de garde
+\author{Alexia \textsc{HOCINE}}
+
+\title{Comparaison des prédictions des suites logicielles\\
+	de ILC (iLCSoft) et de FCC (key4HEP) \\
+	sur un signal $ e^{+} e^{-} \longrightarrow Z H $ 
+}
+%Stage M2 Physique, parcours SUBA\\Université de Claude Bernard Lyon 1
+\date{Juillet 2022}
+
+% raccourci français
+\newcommand{\cad}{c'est-à-dire\xspace}
+
+% nom informatique
+\newcommand{\ROOT}{\texttt{ROOT}\xspace}
+\newcommand{\SLCIO}{\texttt{SLCIO}\xspace}
+\newcommand{\processor}{\texttt{processor}\xspace}
+\newcommand{\analysis}{\texttt{analysis}\xspace}
+\newcommand{\nnhAnalysis}{\texttt{nnhAnalysis}\xspace}
+
+% corps du document
+\begin{document}
+
+\maketitle
+
+\input{Remerciements.tex}
+
+\input{Preambule.tex}
+
+\tableofcontents
+
+\input{Introduction.tex}
+
+\input{iLCSoft.tex}
+
+\input{FCC.tex}
+
+\listoffigures
+
+%\bibliographystyle{plain} %{Nabbrv}
+%\bibliography{../Bibliographies/biblio}
+
+\printbibheading
+
+\printbibliography[keyword={sdhcal},heading=subbibliography,title={SDHCAL}]
+\printbibliography[keyword={ilcsoft},heading=subbibliography,title={iLCSoft}]
+\printbibliography[keyword={fcc},heading=subbibliography,title={FCC}]
+\printbibliography[keyword={particles},heading=subbibliography,title={Physique des Particules}]
+
+
+\end{document}
