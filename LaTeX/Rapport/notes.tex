@@ -8,14 +8,24 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{lmodern}
-\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
-
 \usepackage{hyperref}
 \usepackage{xspace}
 
-\author[Hocine]{Alexia HOCINE}
-\title{Stage M2 Physique, parcours SUBA\\Université de Claude Bernard Lyon 1}
-\date{2021-2022}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+% biblio
+\usepackage{biblatex}
+\addbibresource{biblio.bib}
+
+% Page de garde
+\author{Alexia \textsc{HOCINE}}
+
+\title{Comparaison des prédictions des suites logicielles\\
+	de ILC (iLCSoft) et de FCC (key4HEP) \\
+	sur un signal $ e^{+} e^{-} \longrightarrow Z H $ 
+}
+%Stage M2 Physique, parcours SUBA\\Université de Claude Bernard Lyon 1
+\date{Juillet 2022}
 
 % raccourci français
 \newcommand{\cad}{c'est-à-dire\xspace}
@@ -27,7 +37,7 @@
 \newcommand{\analysis}{\texttt{analysis}\xspace}
 \newcommand{\nnhAnalysis}{\texttt{nnhAnalysis}\xspace}
 
-
+% corps du document
 \begin{document}
 
 \maketitle
@@ -44,7 +54,17 @@
 
 \input{FCC.tex}
 
-\bibliographystyle{plain} %{Nabbrv}
-\bibliography{biblio.bib}
+\listoffigures
+
+%\bibliographystyle{plain} %{Nabbrv}
+%\bibliography{../Bibliographies/biblio}
+
+\printbibheading
+
+\printbibliography[keyword={sdhcal},heading=subbibliography,title={SDHCAL}]
+\printbibliography[keyword={ilcsoft},heading=subbibliography,title={iLCSoft}]
+\printbibliography[keyword={fcc},heading=subbibliography,title={FCC}]
+\printbibliography[keyword={particles},heading=subbibliography,title={Physique des Particules}]
+
 
 \end{document}
