@@ -1,0 +1,137 @@
+\documentclass[11pt]{beamer}
+
+\usetheme{Pittsburgh}
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{tikz}
+
+\author[Hocine]{Alexia HOCINE}
+
+\title{
+	Comparaison des prédictions des suites logicielles de ILC (iLCSoft) et de FCC (key4HEP) \\
+	sur un signal $ e^{+} e^{-} \longrightarrow Z H $ 
+}
+\subtitle{Gérald Grenier (IP2I équipe CMS, FCC, SDHCAL)}
+
+\titlegraphic{
+	\includegraphics[width=0.18\textwidth]{../img/UdL-logo.png}
+    \hspace{5cm}
+    \includegraphics[width=0.15\textwidth]{../img/Logo_IP2I.png}
+}
+
+\setbeamercovered{transparent} 
+\setbeamertemplate{navigation symbols}{} 
+\logo{} 
+\institute[UCBL]{Université de Claude Bernard Lyon 1} 
+\date[2022]{Juillet 2022} 
+\subject{nnhA} 
+
+% Décompte des pages sans les annexes
+\setbeamertemplate{caption}[numbered]
+
+\newcommand{\backupbegin}{
+   \newcounter{framenumberappendix}
+   \setcounter{framenumberappendix}{\value{framenumber}}
+}
+
+\newcommand{\backupend}{
+   \addtocounter{framenumberappendix}{-\value{framenumber}}
+   \addtocounter{framenumber}{\value{framenumberappendix}} 
+}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+\begin{frame}{Introduction}
+	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Programme}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{iLCSoft}
+
+\begin{frame}{iLCSoft}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{FCC}
+
+\begin{frame}{FCC}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+
+%\begin{description}
+	%\item[\ref{fig:Michelson}] \url{public.virgo-gw.eu/index.php?gmedia=Rv7bB&t=g\#photoBox-54}
+%\end{description}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\backupbegin
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Sources des Figures}
+
+\listoftables 
+
+%\begin{description}
+	%\item[\ref{fig:Michelson}] \url{public.virgo-gw.eu/index.php?gmedia=Rv7bB&t=g\#photoBox-54}
+%\end{description}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Bibliographie}
+
+%\begin{description}
+	%\item[\ref{fig:Michelson}] \url{public.virgo-gw.eu/index.php?gmedia=Rv7bB&t=g\#photoBox-54}
+%\end{description}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\begin{frame}
+
+\begin{center}
+\Huge{Suppléments}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Annexes}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\backupend
+\end{document}
