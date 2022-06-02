@@ -16,41 +16,40 @@ unsigned int EventShape::m_maxpart = 1000;
 
 // REQUESTS : Returning results
 
-CLHEP::Hep3Vector EventShape::thrustAxis() const {
+CLHEP::Hep3Vector EventShape::getTrustAxis() const {
     return CLHEP::Hep3Vector(m_dAxes(1, 1), m_dAxes(1, 2), m_dAxes(1, 3));
 }
 
-CLHEP::Hep3Vector EventShape::majorAxis() const {
+CLHEP::Hep3Vector EventShape::getMajorTrustAxis() const {
     return CLHEP::Hep3Vector(m_dAxes(2, 1), m_dAxes(2, 2), m_dAxes(2, 3));
 }
 
-CLHEP::Hep3Vector EventShape::minorAxis() const {
+CLHEP::Hep3Vector EventShape::getMinorTrustAxis() const {
     return CLHEP::Hep3Vector(m_dAxes(3, 1), m_dAxes(3, 2), m_dAxes(3, 3));
 }
 
-double EventShape::thrust() const {
+double EventShape::getTrustValue() const {
     return m_dThrust[1];
 }
 
-double EventShape::majorThrust() const {
+double EventShape::getMajorTrustValue() const {
     return m_dThrust[2];
 }
 
-double EventShape::minorThrust() const {
+double EventShape::getMinorTrustValue() const {
     return m_dThrust[3];
 }
 
-double EventShape::oblateness() const {
+double EventShape::getOblateness() const {
     return m_dOblateness;
 }
 
 // Setting and getting parameters.
 
 /**
- * Set Thrust Momentum Power
- * AE: Error if sp < 0
+ * \pre sp > 0
  */
-void EventShape::setThMomPower(double tp) {
+void EventShape::setThrustMomentumPower(double tp) {
     
     //assert(sp > 0.); // Error if sp not positive. ???
 
@@ -59,36 +58,34 @@ void EventShape::setThMomPower(double tp) {
     }
 }
 
-double EventShape::getThMomPower() const {
+double EventShape::getThrustMomentumPower() const {
     return 1.0 + m_dDeltaThPower;
 }
 
 /**
- * Set Fast
- * AE: Error if sp < 0
+ * @pre sp > 0
  */
 void EventShape::setFast(int nf) {
     
     //assert(sp >= 0);// Error if sp not positive. ???
     
-    if (nf > 3)
+    if (nf > 3) {
         m_iFast = nf;
+    }
 }
 
 int EventShape::getFast() const {
-    
     return m_iFast;
 }
 
 // COMMANDS
 
 /**
- * Change particles list and attributes
- * AE : particles.size() > (m_maxpart = 1000)
+ * @pre particles.size() > (m_maxpart = 1000)
  */
-void EventShape::setPartList(const vector<fastjet::PseudoJet>& particles) {
+void EventShape::setParticleList(const vector<fastjet::PseudoJet>& particles) {
     // To make this look like normal physics notation the
-    // zeroth element of each array, mom[i][0], will be ignored
+    // zeroth element of each array, momentum[i][0], will be ignored
     // and operations will be on elements 1,2,3...
 
     // Init momentum matrix

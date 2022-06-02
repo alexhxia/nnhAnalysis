@@ -13,78 +13,27 @@
 
 #include <random>
 
+/**
+ * 
+ */
 class EventShape {
     
     public:
-        // MAKER
-        EventShape() = default;
-        ~EventShape() = default;
-        
-        // REQUESTS
-        
-        CLHEP::Hep3Vector thrustAxis() const;   // getTrustAxis
-        CLHEP::Hep3Vector majorAxis() const;    // getMajorAxis
-        CLHEP::Hep3Vector minorAxis() const;    // getMinorAxis 
-
-        double thrust() const;                  // getTrust
-        double majorThrust() const;             // getMajorTrust 
-        double minorThrust() const;             // getMajorTrust 
-        // thrust :: Corresponding thrust, major, and minor value.
-
-        double oblateness() const;              // getOblateness
-        
-        // Setting and getting parameters.
-        void   setThMomPower(double tp);        // setThrustMomentumPower
-        double getThMomPower() const;           // getThrustMomentumPower
-        
-        void   setFast(int nf);
-        int    getFast() const;
-        
-        //  COMMANDS
-        void setPartList(const std::vector<fastjet::PseudoJet>& particles);
-
-    private:
     
-        // REQUESTS 
-        /**
-         * Polar angle ???
-         * Return :
-         *      if abs(x) / r < 0.8 then 
-         *          sign(acos(x / r), y)            
-         *      else 
-         *          if x > 0 then 
-         *              asin(y / r)
-         *          else 
-         *              sign(asin(y / r)) * pi - asin(y / r)
-         */
-        double ulAngle(double x, double y) const;
+        // ATTRIBUTE STATIQUE
         
         /**
-         * Return : sign(b) * abs(a)
+         * Max particle number
          */
-        double sign(double a, double b) const;
-
-        /**
-         * Result : man^{exp}
-         */
-        int iPow(int man, int exp);
-        
-        // COMMANDS
-                
-        /**
-         * ???
-         */
-        void ludbrb(
-                Eigen::MatrixXd& momentum,
-                double theta, double phi,
-                double bx, double by, double bz);
-
+        static unsigned int m_maxpart; // = 1000;
+    
         // ATTRIBUTES
         
         /**
          * PARU(42): Power of momentum dependence in thrust finder.
          */
         double m_dDeltaThPower = 0.;
+        
         /**
          * MSTU(44): # of initial fastest particles choosen to start search.
          */ 
@@ -116,11 +65,115 @@ class EventShape {
         std::array<double, 4> m_dThrust = {};
         
         double m_dOblateness = 0.;
+        
+        // MAKER
+        
+        EventShape() = default;
+        ~EventShape() = default;
+        
+        // REQUESTS
+        
+        /**
+         * \return return Hep3Vector(m_dAxes(j, i)) , i = {1, 2, 3}
+         */
+        CLHEP::Hep3Vector getTrustAxis() const;         /// j == 1
+        CLHEP::Hep3Vector getMajorTrustAxis() const;    /// j == 2
+        CLHEP::Hep3Vector getMinorTrustAxis() const;    /// j == 3
 
         /**
-         * Max nb particle
+         * \return m_dThrust[j]
          */
-        static unsigned int m_maxpart;// = 1000;
+        double getTrustValue() const;       /// j == 1
+        double getMajorTrustValue() const;  /// j == 2
+        double getMinorTrustValue() const;  /// j == 2
+
+        /**
+         * \return m_dOblateness
+         */
+        double getOblateness() const;
+        
+        // Setting and getting parameters.
+        
+        /**
+         * \param tp
+         * 
+         * \post tp > 0. ==> m_dDeltaThPower == tp - 1.
+         */
+        void setThrustMomentumPower(double tp); 
+        
+        /**
+         * \return 1.0 + m_dDeltaThPower
+         */
+        double getThrustMomentumPower() const; 
+        
+        /**
+         * \param nf
+         * 
+         * \post nf > 3 ==> m_iFast == nf
+         */
+        void setFast(int nf);
+        
+        /**
+         * \return m_iFast
+         */
+        int getFast() const;
+        
+        //  COMMANDS
+        /**
+         * Change particles list and attributes
+         * 
+         * \param particles : PseudoJet vector
+         * \pre particles.size() > (m_maxpart = 1000)
+         */
+        void setParticleList(const std::vector<fastjet::PseudoJet>& particles);
+
+    private:
+    
+        // REQUESTS 
+        /**
+         * Polar angle ???
+         * 
+         * \param x coord
+         * \param y coord
+         * 
+         * \return
+         *      if abs(x) / r < 0.8 then 
+         *          sign(acos(x / r), y)            
+         *      else 
+         *          if x > 0 then 
+         *              asin(y / r)
+         *          else 
+         *              sign(asin(y / r)) * pi - asin(y / r)
+         */
+        double ulAngle(double x, double y) const;
+        
+        /**
+         * \param a
+         * \param b
+         * 
+         * \return sign(b) * abs(a)
+         */
+        double sign(double a, double b) const;
+
+        /**
+         * \param man
+         * \param exp
+         * 
+         * \return man^{exp}
+         */
+        int iPow(int man, int exp);
+        
+        // COMMANDS
+                
+        /**
+         * \param momentum
+         * \param theta, phi : angle
+         * \param bx, by, bz : \vec{\beta}
+         */
+        void ludbrb(
+                Eigen::MatrixXd& momentum,
+                double theta, double phi,
+                double bx, double by, double bz);
 };
 
 #endif
