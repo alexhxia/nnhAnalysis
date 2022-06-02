@@ -42,8 +42,6 @@
 
 \maketitle
 
-\input{Remerciements.tex}
-
 \input{Preambule.tex}
 
 \tableofcontents
@@ -51,20 +49,34 @@
 \input{Introduction.tex}
 
 \input{iLCSoft.tex}
+\cite{Gaede:2003ip}
+
+\cite{garillot:tel-02141420}
+
+\cite{ilc:Chadeau}
+
+\cite{liu:tel-03405418}
+
+\cite{garillot:tel-02141420}
 
 \input{FCC.tex}
 
 \listoffigures
 
+%%%%% BIBLIO %%%%%
+
 %\bibliographystyle{plain} %{Nabbrv}
 %\bibliography{../Bibliographies/biblio}
 
-\printbibheading
+%\printbibheading
 
-\printbibliography[keyword={sdhcal},heading=subbibliography,title={SDHCAL}]
-\printbibliography[keyword={ilcsoft},heading=subbibliography,title={iLCSoft}]
-\printbibliography[keyword={fcc},heading=subbibliography,title={FCC}]
-\printbibliography[keyword={particles},heading=subbibliography,title={Physique des Particules}]
+% Afficher toute la biblio
+%\nocite{*}
+
+\printbibliography[keyword = {sdhcal}, 	 title = {SDHCAL}]
+\printbibliography[keyword = {ilcsoft}, 	 title = {iLCSoft}]
+\printbibliography[keyword = {fcc}, 		 title = {FCC}]
+\printbibliography[keyword = {particles}, title = {Physique des Particules}]
 
 
 \end{document}
