@@ -66,16 +66,16 @@ export NNH_OUTPUT=/gridgroup/ilc/nnhAnalysisFiles/result
 
 ```
 /path/to/nnhAnalysis
-└───nnhHome
+└─── nnhHome
 |   └─── original
 |   |   └─── miniDSTMaker
 |   |   └─── processor
 |   |   └─── analysis
-|   └───ilcsoft
+|   └─── ilcsoft
 |   |   └─── processor
 |   |   └─── analysis
 |   └─── fcc
-└───nnhScript
+└─── nnhScript
 |   └─── nnh.sh
 |   └─── nnhProcessor.sh
 |   └─── nnhAnalysis.sh
@@ -93,22 +93,115 @@ export NNH_OUTPUT=/gridgroup/ilc/nnhAnalysisFiles/result
 ```
 
 ### Dossiers du Programme `nnhHome`
+
+```
+/path/to/nnhAnalysis
+└─── nnhHome
+|   └─── original
+|   └─── ilcsoft
+|   └─── fcc
+└─── nnhScript
+└─── nnhTest
+```
+
 ```
 export NNH_HOME=~/nnhAnalysis/nnhHome
 ```
 
 #### Programme `original`
-
+```
+/path/to/nnhAnalysis/nnhHome/original
+└─── miniDSTMaker
+|   └─── miniDST.py
+|   └─── Observer.py
+|   └─── Transfer.py
+|   └─── downloadAndMiniDst.py
+|   └─── mini-DST-maker.xml
+|   └─── lfns
+|   |   └─── 402001.lfns
+|   |   └─── 402002.lfns
+|   |   └─── ...
+|   └─── 4q250_ZZ_v4_p00_ildl5
+|   |   └─── 4q250_v04_p00_ildl5_c0_bdt.class.C
+|   |   └─── 4q250_v04_p00_ildl5_c1_bdt.class.C
+|   |   └─── 4q250_v04_p00_ildl5_c2_bdt.class.C
+|   |   └─── 4q250_v04_p00_ildl5_c3_bdt.class.C
+|   |   └─── 4q250_v04_p00_ildl5_c0_bdt.weights.xml
+|   |   └─── 4q250_v04_p00_ildl5_c1_bdt.weights.xml
+|   |   └─── 4q250_v04_p00_ildl5_c2_bdt.weights.xml
+|   |   └─── 4q250_v04_p00_ildl5_c3_bdt.weights.xml
+└─── processor
+|   └─── script
+|   |   └─── Merge.py
+|   |   └─── launchNNHProcessor.py
+|   |   └─── NNHProcessor.py
+|   |   └─── Observer.py
+|   |   └─── Transfert.py
+|   |   └─── NNH_steer.xml
+|   |   └─── setEnv.sh
+|   └─── include
+|   |   └─── EventSharpe.hh
+|   |   └─── NNHProcessor.hh
+|   |   └─── ParticleInfo.hh
+|   └─── src
+|   |   └─── EventSharpe.cc
+|   |   └─── NNHProcessor.cc
+└─── analysis
+|   └─── CMakeLists.txt
+|   └─── channels.json
+|   └─── exec
+|   |   └─── prepareForBDT.cxx
+|   └─── include
+|   |   └─── Channels.hh
+|   └─── python
+|   |   └─── launchBDT_WW.py
+|   |   └─── launchBDT_bb.py
+```
 ```
 export NNH_ORIGINAL=~/nnhAnalysis/nnhHome/original
 ```
 
 #### Programme `ilcsoft`
 ```
+/path/to/nnhAnalysis/nnhHome/ilcsoft
+└─── processor
+|   └─── script
+|   |   └─── Merge.py
+|   |   └─── launchNNHProcessor.py
+|   |   └─── NNHProcessor.py
+|   |   └─── Observer.py
+|   |   └─── Transfert.py
+|   |   └─── NNH_steer.xml
+|   |   └─── setEnv.sh
+|   └─── include
+|   |   └─── EventSharpe.hh
+|   |   └─── NNHProcessor.hh
+|   |   └─── ParticleInfo.hh
+|   |   └─── PDGInfo.hh
+|   └─── src
+|   |   └─── EventSharpe.cc
+|   |   └─── NNHProcessor.cc
+|   |   └─── ParticleInfo.cc
+|   |   └─── PDGInfo.cc
+└─── analysis
+|   └─── CMakeLists.txt
+|   └─── channels.json
+|   └─── exec
+|   |   └─── prepareForBDT.cxx
+|   └─── include
+|   |   └─── Channels.hh
+|   └─── python
+|   |   └─── launchBDT_WW.py
+|   |   └─── launchBDT_bb.py
+```
+```
 export NNH_ILCSOFT=~/nnhAnalysis/nnhHome/ilcsoft
 ```
 
-#### Programme `fcc`
+#### Programme `fcc` 
+```
+/path/to/nnhAnalysis/nnhHome/fcc
+```
 ```
 export NNH_FCC=~/nnhAnalysis/nnhHome/fcc
 ```
@@ -132,10 +225,35 @@ export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
 ## Projet `nnhScript`
 ```
+/path/to/nnhAnalysis
+└─── nnhHome
+└─── nnhScript
+|   └─── nnh.sh
+|   └─── nnhProcessor.sh
+|   └─── nnhAnalysis.sh
+|   └─── prepareBDT.sh
+|   └─── launchBDT.sh
+|   └─── tools
+|       └─── help.sh
+|       └─── export.sh
+|       └─── functions.sh
+└─── nnhTest
+```
+```
 export NNH_SCRIPT=~/nnhAnalysis/nnhScript
 ```
 
 ## Projet `nnhTest`
+```
+/path/to/nnhAnalysis
+└─── nnhHome
+└─── nnhScript
+└─── nnhTest
+|   └─── testProcessor_isCompleted.py
+|   └─── testProcessor_isSame2.py
+|   └─── testAnalysis_isCompleted.py
+|   └─── testAnalysis_isSame2.py
+```
 ```
 export NNH_TEST=~/nnhAnalysis/nnhTest
 ```
