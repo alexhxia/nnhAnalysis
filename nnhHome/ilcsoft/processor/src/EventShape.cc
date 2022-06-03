@@ -63,7 +63,7 @@ double EventShape::getThrustMomentumPower() const {
 }
 
 /**
- * @pre sp > 0
+ * \pre sp > 0
  */
 void EventShape::setFast(int nf) {
     
@@ -81,7 +81,7 @@ int EventShape::getFast() const {
 // COMMANDS
 
 /**
- * @pre particles.size() > (m_maxpart = 1000)
+ * \pre particles.size() > (m_maxpart = 1000)
  */
 void EventShape::setParticleList(const vector<fastjet::PseudoJet>& particles) {
     // To make this look like normal physics notation the

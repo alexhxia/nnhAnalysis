@@ -9,13 +9,16 @@
 
 // REQUEST 
 
-EVENT::ReconstructedParticle* ParticleInfo::recoParticle() const { 
-    return _recoParticle; 
+EVENT::ReconstructedParticle* ParticleInfo::getReconstructedParticle() const { 
+    
+    return _reconstructedParticle; 
 }
 
 // COMMAND
 
-void ParticleInfo::setRecoParticle(EVENT::ReconstructedParticle* recoPart) { 
-    _recoParticle = recoPart; 
+void ParticleInfo::setReconstructedParticle(
+            EVENT::ReconstructedParticle* recoPart) { 
+                
+    _reconstructedParticle = recoPart; 
 }
 

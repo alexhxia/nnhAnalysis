@@ -58,7 +58,7 @@ fastjet::PseudoJet recoParticleToPseudoJet(
     fastjet::PseudoJet particle(momentum[0], momentum[1], momentum[2], energy);
     
     ParticleInfo* particleInfo = new ParticleInfo;
-    particleInfo->setRecoParticle(reconstructedParticle);
+    particleInfo->setReconstructedParticle(reconstructedParticle);
     
     particle.set_user_info(particleInfo);
     
