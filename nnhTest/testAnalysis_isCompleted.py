@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """ 
-Test if 'processor' has once root file by processus
+Test if "-a path/to/directory" is a analysis directory.
 """
 
 import numpy
@@ -18,7 +18,7 @@ def error(msg):
     print(msg)
     sys.exit(1)
 
-def testInputDirectory(directory):
+def testDirectory(directory):
     """Test if input directory exist."""
     
     if not os.path.exists(directory):
@@ -43,9 +43,9 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     
     aDirectory = args['analysis']
-    testInputDirectory(aDirectory)
+    testDirectory(aDirectory)
     
-    # FOR ALL PROCESSUS
+    # Files created by analysis program
     
     nameFileList = [
         "DATA.root"
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         
         nameFileList = nameFileList + nameFileList_p
 
-    # add num processus if is missing
+    # list analysis file which missing
     fileMissing = list()
     
     for nameFile in nameFileList:
@@ -80,7 +80,7 @@ if __name__ == "__main__":
             print("Analysis files " + str(nameFile) + " exist")
                         
     
-    # OUTPUT
+    # OUTPUT STREAM
     
     print("\n---- RESULTS -----")
     
@@ -88,5 +88,21 @@ if __name__ == "__main__":
         print("\nAnalysis is complete.")
     else:
         print("\nAnalysis files Missing :\n\t" + str(fileMissing))
+            
+    # OUTPUT FILES 
+    
+    f = open("testAnalysis_isCompleted.txt", "a")
+    f.write("Test directory " + aDirectory + "containt all files created by analysis program.\n")
+    
+    if len(fileMissing) == 0:
+        f.write("Completed.")
+    else:
+        for nameFile in fileMissing:
+            f.write(nameFile + " missing.")
+            
+    f.write("\n------------------------------------------------------------\n")
+    f.close() 
+    
+    # END
     
     print("\n----- END TEST_ANALYSIS_COMPLETED -----\n")

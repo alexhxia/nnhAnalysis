@@ -136,5 +136,23 @@ if __name__ == "__main__":
         print("\nProcessus1 and Processus2 are same.")
     else:
         print("\nProcessus1 and Processus2 are distinct for:\n\t" + str(processusDistinct))
+            
+    # OUTPUT FILE
+    
+    f = open("testProcessor_isSame2.txt", "a")
+    f.write("Test " + p1Directory + "and " + p2Directory + " directory are same.\n")
+    
+    if len(analysisDistinct) == 0:
+        print("\nSame.")
+    else:
+        f.write("\nDistinct for:\n")
+        
+        for key in processusDistinct:
+            print("\t" + key + ": " + str(key))
+    
+    f.write("\n------------------------------------------------------------\n")
+    f.close() 
+            
+    # END
     
     print("\n----- END TEST_2PROCESSOR -----\n")
