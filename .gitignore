@@ -1,6 +1,27 @@
 # nnhHome
 
-## Directory
+## LaTeX
+
+### Rapport
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.lof
+*.log
+*.out
+*.run.xml
+*.toc
+
+### Diaporama
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+
 logs
 __pycache__
 DATA
