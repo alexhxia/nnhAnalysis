@@ -2,12 +2,14 @@
 
 # HOME
 home=~/nnhAnalysis/nnhHome
-script=~/nnhAnalysis/nnhScript
 test=~/nnhAnalysis/nnhTest
+script=~/nnhAnalysis/nnhScript
+
 branch=original
 
 # SERVER
 server=/gridgroup/ilc/nnhAnalysisFiles
+
 input=$server/AHCAL
 output=$server/result
 

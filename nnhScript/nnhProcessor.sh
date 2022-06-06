@@ -66,10 +66,10 @@ while getopts hcn:b:i: flag ; do
     esac
 done 
 
-nnh_export # && print_export
+nnh_export && print_export
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
-#test_isValidHome
+test_isValidHome && error "home is no valid."
 testNeedBuild
 
 ### BUILD ###
