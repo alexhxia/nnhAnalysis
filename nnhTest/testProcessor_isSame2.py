@@ -99,13 +99,21 @@ if __name__ == "__main__":
         500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
         500126, 500127, 500128
     ]
+    nbProcessus = len(numProcessus)
     
     # add if processus 1 and 2 are different tree
     processusDistinct = {}
     
+    # result file
+    f = open("testProcessor_isSame.txt", "w")
+    f.write("# Test 2 processor directories are same")
+    f.write("\tDirectory 1:" + p1Directory)
+    f.write("\tDirectory 2:" + p2Directory + "\n")
+    
     for numP in numProcessus:
         
-        print("\nProcessus " + str(numP) + " in progress...")
+        print("\nProcessus remaing: " + str(nbProcessus))
+        print("\tProcessus " + str(numP) + " in progress...")
         numPFileName = str(numP) + ".root"
         path_p1 = os.path.join(p1Directory, numPFileName)
         path_p2 = os.path.join(p2Directory, numPFileName)
@@ -124,9 +132,14 @@ if __name__ == "__main__":
             
             if not len(distinctBranchTreeList) == 0:
                 processusDistinct[numP] = distinctBranchTreeList
+                f.write(str(numP) + ": " + str(processusDistinct[numP]))
+            else:
+                f.write(str(numP) + ": OK")
             
             file1.Close()
             file2.Close()
+            
+    f.close()
     
     # OUTPUT
     
@@ -136,5 +149,7 @@ if __name__ == "__main__":
         print("\nProcessus1 and Processus2 are same.")
     else:
         print("\nProcessus1 and Processus2 are distinct for:\n\t" + str(processusDistinct))
+        for numP in numProcessus:
+            print(str(numP) + ": " + str(processusDistinct[numP]))
     
     print("\n----- END TEST_2PROCESSOR -----\n")
