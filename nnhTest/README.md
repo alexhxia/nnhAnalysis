@@ -9,7 +9,7 @@ Vérifie que le programme à générer tous les fichiers qu'il devrait.
 ### For `processor`
 
 ```
-testProcessor_isCompleted.py -p path/to/processor_directory_root_files
+python testProcessor_isCompleted.py -p path/to/processor_directory_root_files
 ```
 Vérifie que le programme `processor` à bien un fichier root par numéro de processus :
 ```
@@ -26,10 +26,13 @@ Vérifie que le programme `processor` à bien un fichier root par numéro de pro
 
 ### For `analysis`
 
+Le programme `testAnalysis_isCompleted.py` prend le chemin d'un dossier et 
+test si ce dossier contient tous les fichiers générés par le programme `analysis`.
+
 ```
-testAnalysis_isCompleted.py -a path/to/analysis_directory_data_files
+python testAnalysis_isCompleted.py -a path/to/directory
 ```
-Vérifie que le programme `analysis` à bien un fichier root par numéro de processus :
+Vérifie que le dossier `directory` a bien tous les fichiers suivants :
 ```
 # files created by XX (here for ww or bb)
 "bestSelection_XX_e-0.8_p+0.3.root", 
@@ -38,19 +41,20 @@ Vérifie que le programme `analysis` à bien un fichier root par numéro de proc
 "scores_XX_e-0.8_p+0.3.root",
 "stats_XX_e-0.8_p+0.3.json",
 "model_XX_e-0.8_p+0.3.joblib"
+"DATA.root"
 ```
 
 ## `testXX_isSame2.py` programs
 Regarde, suivant la définition de Kolmogorov, si 2 dossiers de résultats sont identiques.
 
 ### For `processor`
-Tous les processor doivent être identiques.
+Tous les processors doivent être identiques.
 ```
-testProcessor_isSame2.py -p1 path/to/processor_directory_root_files_1 -p2 path/to/processor_directory_root_files_2
+python testProcessor_isSame2.py -p1 path/to/processor_directory_root_files_1 -p2 path/to/processor_directory_root_files_2
 ```
 
 ### For `analysis`
 Les résultats peuvent être légèrement différents mais doivent rester équivalent.
 ```
-testProcessor_isSame2.py -a1 path/to/analysis_directory_data_files_1 -a2 path/to/analysis_directory_data_files_2
+python testProcessor_isSame2.py -a1 path/to/analysis_directory_data_files_1 -a2 path/to/analysis_directory_data_files_2
 ```

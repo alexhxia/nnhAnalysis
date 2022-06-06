@@ -81,5 +81,21 @@ if __name__ == "__main__":
         print("\nProcessus is complete.")
     else:
         print("\nProcessus Missing :\n\t" + str(processusMissing))
+        
+    # OUTPUT FILES 
+    
+    f = open("testProcessor_isCompleted.txt", "a")
+    f.write("Test directory " + pDirectory + "containt all files created by processor program.\n")
+    
+    if len(processusMissing) == 0:
+        f.write("Completed.")
+    else:
+        for p in processusMissing:
+            f.write(p + " missing.")
+            
+    f.write("\n------------------------------------------------------------\n")
+    f.close() 
+    
+    # END
     
     print("\n----- END TEST_PROCESSOR_COMPLETED -----\n")

@@ -3,6 +3,7 @@
 # HOME
 home=~/nnhAnalysis/nnhHome
 script=~/nnhAnalysis/nnhScript
+test=~/nnhAnalysis/nnhTest
 branch=original
 
 # SERVER
@@ -23,6 +24,8 @@ function print_export {
     echo
     echo "home :             $NNH_HOME"
     echo "script :           $NNH_SCRIPT"
+    echo "test :             $NNH_TEST"
+    echo
     echo "input :            $NNH_INPUT"
     echo "output :           $NNH_OUTPUT"
     echo
@@ -40,6 +43,7 @@ function nnh_export {
     # HOME
     export NNH_HOME=$home/$branch
     export NNH_SCRIPT=$script
+    export NNH_TEST=$test
 
     # SERVER
     export NNH_INPUT=$input

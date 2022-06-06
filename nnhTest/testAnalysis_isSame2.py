@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """ 
-Compare the difference between 2 'processor' result  directories 
+Compare the difference between 2 'analysis' result  directories 
 with KolmogorowTest
 """
 
@@ -19,7 +19,7 @@ def error(msg):
     print(msg)
     sys.exit(1)
 
-def testInputDirectory(directory):
+def testDirectory(directory):
     """Test if input directory exist."""
     
     if not os.path.exists(directory):
@@ -67,7 +67,6 @@ if __name__ == "__main__":
     
     print("\n----- BEGIN TEST_2ANALYSIS -----\n")
 
-    
     # PARAMETERS
     
     parser = argparse.ArgumentParser()
@@ -85,10 +84,10 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     
     a1Directory = args['analysis1']
-    testInputDirectory(a1Directory)
+    testDirectory(a1Directory)
     
     a2Directory = args['analysis2']
-    testInputDirectory(a2Directory)
+    testDirectory(a2Directory)
     
     # Get all file name in 2 analysis directory
     
@@ -98,13 +97,14 @@ if __name__ == "__main__":
     nameFileList = set(nameFile1List + nameFile2List)
     
     # Sort file by type in dictionary
+    
     nameFileByType = {}
     
     for nameFile in nameFileList:
         
         nameFileSplit = os.path.splitext(nameFile)
         
-        typeFile=nameFileSplit[1]
+        typeFile = nameFileSplit[1]
         
         if typeFile in nameFileByType:
             t = nameFileByType[typeFile]
@@ -144,7 +144,7 @@ if __name__ == "__main__":
             file1.Close()
             file2.Close()
             
-    # OUTPUT
+    # OUTPUT STREAM
     
     print("\n---- RESULTS -----")
     
@@ -156,5 +156,24 @@ if __name__ == "__main__":
         keys = analysisDistinct.keys()
         for key in analysisDistinct:
             print("\t" + key + ": " + str(analysisDistinct[key]))
+            
+    # OUTPUT FILE
+    
+    f = open("testAnalysis_isSame2.txt", "a")
+    f.write("Test " + a1Directory + "and " + a2Directory + " directory are same.\n")
+    
+    if len(analysisDistinct) == 0:
+        print("\nSame.")
+    else:
+        f.write("\nDistinct for:\n")
+        
+        keys = analysisDistinct.keys()
+        for key in analysisDistinct:
+            print("\t" + key + ": " + str(analysisDistinct[key]))
+    
+    f.write("\n------------------------------------------------------------\n")
+    f.close() 
+            
+    # END
     
     print("\n----- END TEST_2ANALYSIS -----\n")
