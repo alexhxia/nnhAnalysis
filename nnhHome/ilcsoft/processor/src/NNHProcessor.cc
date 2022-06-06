@@ -49,7 +49,7 @@ NNHProcessor aNNHProcessor;
 /**
  * Built 'PseudoJet' with 'ReconstructedParticle'
  */
-fastjet::PseudoJet recoParticleToPseudoJet(
+fastjet::PseudoJet reconstructedParticleToPseudoJet(
         EVENT::ReconstructedParticle* reconstructedParticle) {
     
     const double* momentum = reconstructedParticle->getMomentum();
@@ -417,7 +417,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
         visible_e += recoPart->getEnergy();
 
-        fastjet::PseudoJet particle = recoParticleToPseudoJet(recoPart);
+        fastjet::PseudoJet particle = reconstructedParticleToPseudoJet(recoPart);
         particles.push_back(particle);
     }
 
@@ -464,7 +464,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     if (isValid_bb) {
         vector<fastjet::PseudoJet> jets = vector<fastjet::PseudoJet>{};
         for (EVENT::ReconstructedParticle* lcioJet : _2Jets) {
-            jets.push_back(recoParticleToPseudoJet(lcioJet));
+            jets.push_back(reconstructedParticleToPseudoJet(lcioJet));
         }
 
         const fastjet::PseudoJet higgs = join(jets[0], jets[1]);
@@ -494,15 +494,15 @@ void NNHProcessor::processEvent(LCEvent* evt) {
 
         higgs_bb_cosBetw = std::cos(b1_mom.angle(b2_mom));
 
-        higgs_bTag1 = 0;
-        higgs_bTag2 = 0;
+        higgs_bTag1 = 0.;
+        higgs_bTag2 = 0.;
 
-        y_12 = 0;
-        y_23 = 0;
-        y_34 = 0;
-        y_45 = 0;
-        y_56 = 0;
-        y_67 = 0;
+        y_12 = 0.;
+        y_23 = 0.;
+        y_34 = 0.;
+        y_45 = 0.;
+        y_56 = 0.;
+        y_67 = 0.;
 
         IntVec intValues = IntVec{};
         StringVec strValues = StringVec{};
@@ -561,7 +561,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     if (_3Jets.size() == 3) {
         vector<fastjet::PseudoJet> jets = vector<fastjet::PseudoJet>{};
         for (EVENT::ReconstructedParticle* lcioJet : _3Jets) {
-            jets.push_back(recoParticleToPseudoJet(lcioJet));
+            jets.push_back(reconstructedParticleToPseudoJet(lcioJet));
         }
 
         vector<fastjet::PseudoJet> osef{};
@@ -581,7 +581,7 @@ void NNHProcessor::processEvent(LCEvent* evt) {
     if (isValid_ww) {
         vector<fastjet::PseudoJet> jets = vector<fastjet::PseudoJet>{};
         for (EVENT::ReconstructedParticle* lcioJet : _4Jets) {
-            jets.push_back(recoParticleToPseudoJet(lcioJet));
+            jets.push_back(reconstructedParticleToPseudoJet(lcioJet));
         }
 
         vector<fastjet::PseudoJet> smallW_jetPair{};
