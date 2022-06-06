@@ -5,6 +5,9 @@
 # INPUT: directory with processus directory with LCIO files
 # OUTPUT: directory with once root file by processus number
 
+echo
+echo "--> BEGIN : processor ($branch) <--"
+echo
 
 ### INCLUDE TOOL ###
 
@@ -66,7 +69,7 @@ done
 nnh_export # && print_export
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
-test_isValidHome
+#test_isValidHome
 testNeedBuild
 
 ### BUILD ###
