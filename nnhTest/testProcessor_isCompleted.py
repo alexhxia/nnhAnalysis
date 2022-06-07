@@ -72,8 +72,8 @@ if __name__ == "__main__":
         if not os.path.exists(path):
             processusMissing.append(numP)
             #print("Processus " + str(numP) + " missing")
-        else:
-            print("Processus " + str(numP) + " exist")
+        #else:
+            #print("Processus " + str(numP) + " exist")
                         
     
     # OUTPUT
