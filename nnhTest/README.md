@@ -1,17 +1,18 @@
 # `nnhTest` directory
 
 Ce dossier regroupe toutes les fonctions qui vont permettent de tester les résultats de programme de [`nnhHome`](../nnhHome) 
-(cad les progremmes `processor` et `analysis`).
+(cad les programmes `processor` et `analysis`).
 
-## `testXX_isCompleted.py` programs
-Vérifie que le programme à générer tous les fichiers qu'il devrait.
+## `testXXCompleted.py` programs, `XX` (soit `Processus`, soit `Analysis`)
+Permet de vérifier qu'un dossier possède tous les fichiers qu'il devrait, càd que le programme à bien généner tous les fichiers qu'il aurait du.
 
 ### For `processor`
 
 ```
-python testProcessor_isCompleted.py -p path/to/processor_directory_root_files
+python testProcessorCompleted.py -p path/to/directory
 ```
-Vérifie que le programme `processor` à bien un fichier root par numéro de processus :
+Prend en entré, un dossier (de résultat du programme `Processor`) est vérifie qu'il contient un fichier ROOT par numéro de processus (liste récupérer à partir du dossier `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`).
+
 ```
 # processus number list
 402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
@@ -23,16 +24,16 @@ Vérifie que le programme `processor` à bien un fichier root par numéro de pro
 500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
 500126, 500127, 500128
 ```
+Il va retourner les processus manquant sur le terminal et dans un fichier `testProcessorCompleted.txt`.
 
 ### For `analysis`
 
-Le programme `testAnalysis_isCompleted.py` prend le chemin d'un dossier et 
+De manière similiare,le programme `testAnalysisCompleted.py` prend le chemin d'un dossier et 
 test si ce dossier contient tous les fichiers générés par le programme `analysis`.
-
 ```
-python testAnalysis_isCompleted.py -a path/to/directory
+python testAnalysisCompleted.py -a path/to/directory
 ```
-Vérifie que le dossier `directory` a bien tous les fichiers suivants :
+Vérifie donc que le dossier `directory` a bien les fichiers suivants :
 ```
 # files created by XX (here for ww or bb)
 "bestSelection_XX_e-0.8_p+0.3.root", 
@@ -43,6 +44,7 @@ Vérifie que le dossier `directory` a bien tous les fichiers suivants :
 "model_XX_e-0.8_p+0.3.joblib"
 "DATA.root"
 ```
+Là aussi, il retourne les noms des dossiers manquants sur le terminal et dans un fichier `testAnalysisCompleted.txt`.
 
 ## `testXX_isSame2.py` programs
 Regarde, suivant la définition de Kolmogorov, si 2 dossiers de résultats sont identiques.
