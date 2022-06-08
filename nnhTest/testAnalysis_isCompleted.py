@@ -68,16 +68,16 @@ if __name__ == "__main__":
 
     # list analysis file which missing
     fileMissing = list()
-    
+
     for nameFile in nameFileList:
         
         path = os.path.join(aDirectory, nameFile)
         
         if not os.path.exists(path):
             fileMissing.append(nameFile)
-            print("Analysis files " + str(nameFile) + " missing")
-        else:
-            print("Analysis files " + str(nameFile) + " exist")
+            #print("Analysis files " + str(nameFile) + " missing")
+        #else:
+            #print("Analysis files " + str(nameFile) + " exist")
                         
     
     # OUTPUT STREAM
@@ -85,20 +85,23 @@ if __name__ == "__main__":
     print("\n---- RESULTS -----")
     
     if len(fileMissing) == 0:
-        print("\nAnalysis is complete.")
+        print("\nAnalysis is completed.")
     else:
-        print("\nAnalysis files Missing :\n\t" + str(fileMissing))
+        print("\nAnalysis files Missing :")
+        for nameFile in fileMissing:
+            print("\t" + nameFile + "")
             
     # OUTPUT FILES 
     
     f = open("testAnalysis_isCompleted.txt", "a")
-    f.write("Test directory " + aDirectory + "containt all files created by analysis program.\n")
+    f.write("Test directory containts all files created by analysis program.\n")
     
     if len(fileMissing) == 0:
-        f.write("Completed.")
+        f.write(aDirectory + " completed.\n")
     else:
+        f.write(aDirectory + " is not completed, missing:\n")
         for nameFile in fileMissing:
-            f.write(nameFile + " missing.")
+            f.write("\t" + nameFile + "\n")
             
     f.write("\n------------------------------------------------------------\n")
     f.close() 

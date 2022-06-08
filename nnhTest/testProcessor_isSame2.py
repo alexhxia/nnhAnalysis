@@ -87,33 +87,33 @@ if __name__ == "__main__":
     p2Directory = args['processor2']
     testInputDirectory(p2Directory)
     
-    # FOR ALL PROCESSUS
+    # INIT
     
-    numProcessus = [
-        402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
-        402012, 402001, 402002, 402013, 402014, 402003, 402004, 402005, 402006, 
-        500006, 500008, 500010, 500012, 500062, 500064, 500066, 500068, 500070, 
-        500072, 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 
-        500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112, 500086, 
-        500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 
-        500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
-        500126, 500127, 500128
-    ]
+    #numProcessus = [
+    #    402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
+    #    402012, 402001, 402002, 402013, 402014, 402003, 402004, 402005, 402006, 
+    #    500006, 500008, 500010, 500012, 500062, 500064, 500066, 500068, 500070, 
+    #    500072, 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 
+    #    500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112, 500086, 
+    #    500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 
+    #    500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
+    #    500126, 500127, 500128
+    #]
+    numProcessus = os.listdir("/gridgroup/ilc/nnhAnalysisFiles/AHCAL")
     nbProcessus = len(numProcessus)
     
     # add if processus 1 and 2 are different tree
     processusDistinct = {}
     
-    # result file
-    f = open("testProcessor_isSame.txt", "w")
-    f.write("# Test 2 processor directories are same")
-    f.write("\tDirectory 1:" + p1Directory)
-    f.write("\tDirectory 2:" + p2Directory + "\n")
+    # for print, counter of processor remains
+    k=1
+    
+    # FOR EACH PROCESSUS
     
     for numP in numProcessus:
         
-        print("\nProcessus remaing: " + str(nbProcessus))
-        print("\tProcessus " + str(numP) + " in progress...")
+        print("[" + str(k) + "/" + str(nbProcessus) + "]"
+                + " Processus " + str(numP) + " in progress...")
         numPFileName = str(numP) + ".root"
         path_p1 = os.path.join(p1Directory, numPFileName)
         path_p2 = os.path.join(p2Directory, numPFileName)
@@ -132,14 +132,11 @@ if __name__ == "__main__":
             
             if not len(distinctBranchTreeList) == 0:
                 processusDistinct[numP] = distinctBranchTreeList
-                f.write(str(numP) + ": " + str(processusDistinct[numP]))
-            else:
-                f.write(str(numP) + ": OK")
             
             file1.Close()
             file2.Close()
-            
-    f.close()
+        
+        k=k+1
     
     # OUTPUT
     
@@ -149,28 +146,27 @@ if __name__ == "__main__":
         print("\nProcessus1 and Processus2 are same.")
     else:
         print("\nProcessus1 and Processus2 are distinct for:\n\t" + str(processusDistinct))
-<<<<<<< HEAD
         for numP in numProcessus:
             print(str(numP) + ": " + str(processusDistinct[numP]))
-=======
             
     # OUTPUT FILE
     
-    f = open("testProcessor_isSame2.txt", "a")
-    f.write("Test " + p1Directory + "and " + p2Directory + " directory are same.\n")
+    f = open("testProcessor_isSame.txt", "a")
+    f.write("# Test 2 processor directories have the same root files.\n\n")
+    f.write("Directory 1: " + p1Directory + "\n")
+    f.write("Directory 2: " + p2Directory + "\n\n")
     
-    if len(analysisDistinct) == 0:
-        print("\nSame.")
+    if len(processusDistinct) == 0:
+        f.write("Same.")
     else:
-        f.write("\nDistinct for:\n")
+        f.write("Distinct for:\n")
         
         for key in processusDistinct:
-            print("\t" + key + ": " + str(key))
+            f.write("\t" + key + ": " + str(key))
     
     f.write("\n------------------------------------------------------------\n")
     f.close() 
-            
+    
     # END
->>>>>>> 45cbedee35e3cabbba448fa5a90cdd088ae549fc
     
     print("\n----- END TEST_2PROCESSOR -----\n")

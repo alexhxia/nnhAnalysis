@@ -89,34 +89,33 @@ if __name__ == "__main__":
     a2Directory = args['analysis2']
     testDirectory(a2Directory)
     
-    # Get all file name in 2 analysis directory
+    # Get all name files in 2 analysis directories
     
     nameFile1List = os.listdir(a1Directory)
     nameFile2List = os.listdir(a2Directory)
     
-    nameFileList = set(nameFile1List + nameFile2List)
+    nameFileList = set(nameFile1List + nameFile2List) # set (without double)
     
-    # Sort file by type in dictionary
+    # SORT NAME FILE IN THE DICTONARY BY TYPE FILE
     
-    nameFileByType = {}
-    
+    nameFileByType = {} # dictionary {key = extension, value = name file list}
     for nameFile in nameFileList:
         
-        nameFileSplit = os.path.splitext(nameFile)
+        nameFileSplit = os.path.splitext(nameFile) # split name and extension
+        typeFile = nameFileSplit[1] # file extension
         
-        typeFile = nameFileSplit[1]
-        
-        if typeFile in nameFileByType:
+        if typeFile in nameFileByType: # if typeFile exist then append
             t = nameFileByType[typeFile]
             t.append(nameFile)
             nameFileByType.update({typeFile: t})
-        else:
+        else: # create new "key"
             nameFileByType[typeFile] = [nameFile]
            
     # TEST BY FILE TYPE
+    
     analysisDistinct = {}
     
-    # ROOT files
+    # For ROOT files
     
     print("\nROOT files... ")
     rootFiles = nameFileByType[".root"]
@@ -160,16 +159,18 @@ if __name__ == "__main__":
     # OUTPUT FILE
     
     f = open("testAnalysis_isSame2.txt", "a")
-    f.write("Test " + a1Directory + "and " + a2Directory + " directory are same.\n")
+    f.write("Test 2 directories are same.\n\n")
+    f.write("Directory 1:" + a1Directory + "\n")
+    f.write("Directory 2:" + a2Directory + "\n\n")
     
     if len(analysisDistinct) == 0:
-        print("\nSame.")
+        f.write("\tSame.")
     else:
-        f.write("\nDistinct for:\n")
+        f.write("\tDistinct for:\n")
         
         keys = analysisDistinct.keys()
         for key in analysisDistinct:
-            print("\t" + key + ": " + str(analysisDistinct[key]))
+            print("\t\t" + key + ": " + str(analysisDistinct[key]))
     
     f.write("\n------------------------------------------------------------\n")
     f.close() 
