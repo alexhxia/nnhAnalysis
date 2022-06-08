@@ -9,6 +9,7 @@ import argparse
 import os, os.path 
 import sys 
 import ROOT 
+import datetime
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
@@ -27,47 +28,83 @@ def testInputDirectory(directory):
     if not os.path.isdir(directory):
         error('ERROR : directory is not ' + directory)
 
+def outputStream(processusMissing):
+    """Print result on output stream"""
+    
+    print("RESULTS:")
+    
+    if len(processusMissing) == 0:
+        print("\tProcessus is completed.")
+    else:
+        print("\tProcessus Missing :")
+        for p in processusMissing:
+            print("\t\t" + str(p))
+
+
+def outputFile(nameOutputFile, pathDir, processusMissing):
+    """Write result on output file"""
+        
+    f = open(nameOutputFile, "a")
+    f.write("\nTest if a directory containts all files created by processor program.\n")
+    f.write(str(datetime.datetime.now()) + "\n\n")
+    
+    if len(processusMissing) == 0:
+        f.write(pathDir + " is completed.\n")
+    else:
+        f.write(pathDir + " is not completed, it's missing:\n")
+        for p in processusMissing:
+            f.write("\t" + str(p) + "\n")
+            
+    f.write("\n------------------------------------------------------------\n")
+    f.close() 
+
+
 if __name__ == "__main__":
     
     print("\n----- BEGING TEST_PROCESSOR_COMPLETED -----\n")
     
     # PARAMETERS
     
+    # Entry: directory path to test
     parser = argparse.ArgumentParser()
-    
     parser.add_argument(
-            '-p', '--processor', 
+            '-d', '--directory', 
             help='Path of processor directory', 
             required=True)
-            
     args = vars(parser.parse_args())
     
-    pDirectory = args['processor']
-    testInputDirectory(pDirectory)
+    pathDir = args['directory']
+    testInputDirectory(pathDir)
     
-    # FOR ALL PROCESSUS
+    # Output: name output file
+    nameOutputFile = "testProcessorCompleted.txt"
     
-    #numProcessus = [
-    #    402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
-    #    402012, 402001, 402002, 402013, 402014, 402003, 402004, 402005, 402006, 
-    #    500006, 500008, 500010, 500012, 500062, 500064, 500066, 500068, 500070, 
-    #    500072, 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 
-    #    500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112, 500086, 
-    #    500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 
-    #    500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
-    #    500126, 500127, 500128#, 454865 # processus no exist, it's for test
-    #]
+    # num processus list
+    """
+    numProcessus = [
+        402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
+        402012, 402001, 402002, 402013, 402014, 402003, 402004, 402005, 402006, 
+        500006, 500008, 500010, 500012, 500062, 500064, 500066, 500068, 500070, 
+        500072, 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 
+        500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112, 500086, 
+        500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 
+        500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
+        500126, 500127, 500128 
+        #, 454865, 876552, 796354 # processus no exist, it's for test
+    ]
+    """
     
-    # Get All processus in local server 
+    # Get all processus in local server 
     numProcessus = os.listdir("/gridgroup/ilc/nnhAnalysisFiles/AHCAL")
     
-    # add num processus if is missing
+    # num processus list if missing
     processusMissing = list()
     
+    # TEST : all processus file exit
     for numP in numProcessus:
         
         numPFileName = str(numP) + ".root"
-        path = os.path.join(pDirectory, numPFileName)
+        path = os.path.join(pathDir, numPFileName)
         
         if not os.path.exists(path):
             processusMissing.append(numP)
@@ -75,30 +112,13 @@ if __name__ == "__main__":
         #else:
             #print("Processus " + str(numP) + " exist")
                         
-    
     # OUTPUT
     
-    print("\n---- RESULTS -----")
-    
-    if len(processusMissing) == 0:
-        print("\nProcessus is completed.")
-    else:
-        print("\nProcessus Missing :\n\t" + str(processusMissing))
-        
-    # OUTPUT FILES 
-    
-    f = open("testProcessor_isCompleted.txt", "a")
-    f.write("\nTest if a directory containts all files created by processor program.\n\n")
-    
-    if len(processusMissing) == 0:
-        f.write(pDirectory + " is completed.\n")
-    else:
-        f.write(pDirectory + " is not completed, it's missing:\n")
-        for p in processusMissing:
-            f.write("\t" + str(p) + "\n")
+    ## Stream
+    outputStream(processusMissing)
             
-    f.write("\n------------------------------------------------------------\n")
-    f.close() 
+    ## Files
+    outputFile(nameOutputFile, pathDir, processusMissing)
     
     # END
     

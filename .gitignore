@@ -22,9 +22,15 @@
 *.snm
 *.toc
 
+## nnhScript 
+*.err
+*.out
+*.txt
+
 ## nnhHome
 
 ### Directory
+
 lib
 build
 BUILD

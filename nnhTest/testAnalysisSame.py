@@ -10,6 +10,7 @@ import argparse
 import os, os.path 
 import sys 
 import ROOT 
+import datetime
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
@@ -29,7 +30,19 @@ def testDirectory(directory):
         error('ERROR : directory is not ' + directory)
 
 def distinctBranchTree(tree1, tree2):
-    """Return branch name list what are different with Kolmogorov definition."""
+    """
+    Return branch name list what are different with Kolmogorov definition.
+    
+    Parameters:
+    -------------------
+    tree1 : TTree
+    tree2 : TTree
+    
+    Return :
+    -------------------
+    nameBranchDistinct : list of dictionary {"branch", "Kolmogorov"}
+        
+    """
     
     nameBranchDistinct = list()
     
@@ -56,47 +69,58 @@ def distinctBranchTree(tree1, tree2):
     
         k = hist1.KolmogorovTest(hist2, "UON")
         if not k == 1.:
-            nameBranchDistinct.append(nameBranch + " = " + str(k))
+            nameBranchDistinct.append({
+                    "branch" : nameBranch,
+                    "Komogorov" : str(k)
+            })
 
         del hist1
         del hist2
             
     return nameBranchDistinct
 
-if __name__ == "__main__":
-    
-    print("\n----- BEGIN TEST_2ANALYSIS -----\n")
 
-    # PARAMETERS
+
+def outputStream(analysisDistinct):
+    """Print stream output"""
     
-    parser = argparse.ArgumentParser()
+    print("RESULTS: ")
     
-    parser.add_argument(
-            '-a1', '--analysis1', 
-            help='Path of analysis directory', 
-            required=True)
-    
-    parser.add_argument(
-            '-a2', '--analysis2', 
-            help='Path of analysis directory', 
-            required=True)
+    if len(analysisDistinct) == 0:
+        print("\tAnalysis1 and Analysis2 are same.")
+    else:
+        print("\tAnalysis1 and Analysis2 are distinct for:\n")
+        
+        keys = analysisDistinct.keys()
+        for key in analysisDistinct:
+            print("\t" + key + ": " + str(analysisDistinct[key]))
             
-    args = vars(parser.parse_args())
+            
     
-    a1Directory = args['analysis1']
-    testDirectory(a1Directory)
+def outputFile(nameFile, pathDir1, pathDir2, analysisDistinct):
+    """Do a file output"""
     
-    a2Directory = args['analysis2']
-    testDirectory(a2Directory)
+    f = open(nameOutputFile, "a")
+    f.write("Test 2 directories are same.\n")
+    f.write(str(datetime.datetime.now()) + "\n\n")
+    f.write("Directory 1:" + pathDir1 + "\n")
+    f.write("Directory 2:" + pathDir2 + "\n\n")
     
-    # Get all name files in 2 analysis directories
+    if len(analysisDistinct) == 0:
+        f.write("\tSame.")
+    else:
+        f.write("\tDistinct for:\n")
+        
+        keys = analysisDistinct.keys()
+        for key in analysisDistinct:
+            print("\t\t" + key + ": " + str(analysisDistinct[key]))
     
-    nameFile1List = os.listdir(a1Directory)
-    nameFile2List = os.listdir(a2Directory)
-    
-    nameFileList = set(nameFile1List + nameFile2List) # set (without double)
-    
-    # SORT NAME FILE IN THE DICTONARY BY TYPE FILE
+    f.write("\n------------------------------------------------------------\n")
+    f.close() 
+
+
+def sortNameFileByTypeFile(nameFileList):
+    """ Sort the name files by type file (root, json, ...)"""
     
     nameFileByType = {} # dictionary {key = extension, value = name file list}
     for nameFile in nameFileList:
@@ -104,27 +128,70 @@ if __name__ == "__main__":
         nameFileSplit = os.path.splitext(nameFile) # split name and extension
         typeFile = nameFileSplit[1] # file extension
         
-        if typeFile in nameFileByType: # if typeFile exist then append
+        if typeFile in nameFileByType: # if typeFile exist then append name file
             t = nameFileByType[typeFile]
             t.append(nameFile)
             nameFileByType.update({typeFile: t})
-        else: # create new "key"
+        else: # create new "key" and add name file in list
             nameFileByType[typeFile] = [nameFile]
-           
-    # TEST BY FILE TYPE
+            
+    return nameFileByType
+
+
+if __name__ == "__main__":
     
+    print("\n----- BEGIN TEST_ANALYSIS_SAME -----\n")
+
+    # PARAMETERS
+    
+    ## Entry: 2 directories
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument(
+            '-d1', '--directory1', 
+            help='Path of analysis directory', 
+            required=True)
+    
+    parser.add_argument(
+            '-d2', '--directory2',
+            help='Path of analysis directory', 
+            required=True)
+            
+    args = vars(parser.parse_args())
+    
+    pathDir1 = args['directory1']
+    testDirectory(pathDir1)
+    
+    pathDir2 = args['directory2']
+    testDirectory(pathDir2)
+    
+    ## Output
+    nameOutputFile = "testAnalysSame.txt"
+    
+    ## Get all name files in 2 analysis directories
+    
+    nameFile1List = os.listdir(pathDir1)
+    nameFile2List = os.listdir(pathDir2)
+    
+    nameFileList = set(nameFile1List + nameFile2List) # set (without double)
+    
+    # TEST
+    
+    ## SORT NAME FILE IN THE DICTONARY BY TYPE FILE
+    nameFileByType = sortNameFileByTypeFile(nameFileList)
+           
+    ## TEST BY FILE TYPE
     analysisDistinct = {}
     
-    # For ROOT files
-    
-    print("\nROOT files... ")
+    ## For ROOT files
+    #print("\nROOT files... ")
     rootFiles = nameFileByType[".root"]
 
     for rootFile  in rootFiles:
-        path_p1 = os.path.join(a1Directory, rootFile)
-        path_p2 = os.path.join(a2Directory, rootFile)
+        path_p1 = os.path.join(pathDir1, rootFile)
+        path_p2 = os.path.join(pathDir2, rootFile)
     
-        print(rootFile)
+        #print(rootFile)
         if os.path.exists(path_p1) and os.path.exists(path_p2):
             
             # FOR EACH TREE
@@ -143,38 +210,14 @@ if __name__ == "__main__":
             file1.Close()
             file2.Close()
             
-    # OUTPUT STREAM
+    # OUTPUT
     
-    print("\n---- RESULTS -----")
-    
-    if len(analysisDistinct) == 0:
-        print("\nAnalysis1 and Analysis2 are same.")
-    else:
-        print("\nAnalysis1 and Analysis2 are distinct for:\n")
-        
-        keys = analysisDistinct.keys()
-        for key in analysisDistinct:
-            print("\t" + key + ": " + str(analysisDistinct[key]))
+    ## Stream
+    outputStream(analysisDistinct)
             
-    # OUTPUT FILE
-    
-    f = open("testAnalysis_isSame2.txt", "a")
-    f.write("Test 2 directories are same.\n\n")
-    f.write("Directory 1:" + a1Directory + "\n")
-    f.write("Directory 2:" + a2Directory + "\n\n")
-    
-    if len(analysisDistinct) == 0:
-        f.write("\tSame.")
-    else:
-        f.write("\tDistinct for:\n")
-        
-        keys = analysisDistinct.keys()
-        for key in analysisDistinct:
-            print("\t\t" + key + ": " + str(analysisDistinct[key]))
-    
-    f.write("\n------------------------------------------------------------\n")
-    f.close() 
+    ## Files
+    outputFile(nameOutputFile, pathDir1, pathDir2, analysisDistinct)
             
     # END
     
-    print("\n----- END TEST_2ANALYSIS -----\n")
+    print("\n----- END TEST_ANALYSIS_SAME -----\n")

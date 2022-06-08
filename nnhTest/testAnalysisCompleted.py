@@ -9,6 +9,7 @@ import argparse
 import os, os.path 
 import sys 
 import ROOT 
+import datetime
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
@@ -27,34 +28,51 @@ def testDirectory(directory):
     if not os.path.isdir(directory):
         error('ERROR : directory is not ' + directory)
 
-if __name__ == "__main__":
+def outputStream(fileMissing):
+    """Print result on output stream"""
+
+    print("RESULTS: ")
     
-    print("\n----- BEGING TEST_ANALYSIS_COMPLETED -----\n")
+    if len(fileMissing) == 0:
+        print("\tAnalysis is completed.")
+    else:
+        print("\tAnalysis files Missing :")
+        for nameFile in fileMissing:
+            print("\t" + nameFile + "")
+
+
+def outputFile(nameOutputFile, pathDir, fileMissing):
+    """Write result on output file"""
     
-    # PARAMETERS
+    f = open(nameOutputFile, "a")
+    f.write("Test directory containts all files created by analysis program.\n")
+    f.write(str(datetime.datetime.now()) + "\n\n")
     
-    parser = argparse.ArgumentParser()
-    
-    parser.add_argument(
-            '-a', '--analysis', 
-            help='Path of analysis directory', 
-            required=True)
+    if len(fileMissing) == 0:
+        f.write(pathDir + " completed.\n")
+    else:
+        f.write(pathDir + " is not completed, missing:\n")
+        for nameFile in fileMissing:
+            f.write("\t" + nameFile + "\n")
             
-    args = vars(parser.parse_args())
+    f.write("\n------------------------------------------------------------\n")
+    f.close() 
     
-    aDirectory = args['analysis']
-    testDirectory(aDirectory)
     
-    # Files created by analysis program
+def getAnalysisNameFiles():
+    """
+    Get name files created by analysis program.
     
-    nameFileList = [
-        "DATA.root"
-    ]
+    Return:
+    ------------------
+    nameFileList : set
+    """
+    
+    nameFileList = ["DATA.root"]
     
     particleTypeList = ["ww", "bb"]
     
     for particleType in particleTypeList:
-    
         nameFileList_p = [
             "bestSelection_" + particleType + "_e-0.8_p+0.3.root", 
             "split_" + particleType + "_e+0_p+0.root",
@@ -63,15 +81,40 @@ if __name__ == "__main__":
             "stats_" + particleType + "_e-0.8_p+0.3.json",
             "model_" + particleType + "_e-0.8_p+0.3.joblib"
         ]
-        
         nameFileList = nameFileList + nameFileList_p
+    
+    return nameFileList
+    
+if __name__ == "__main__":
+    
+    print("\n----- BEGING TEST_ANALYSIS_COMPLETED -----\n")
+    
+    # PARAMETERS
+    
+    ## Entry: directory path to test
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+            '-d', '--directory', 
+            help='Path of analysis directory', 
+            required=True)
+    args = vars(parser.parse_args())
+    
+    pathDir = args['directory']
+    testDirectory(pathDir)
+    
+    ## Output: name output file
+    nameOutputFile = "testAnalysisCompleted.txt"
+    
+    ## list of files created by analysis program
+    nameFileList = getAnalysisNameFiles()
 
-    # list analysis file which missing
+    ## list analysis file which missing
     fileMissing = list()
 
+    # TEST 
     for nameFile in nameFileList:
         
-        path = os.path.join(aDirectory, nameFile)
+        path = os.path.join(pathDir, nameFile)
         
         if not os.path.exists(path):
             fileMissing.append(nameFile)
@@ -80,31 +123,13 @@ if __name__ == "__main__":
             #print("Analysis files " + str(nameFile) + " exist")
                         
     
-    # OUTPUT STREAM
+    # OUTPUT 
     
-    print("\n---- RESULTS -----")
-    
-    if len(fileMissing) == 0:
-        print("\nAnalysis is completed.")
-    else:
-        print("\nAnalysis files Missing :")
-        for nameFile in fileMissing:
-            print("\t" + nameFile + "")
+    ## Stream
+    outputStream(fileMissing)
             
-    # OUTPUT FILES 
-    
-    f = open("testAnalysis_isCompleted.txt", "a")
-    f.write("Test directory containts all files created by analysis program.\n")
-    
-    if len(fileMissing) == 0:
-        f.write(aDirectory + " completed.\n")
-    else:
-        f.write(aDirectory + " is not completed, missing:\n")
-        for nameFile in fileMissing:
-            f.write("\t" + nameFile + "\n")
-            
-    f.write("\n------------------------------------------------------------\n")
-    f.close() 
+    ## Files
+    outputFile(nameOutputFile, pathDir, fileMissing)
     
     # END
     
