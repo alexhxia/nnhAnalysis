@@ -6,10 +6,10 @@ Ce dossier regroupe toutes les fonctions qui vont permettent de tester les résu
 ## `testXXCompleted.py` programs, `XX` (soit `Processus`, soit `Analysis`)
 Permet de vérifier qu'un dossier possède tous les fichiers qu'il devrait, càd que le programme à bien généner tous les fichiers qu'il aurait du.
 
-### For `processor`
+### For `Processor`
 
 ```
-python testProcessorCompleted.py -p path/to/directory
+python testProcessorCompleted.py -d path/to/directory
 ```
 Prend en entré, un dossier (de résultat du programme `Processor`) est vérifie qu'il contient un fichier ROOT par numéro de processus (liste récupérer à partir du dossier `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`).
 
@@ -26,12 +26,12 @@ Prend en entré, un dossier (de résultat du programme `Processor`) est vérifie
 ```
 Il va retourner les processus manquant sur le terminal et dans un fichier `testProcessorCompleted.txt`.
 
-### For `analysis`
+### For `Analysis`
 
 De manière similiare,le programme `testAnalysisCompleted.py` prend le chemin d'un dossier et 
 test si ce dossier contient tous les fichiers générés par le programme `analysis`.
 ```
-python testAnalysisCompleted.py -a path/to/directory
+python testAnalysisCompleted.py -d path/to/directory
 ```
 Vérifie donc que le dossier `directory` a bien les fichiers suivants :
 ```
@@ -46,17 +46,17 @@ Vérifie donc que le dossier `directory` a bien les fichiers suivants :
 ```
 Là aussi, il retourne les noms des dossiers manquants sur le terminal et dans un fichier `testAnalysisCompleted.txt`.
 
-## `testXX_isSame2.py` programs
-Regarde, suivant la définition de Kolmogorov, si 2 dossiers de résultats sont identiques.
+## `testXXSame2.py` programs
+Regarde, suivant la définition de Kolmogorov, si tous les fichiers de résultats sont identiques (néglige s'il manque des fichiers).
 
-### For `processor`
+### For `Processor`
 Tous les processors doivent être identiques.
 ```
-python testProcessor_isSame2.py -p1 path/to/processor_directory_root_files_1 -p2 path/to/processor_directory_root_files_2
+python testProcessorSame.py -d1 path/to/directory1 -d2 path/to/directory2
 ```
 
-### For `analysis`
+### For `Analysis`
 Les résultats peuvent être légèrement différents mais doivent rester équivalent.
 ```
-python testProcessor_isSame2.py -a1 path/to/analysis_directory_data_files_1 -a2 path/to/analysis_directory_data_files_2
+python testProcessorSame.py -d1 path/to/directory1 -d2 path/to/directory2
 ```
