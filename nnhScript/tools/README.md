@@ -44,6 +44,9 @@ Donc les scripts de cette partie peuvent prendre des options afin de personalise
 - 'o' : "outputDirectory", le chemin vers le dossier de sortie du programme.
   - `home/branch/processor/RESULTS` pour [`processor.sh`](processor.sh)
   - `/gridgroup/ilc/nnhAnalysisFiles/result/branch/run?/analysis/run??` pour [`prepareBDT.sh`](prepareBDT.sh) et [`launchBDT.sh`](launchBDT.sh) 
+- 'p' : "processus", le nombre de fois que vous souhaitez exécuter `processus`, par défault 1.
+- 'a' : "analysis", le nombre de fois que vous souhaitez exécuter `prepareBDT` par `processus`, par défault 1.
+- 't' : le nombre de fois que vous souhaitez exécuter `launchBDT` par `analysis`, par défault 1.
 
 ## `function.sh` script
 Regroupe des méthodes utiles :
