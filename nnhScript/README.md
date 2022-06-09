@@ -39,6 +39,6 @@ C'est 2 programmes peuvent être exécuter indépendamment.
 
 Ce dernier programme est va exécuter l'ensemble de ces autres programmes : `nnhProcessor` et `nnhAnalysis`.
 ```
-./launchBDT.sh
+./nnh.sh
 ```
 Qui prend les options : 'h', 'p', 't', 'a', 'b', 'n', 'i', 'o' (cf [help options](tools/README.md)).
