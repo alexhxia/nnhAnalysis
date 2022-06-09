@@ -36,17 +36,16 @@ function syntax {
     echo '    ./nnhAnalysis.sh [options]'
     echo
     
-    syntaxOption h d p a b n i o #help.sh
+    syntaxOption h d a b n i o #help.sh
 }
 
 ### ENVIRONMENT + in export.sh ###
 
-num_processus=1
 nb_BDT=1
 nb_runByBDT=1
 
 # option choice by user
-while  getopts ":b:a:d:n:i:p:o:h" option ; do
+while  getopts ":b:a:d:n:i:o:h" option ; do
     case "${option}" in 
     
         h)  syntax
@@ -59,12 +58,10 @@ while  getopts ":b:a:d:n:i:p:o:h" option ; do
         a)  nb_runByBDT=${OPTARG};;
         
         n)  home=${OPTARG};;
+                
+        i)  a_input=${OPTARG};;
         
-        p)  num_processus=${OPTARG};;
-        
-        i)  input=${OPTARG};;
-        
-        o)  output=${OPTARG};;
+        o)  a_output=${OPTARG};;
         
         *) error 'option no exist';;
     esac
@@ -100,10 +97,10 @@ k=1
 if ! [[ -d $outputDir/analysis ]]; then
     mkdir -v $outputDir/analysis
 else
-    outputDirA=$outputDir/analysis/run_"$num_processus"_"$k"
+    outputDirA=$outputDir/analysis/run_"$k"
     while [ -d outputDirA ]; do
         k=$((k + 1))
-        outputDirA=$outputDir/analysis/run_"$num_processus"_"$k"
+        outputDirA=$outputDir/analysis/run_"$k"
     done 
 fi
 
@@ -112,7 +109,7 @@ for ((a = 1; a <= $nb_BDT; a++)); do
     # prepareBDT
     echo
     echo "    Start "$a"th BDT at "$num_processus"th processor: "
-    outputDirA=$outputDir/analysis/run_"$num_processus"_"$k"
+    outputDirA=$outputDir/analysis/run_"$k"
     mkdir -v $outputDirA
     
     echo "      -> Prepare BDT: ..."
@@ -123,7 +120,7 @@ for ((a = 1; a <= $nb_BDT; a++)); do
     for ((t = 1; t <= $nb_BDT; t++)); do
         echo "      -> Launch  BDT: "$t"..."
         ./launchBDT.sh -n $NNH_HOME -b $branch
-        outputDirAT=outputDirA/run_"$k"_"$a"_"$t"
+        outputDirAT=outputDirA/run_"$t"
         mkdir -v $outputDirAT
         cp $NNH_ANALYSIS_OUTPUT/* $outputDirAT
         echo "      -> Save result in $outputDirAT"

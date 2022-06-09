@@ -51,7 +51,7 @@ while getopts hdn:b: flag ; do
     esac
 done 
 
-nnh_export # && print_export
+nnh_export && print_export
 
 test_isValidHome
 
@@ -69,8 +69,8 @@ if [ $conda -eq 0 ]; then
     echo "    conda activate"
 fi
 
-particles=("WW" "bb")
-for p in $particles; do
+particles=("bb" "WW")
+for p in ${particles[@]}; do
     echo "    launch launchBDT_$p"
     python3 launchBDT_$p.py \
             1> $NNH_HOME/analysis/DATA/launchBDT_$p.out \

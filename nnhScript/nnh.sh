@@ -112,7 +112,7 @@ for ((p = 1; p <= $nb_runProcessor; p++)); do
     
     # RUN PROCESSOR
     if [ $p = 1 ]; then # build
-        ./nnHProcessor.sh -n $home -b $branch -i $NNH_INPUT -c
+        ./nnhProcessor.sh -n $home -b $branch -i $NNH_INPUT -c
     else
         ./nnhProcessor.sh -n $home -b $branch -i $NNH_INPUT
     fi 
