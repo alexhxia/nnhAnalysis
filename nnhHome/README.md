@@ -8,7 +8,7 @@ Dans ce dossier se trouve les 3 projets d'analyse des cannaux :
 
 Ce dossier contient les différentes projets que j'appelle "branche", elle correspond à un nom de projet : `ìlcsoft`, `fcc`... Sachant que ces projets numériques sont idépendants les uns, les autres. 
 
-Chacune doit au moins contenir un dossier `processus` et `analysis`, qui contient les codes du programmes.
+Chacune doit au moins contenir un dossier `processus` et `analysis`, qui contient les codes des programmes.
 
 ### `processor`
 
@@ -87,10 +87,10 @@ $NNH_HOME/processor/RESULTS
 └───402003.root
 ...
 ```
-`launchNNHProcessor.py ` va générer un fichier root par dossier de processus. Pour confirmer que tous ces fichiers sont bien créés, on peut utiliser le programme [`testProcessor_isCompleted.py`](../nnhTest/testProcessor_isCompleted.py).
+`launchNNHProcessor.py ` va générer un fichier root par dossier de processus. Pour confirmer que tous ces fichiers sont bien créés, on peut utiliser le programme [`testProcessorCompleted.py`](../nnhTest/testProcessorCompleted.py).
 
 De plus chacun de ces fichiers de sortie doivent donner des fichiers roots équivalents (voir identiques si vous êtes dans la même branche).
-Que l'on peut tester avec le programme [`testProcessor_isSame2.py`](../nnhTest/testProcessor_isSame2.py).
+Que l'on peut tester avec le programme [`testProcessorSame.py`](../nnhTest/testProcessorSame.py).
 
 
 ### `analysis`
@@ -101,7 +101,7 @@ Ici il y a 2 programmes à exécuter.
 
 ##### Input data
 
-Prend en entrée le dossier de résultats du programme précédent
+Prend en entrée le dossier des résultats du programme précédent :
 ```
 inputFiles
 └───402001.root
@@ -122,7 +122,7 @@ export NNH_HOME=/path/to/nnhHome/branch
 export  NNH_ANALYSIS_INPUT=/path/to/processorOutputDirectory \
         NNH_ANALYSIS_OUTPUT=$NNH_HOME/analysis/DATA 
 ```
-Ensuite pour préparation de données
+Ensuite pour préparer les données
 ```
 mkdir $NNH_ANALYSIS_OUTPUT
 ```
@@ -145,7 +145,7 @@ make
 ```
 make install
 ```
-Et enfin, pour preparer la BDT :
+Et enfin, pour préparer la BDT :
 ```
 cd $NNH_HOME/analysis
 ```
@@ -181,9 +181,10 @@ Puis le programme, `prepareForBDT` va construire plusieurs fichiers :
 
 ##### Input data
 
-Et la suite de `prepareForBDT`, et récupère les fichiers dans `$NNH_ANALYSIS_OUTPUT`.
+Il s'agit de la suite de `prepareForBDT`. Il utilise les fichiers de `$NNH_ANALYSIS_OUTPUT`.
 
 ##### Run
+
 Attention, il ne faut pas charger ``source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh`` si on souhaite effectuer `$NNH_HOME/analysis/python/launchBDT_XX.py`. Donc il faut aussi ré-export les variables d'environnement.
 ```
 export NNH_HOME=/path/to/nnhHome/branch
@@ -194,7 +195,7 @@ cd $NNH_HOME/analysis/python
 ```
 python3 launchBDT_bb.py
 ```
-or : 
+et/ou : 
 ```
 python3 launchBDT_ww.py
 ```
@@ -211,11 +212,13 @@ python3 launchBDT_ww.py
 Ce projet est basé sur le travail de `ggarillot` accéssible directement de son github :
 https://github.com/ggarillot/nnhAnalysis/tree/refactor
 
-blabla à rajouter
+Donc dans cette branche, vous trouverez le code original, avec des corrections mineures (pour qu'il puissent s'exécuter sur le server local et avec les données en local).
+
+Ce programme est développé avec la suite logiciel `iLCsoft`, adapté pour le projet ILC.
 
 ### ``ilcsoft`` branch
 
-blabla à rajouter
+Ce projet correspond à ma version du code original de `ggarillot`. Mais n'apporte aucune modification majeure.
 
 ### ``fcc`` branch
 
