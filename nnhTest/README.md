@@ -58,5 +58,12 @@ python testProcessorSame.py -d1 path/to/directory1 -d2 path/to/directory2
 ### For `Analysis`
 Les résultats peuvent être légèrement différents mais doivent rester équivalent.
 ```
-python testProcessorSame.py -d1 path/to/directory1 -d2 path/to/directory2
+python testAnalysisSame.py -d1 path/to/directory1 -d2 path/to/directory2
 ```
+
+| Programme | Temps d'exécution sur server | 
+| --- | --- |
+| `testProcessorCompleted.py` | quelques seconds |
+| `testAnalysisCompleted.py` | quelques seconds |
+| `testProcessorSame.py` | 1h30 |
+| `testAnalysisSame.py` | 3h |
