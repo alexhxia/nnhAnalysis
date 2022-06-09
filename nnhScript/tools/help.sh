@@ -40,7 +40,7 @@ function syntaxOption {
             t)  echo '   -t [integer]      number of launchBDT run by BDT'
                 echo "                     DEFAULT VALUE: $nb_runByBDT";;
             
-            *) echo 'option unidentified';;
+            *)  echo 'option unidentified';;
         esac
         
         echo
