@@ -17,18 +17,20 @@ Pour l'importer :
 git clone https://github.com/alexhxia/nnhAnalysis.git
 ```
 
+# Organisation du Projet
+
 ## [`LaTeX`](LaTeX)
 
-Mon rapport de stage.
+Mon rapport et ma présentaion de stage.
 
 ## [`nnhHome`](nnhHome)
 
 Dans ce dossiers se trouve les codes des différents projets.
 
-## [`script`](script)
+## [`nnhScript`](nnhScript)
 
-Dans ce dossier vous trouverez des scripts permettent d'automatiser la compilation, l'exécution et la gestion des données générées par les programmes.
+Ici vous trouverez des scripts permettant d'automatiser la compilation, l'exécution et la gestion des données générées par les programmes.
 
-## [`test`](test)
+## [`nnhTest`](nnhTest)
 
 Dans ce dossier vous trouverez des programmes python qui permettent de vérifier les données générées par les programmes.
