@@ -13,11 +13,11 @@
 #   * prepareForBDT
 #       -> DATA.root
 #       -> split_XX_eXX_pXX.root
+#   * launchBDT_XX.py with XX = {WW ou bb}
+#       -> stats_XX_eXX_pXX.json
 #       -> model_XX_eXX_pXX.root
 #       -> scrore_XX_eXX_pXX.root
 #       -> bestSelection_XX_eXX_pXX.root
-#   * launchBDT_XX.py with XX = {WW ou bb}
-#       -> stats_XX_eXX_pXX.json
 
 ### INCLUDE TOOL ###
 
@@ -36,7 +36,7 @@ function syntax {
     echo '    ./nnhAnalysis.sh [options]'
     echo
     
-    syntaxOption h d a b n i o #help.sh
+    syntaxOption h d b n i o #help.sh
 }
 
 ### ENVIRONMENT + in export.sh ###
@@ -45,7 +45,7 @@ nb_BDT=1
 nb_runByBDT=1
 
 # option choice by user
-while  getopts ":b:a:d:n:i:o:h" option ; do
+while  getopts ":b:t:n:i:o:h" option ; do
     case "${option}" in 
     
         h)  syntax
@@ -53,10 +53,8 @@ while  getopts ":b:a:d:n:i:o:h" option ; do
             
         b)  branch=${OPTARG};;
                 
-        d)  nb_BDT=${OPTARG};;
-        
-        a)  nb_runByBDT=${OPTARG};;
-        
+        t)  nb_runByBDT=${OPTARG};;
+                
         n)  home=${OPTARG};;
                 
         i)  a_input=${OPTARG};;
@@ -68,70 +66,44 @@ while  getopts ":b:a:d:n:i:o:h" option ; do
 done 
 
 if [[ $nb_BDT -lt 0 ]] ; then
-    error "-p: $nb_processor < 0"
+    error "-a: $nb_BDT < 0"
 fi
 
 if [[ $nb_runByBDT -lt 0 ]] ; then
-    error "-a: $nb_bdt < 0"
+    error "-t: $nb_runByBDT < 0"
 fi
 
-outputDir=$NNH_OUTPUT/run_$num_processus
-if ! [[ -d $outputDir ]]; then
-    error "-p : processor number no exist"
-elif ! [[ -d $outputDir/processor ]]; then
-    error "-p : processor directory no exist"
-fi
-
-nnh_export # && print_export
+nnh_export && print_export
 
 test_isValidHome
 
 echo
-echo "Start nnh on the $branch branch with $nb_bdt BDT for "$num_processus"th processors..."
+echo "Start nnhAnalysis on the $branch branch with $nb_bdt BDT..."
 cd $script
 
 ### RUN ###
 
-k=1
-
-if ! [[ -d $outputDir/analysis ]]; then
-    mkdir -v $outputDir/analysis
-else
-    outputDirA=$outputDir/analysis/run_"$k"
-    while [ -d outputDirA ]; do
-        k=$((k + 1))
-        outputDirA=$outputDir/analysis/run_"$k"
-    done 
+if [ -d $NNH_ANALYSIS_OUTPUT ]; then
+    rm -R $NNH_ANALYSIS_OUTPUT
 fi
 
-for ((a = 1; a <= $nb_BDT; a++)); do
+mkdir $NNH_ANALYSIS_OUTPUT
 
-    # prepareBDT
-    echo
-    echo "    Start "$a"th BDT at "$num_processus"th processor: "
-    outputDirA=$outputDir/analysis/run_"$k"
-    mkdir -v $outputDirA
-    
-    echo "      -> Prepare BDT: ..."
-    ./prepareBDT.sh -n $NNH_HOME -b $branch -i $outputDir/processor -o $NNH_ANALYSIS_OUTPUT -c
-    cp $NNH_ANALYSIS_OUTPUT $outputDirA
-    
-    # launchBDT
-    for ((t = 1; t <= $nb_BDT; t++)); do
-        echo "      -> Launch  BDT: "$t"..."
-        ./launchBDT.sh -n $NNH_HOME -b $branch
-        outputDirAT=outputDirA/run_"$t"
-        mkdir -v $outputDirAT
-        cp $NNH_ANALYSIS_OUTPUT/* $outputDirAT
-        echo "      -> Save result in $outputDirAT"
-    done 
-    rm -R $NNH_ANALYSIS_OUTPUT
-    
-    mv $NNH_ANALYSIS_OUTPUT/* $outDir
-    echo "      -> Save result in $outputDirA"
-    rm -R $NNH_ANALYSIS_OUTPUT
-done
+# prepareBDT
+echo
+echo "    Start BDT: "
 
+echo "      -> Prepare BDT: ..."
+./prepareBDT.sh -n $NNH_HOME -b $branch -i$NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT -c
+
+# launchBDT
+for ((t = 1; t <= $nb_BDT; t++)); do
+    echo "      -> Launch  BDT: "$t"..."
+    ./launchBDT.sh -n $NNH_HOME -b $branch
+    
+    mkdir run_$t
+    cp $NNH_ANALYSIS_OUTPUT/* run_$t
+done 
 
 echo
 echo "...Terminate nnh"

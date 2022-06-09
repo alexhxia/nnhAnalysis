@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # HOME
-home=~/nnhAnalysis/nnhHome
-test=~/nnhAnalysis/nnhTest
-script=~/nnhAnalysis/nnhScript
+path=~/nnhAnalysis
+
+home=$path/nnhHome
+test=$path/nnhTest
+script=$path/nnhScript
 
 branch=original
 
