@@ -62,7 +62,7 @@ python testAnalysisSame.py -d1 path/to/directory1 -d2 path/to/directory2
 ```
 
 | Programme | Temps d'exécution sur server | 
-| --- | --- |
+| :---: | :---: |
 | `testProcessorCompleted.py` | quelques seconds |
 | `testAnalysisCompleted.py` | quelques seconds |
 | `testProcessorSame.py` | 1h30 |
