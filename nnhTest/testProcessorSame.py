@@ -46,10 +46,10 @@ def distinctBranchTree(tree1, tree2):
         
         tree1.Draw(nameBranch)
         
-        htemp=ROOT.gPad.GetPrimitive("htemp")
-        xAxis=htemp.GetXaxis()
-        xmin=xAxis.GetXmin()
-        xmax=xAxis.GetXmax()
+        htemp = ROOT.gPad.GetPrimitive("htemp")
+        xAxis = htemp.GetXaxis()
+        xmin = xAxis.GetXmin()
+        xmax = xAxis.GetXmax()
     
         hist1 = TH1F("hist1", nameBranch, 200, xmin, xmax)
         hist2 = TH1F("hist2", nameBranch, 200, xmin, xmax)
@@ -130,19 +130,21 @@ if __name__ == "__main__":
     nameOutputFile = "testProcessorCompleted.txt"
     
     ## Processus number list
-    """
-    numProcessus = [
-        402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
-        402012, 402001, 402002, 402013, 402014, 402003, 402004, 402005, 402006, 
-        500006, 500008, 500010, 500012, 500062, 500064, 500066, 500068, 500070, 
-        500072, 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 
-        500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112, 500086, 
-        500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 
-        500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
-        500126, 500127, 500128
-    ]
-    """
-    numProcessus = os.listdir("/gridgroup/ilc/nnhAnalysisFiles/AHCAL")
+    try:
+        numProcessus = os.listdir("/gridgroup/ilc/nnhAnalysisFiles/AHCAL")
+    except:
+        numProcessus = [
+            402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 
+            402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004, 
+            402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 
+            500066, 500068, 500070, 500072, 500074, 500076, 500078, 500080, 
+            500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 
+            500107, 500108, 500110, 500112, 500086, 500088, 500090, 500092, 
+            500094, 500096, 500098, 500100, 500113, 500114, 500115, 500116, 
+            500117, 500118, 500119, 500120, 500122, 500124, 500125, 500126, 
+            500127, 500128
+        ]
+        
     nbProcessus = len(numProcessus)
     
     # add if processus 1 and 2 are different tree
