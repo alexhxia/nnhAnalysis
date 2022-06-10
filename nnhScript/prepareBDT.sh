@@ -11,7 +11,7 @@
 #   * scrore_XX_eXX_pXX.root
 #   * bestSelection_XX_eXX_pXX.root
 
-### INCLUDE TOOL ###
+# INCLUDE TOOL 
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
@@ -19,9 +19,9 @@ source tools/functions.sh
 source tools/export.sh 
 source tools/help.sh
 
-### FUNCTION TOOL ###
+# FUNCTION TOOL 
 
-# Display Help
+## Display Help
 function syntax {
     echo
     echo "Prepare for BDT program."
@@ -33,7 +33,7 @@ function syntax {
     syntaxOption h c b n i #help.sh
 }
 
-# Test if it need build
+## Test if it need build
 function testNeedBuild {
     
     if [ $recompile -eq 1 ]; then
@@ -48,14 +48,14 @@ function testNeedBuild {
     fi
 } 
 
-### ENVIRONMENT + in export.sh ###
+# ENVIRONMENT + in export.sh 
 
 recompile=1
 
 isInputUser=1
 isOutputUser=1
 
-# option choice by user
+## option choice by user
 while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
     
@@ -64,9 +64,9 @@ while getopts hcn:b:i:o: flag ; do
         
         c)  recompile=0;;
         
-        n)  home=${OPTARG};;
+        n)  setHome ${OPTARG};;
             
-        b)  branch=${OPTARG};;
+        b)  setBranch ${OPTARG};;
             
         i)  a_input=${OPTARG}
             isInputUser=0;;
@@ -75,12 +75,16 @@ while getopts hcn:b:i:o: flag ; do
     esac
 done 
 
+## update env
+
 nnh_export && print_export
+
+## test
 
 test_isValidHome
 testNeedBuild
 
-### BUILD ###
+# BUILD 
 
 if [ $recompile -eq 0 ]; then
 
@@ -105,11 +109,11 @@ if [ $recompile -eq 0 ]; then
     make install
 fi
 
-### RUN ###
+# RUN 
 
 echo
 echo "--> RUN : prepareBDT ($branch) <--"
-echo
+#echo
 
 cd $NNH_HOME/analysis/bin
 ./prepareForBDT \

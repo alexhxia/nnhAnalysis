@@ -23,6 +23,28 @@ p_output=$home/$branch/processor/RESULTS
 a_input=$p_output
 a_output=$home/$branch/analysis/DATA
 
+# Set commands
+function setBranch {
+    branch=$1
+    p_output=$home/$branch/processor/RESULTS
+    a_input=$p_output
+    a_output=$home/$branch/analysis/DATA
+}
+
+function setPath {
+    path=$1
+    home=$path/nnhHome
+    test=$path/nnhTest
+    script=$path/nnhScript
+}
+
+function setHome {
+    home=$1
+    p_output=$home/$branch/processor/RESULTS
+    a_input=$p_output
+    a_output=$home/$branch/analysis/DATA
+}
+
 # Print environment variables
 function print_export {
     echo

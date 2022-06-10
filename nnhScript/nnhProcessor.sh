@@ -9,7 +9,7 @@ echo
 echo "--> BEGIN : processor ($branch) <--"
 echo
 
-### INCLUDE TOOL ###
+# INCLUDE TOOL 
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
@@ -17,9 +17,9 @@ source tools/functions.sh
 source tools/export.sh 
 source tools/help.sh
 
-### FUNCTION TOOL ###
+# FUNCTION TOOL 
 
-# Display Help
+## Display Help
 function syntax {
     echo
     echo "Run 'processor'."
@@ -33,7 +33,7 @@ function syntax {
     syntaxOption h c n b i #help.sh
 }
 
-# Test if it need build
+## Test if it need build
 function testNeedBuild {
     
     if [ $recompile -eq 1 ]; then
@@ -43,11 +43,11 @@ function testNeedBuild {
     fi
 } 
 
-### ENVIRONMENT + in export.sh ###
+# ENVIRONMENT + in export.sh 
 
 recompile=1 # no build
 
-# option choice by user
+## option choice by user
 while getopts hcn:b:i: flag ; do
     case "${flag}" in 
     
@@ -56,9 +56,9 @@ while getopts hcn:b:i: flag ; do
         
         c)  recompile=0;;
         
-        n)  home=${OPTARG};;
+        n)  setHome ${OPTARG};; # export.sh
             
-        b)  branch=${OPTARG};;
+        b)  setBranch ${OPTARG};; # export.sh
             
         i)  p_input=${OPTARG};;
                 
@@ -66,13 +66,17 @@ while getopts hcn:b:i: flag ; do
     esac
 done 
 
+## update env
+
 nnh_export && print_export
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
-test_isValidHome && error "home is no valid."
+## test env
+
+#test_isValidHome && error "home is no valid."
 testNeedBuild
 
-### BUILD ###
+# BUILD 
 
 if [ $recompile -eq 0 ]; then
     echo
@@ -92,11 +96,9 @@ if [ $recompile -eq 0 ]; then
     make install
 fi
 
-### RUN ###
-
+# RUN 
 echo
 echo "--> RUN : processor ($branch) <--"
-echo
 
 if [ -d $NNH_PROCESSOR_OUTPUT ]; then 
     rm -R $NNH_PROCESSOR_OUTPUT

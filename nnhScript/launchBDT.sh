@@ -7,15 +7,15 @@
 # OUTPUT: 
 #   * stats_XX_eXX_pXX.json
 
-### INCLUDE TOOL ###
+# INCLUDE TOOL 
 
 source tools/export.sh
 source tools/help.sh
 source tools/functions.sh
 
-### FUNCTION TOOL ###
+# FUNCTION TOOL 
 
-# Display Help
+## Display Help
 function syntax {
     echo
     echo    "With processor root files, "\
@@ -29,11 +29,11 @@ function syntax {
     syntaxOption h d b n  #help.sh
 }
 
-### ENVIRONMENT + in export.sh ###
+# ENVIRONMENT + in export.sh ###
 
 conda=0
 
-# option choice by user
+## option choice by user
 while getopts hdn:b: flag ; do
     case "${flag}" in 
     
@@ -42,9 +42,9 @@ while getopts hdn:b: flag ; do
         
         d)  conda=1;;
             
-        n)  home=${OPTARG};;
+        n)  setHome ${OPTARG};;
             
-        b)  branch=${OPTARG};;
+        b)  setBranch ${OPTARG};;
             
         *)  error 'option no exist';;
             
@@ -55,7 +55,7 @@ nnh_export && print_export
 
 test_isValidHome
 
-### RUN ###
+# RUN 
 
 echo
 echo "--> RUN : launchBDT ($branch) <--"

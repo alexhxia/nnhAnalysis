@@ -19,15 +19,15 @@
 #       -> scrore_XX_eXX_pXX.root
 #       -> bestSelection_XX_eXX_pXX.root
 
-### INCLUDE TOOL ###
+# INCLUDE TOOL 
 
 source tools/functions.sh
 source tools/export.sh 
 source tools/help.sh
 
-### FUNCTION TOOL ###
+# FUNCTION TOOL
 
-# Display Help
+## Display Help
 function syntax {
     echo
     echo "Run 'prepareBDT', and 'analysis'."
@@ -36,26 +36,24 @@ function syntax {
     echo '    ./nnhAnalysis.sh [options]'
     echo
     
-    syntaxOption h d b n i o #help.sh
+    syntaxOption h b n i o #help.sh
 }
 
-### ENVIRONMENT + in export.sh ###
+# ENVIRONMENT + in export.sh 
 
 nb_BDT=1
 nb_runByBDT=1
 
-# option choice by user
-while  getopts ":b:t:n:i:o:h" option ; do
+## option choice by user
+while  getopts ":b:n:i:o:h" option ; do
     case "${option}" in 
     
         h)  syntax
             exit 0;;
             
-        b)  branch=${OPTARG};;
-                
-        t)  nb_runByBDT=${OPTARG};;
-                
-        n)  home=${OPTARG};;
+        b)  setBranch ${OPTARG};;
+                                
+        n)  setHome ${OPTARG};;
                 
         i)  a_input=${OPTARG};;
         
@@ -65,46 +63,34 @@ while  getopts ":b:t:n:i:o:h" option ; do
     esac
 done 
 
-if [[ $nb_BDT -lt 0 ]] ; then
-    error "-a: $nb_BDT < 0"
-fi
-
-if [[ $nb_runByBDT -lt 0 ]] ; then
-    error "-t: $nb_runByBDT < 0"
-fi
+## update environment
 
 nnh_export && print_export
 
+## test environment
+
 test_isValidHome
 
-echo
-echo "Start nnhAnalysis on the $branch branch with $nb_bdt BDT..."
-cd $script
+# RUN
 
-### RUN ###
+echo
+echo "Start nnhAnalysis on the $branch branch..."
 
 if [ -d $NNH_ANALYSIS_OUTPUT ]; then
     rm -R $NNH_ANALYSIS_OUTPUT
 fi
-
 mkdir $NNH_ANALYSIS_OUTPUT
 
-# prepareBDT
-echo
-echo "    Start BDT: "
+## prepareBDT
 
-echo "      -> Prepare BDT: ..."
-./prepareBDT.sh -n $NNH_HOME -b $branch -i$NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT -c
+echo "  -> Prepare BDT ..."
+./prepareBDT.sh -n $NNH_HOME -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT -c
 
-# launchBDT
-for ((t = 1; t <= $nb_BDT; t++)); do
-    echo "      -> Launch  BDT: "$t"..."
-    ./launchBDT.sh -n $NNH_HOME -b $branch
-    
-    mkdir run_$t
-    cp $NNH_ANALYSIS_OUTPUT/* run_$t
-done 
+## launchBDT
+
+echo "  -> Launch  BDT..."
+./launchBDT.sh -n $NNH_HOME -b $branch
 
 echo
-echo "...Terminate nnh"
+echo "...Terminate nnhAnalysis"
 echo

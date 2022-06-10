@@ -23,14 +23,14 @@
 #       -> launchBDT_XX.py with XX = {WW ou bb}
 #           * stats_XX_eXX_pXX.json
 
-### INCLUDE TOOL ###
+# INCLUDE TOOL 
 
 source export.sh
 source help.sh
 
-### FUNCTION TOOL ###
+# FUNCTION TOOL 
 
-# Display Help
+## Display Help
 function syntax {
     echo
     echo "Run 'processor', 'prepareBDT', and 'analysis'."
@@ -39,16 +39,16 @@ function syntax {
     echo '    ./nnh.sh [options]'
     echo
     
-    syntaxOption h p t a b n i o #help.sh
+    syntaxOption h p t a b n i o # help.sh
 }
 
-### ENVIRONMENT + in export.sh ###
+# ENVIRONMENT + in export.sh 
 
 nb_runProcessor=1
 nb_BDT=1
 nb_runByBDT=1
 
-# option choice by user
+## option choice by user
 while  getopts ":b:p:a:t:n:i:o:h" option ; do
     case "${option}" in 
     
@@ -73,6 +73,10 @@ while  getopts ":b:p:a:t:n:i:o:h" option ; do
     esac
 done 
 
+## Update env
+
+## Test env
+
 if [[ $nb_runProcessor -lt 0 ]] ; then
     error "-p: $nb_processor < 0"
 fi
@@ -85,16 +89,16 @@ if [[ $nb_runByBDT -lt 0 ]] ; then
     error "-t: $nb_runByBDT < 0"
 fi
 
-nnh_export # && print_export
+nnh_export && print_export
 
 test_isValidHome
+
+# RUN 
 
 echo
 echo "Start nnh on the $branch branch with $nb_bdt BDT for each $nb_processor processors..."
 
-### RUN ###
-
-### processor
+## processor
 for ((p = 1; p <= $nb_runProcessor; p++)); do
     echo
     echo "    Start "$p"th processor:"
@@ -129,7 +133,7 @@ for ((p = 1; p <= $nb_runProcessor; p++)); do
         # prepareBDT
         echo
         echo "    Start "$a"th BDT at "$p"th processor: "
-        outputDirA=$outputDir/analysis/run_"$k"_"$a"
+        outputDirA=$outputDir/analysis/run_"$a"
         mkdir -v $outputDirA
         
         echo "      -> Prepare BDT: ..."
@@ -140,7 +144,7 @@ for ((p = 1; p <= $nb_runProcessor; p++)); do
         for ((t = 1; t <= $nb_BDT; t++)); do
             echo "      -> Launch  BDT: "$t"..."
             ./launchBDT.sh -n $NNH_HOME -b $branch
-            outputDirAT=outputDirA/run_"$k"_"$a"_"$t"
+            outputDirAT=outputDirA/run_"$t"
             mkdir -v $outputDirAT
             cp $NNH_ANALYSIS_OUTPUT/* $outputDirAT
             echo "      -> Save result in $outputDirAT"
