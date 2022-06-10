@@ -164,19 +164,6 @@ Puis le programme, `prepareForBDT` va construire plusieurs fichiers :
         - split_ww_e+0_p+0.root
         - split_ww_e-0.8_p+0.3.root
 
-- model_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau energieet de polarisation "-0.8" et "+0.3" :
-        - model_bb_e-0.8_p+0.3.joblib
-        - model_ww_e-0.8_p+0.3.joblib
-
-- scores_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau energieet de polarisation "-0.8" et "+0.3" :
-        - scores_bb_e-0.8_p+0.3.root
-        - scores_ww_e-0.8_p+0.3.root
-
-- bestSelection_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau energieet de polarisation "-0.8" et "+0.3" :
-        - bestSelection_bb_e-0.8_p+0.3.root
-        - bestSelection_ww_e-0.8_p+0.3.root
-
-
 #### `launchBDT` program
 
 ##### Input data
@@ -202,23 +189,34 @@ python3 launchBDT_ww.py
 
 ##### Output data
 
-- stats_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau energieet de polarisation "-0.8" et "+0.3" :
+- model_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau énergie et de polarisation "-0.8" et "+0.3" :
+        - model_bb_e-0.8_p+0.3.joblib
+        - model_ww_e-0.8_p+0.3.joblib
+
+- scores_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau énergie et de polarisation "-0.8" et "+0.3" :
+        - scores_bb_e-0.8_p+0.3.root
+        - scores_ww_e-0.8_p+0.3.root
+
+- bestSelection_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau énergie et de polarisation "-0.8" et "+0.3" :
+        - bestSelection_bb_e-0.8_p+0.3.root
+        - bestSelection_ww_e-0.8_p+0.3.root
+- stats_XX_eXX_pXX.root, pour 2 type de particules "bb" ou "WW", au niveau énergie et de polarisation "-0.8" et "+0.3" :
         - stats_bb_e-0.8_p+0.3.json
         - stats_ww_e-0.8_p+0.3.json
 
 
 ## Branchs
 ### ``original`` branch : the init projet
-Ce projet est basé sur le travail de `ggarillot` accéssible directement de son github :
+Ce projet est basé sur le travail de `ggarillot` accessible directement de son github :
 https://github.com/ggarillot/nnhAnalysis/tree/refactor
 
-Donc dans cette branche, vous trouverez le code original, avec des corrections mineures (pour qu'il puissent s'exécuter sur le server local et avec les données en local).
+Donc dans cette branche, vous trouverez les codes originaux, avec des corrections mineures (pour qu'ils puissent s'exécuter sur le server local et avec les données en local).
 
-Ce programme est développé avec la suite logiciel `iLCsoft`, adapté pour le projet ILC.
+Ce programme est développé avec la suite logiciel `iLCSoft`, adapté pour le projet ILC.
 
 ### ``ilcsoft`` branch
 
-Ce projet correspond à ma version du code original de `ggarillot`. Mais n'apporte aucune modification majeure.
+Ce projet correspond à ma version du code original de `ggarillot`. Mais n'apporte aucune modification majeure et donne les mêmes résultats.
 
 ### ``fcc`` branch
 
