@@ -33,7 +33,7 @@ function setBranch {
 
 function setPath {
     path=$1
-    home=$path/nnhHome
+    setHome $path/nnhHome
     test=$path/nnhTest
     script=$path/nnhScript
 }

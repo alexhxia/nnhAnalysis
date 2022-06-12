@@ -60,6 +60,7 @@ def distinctBranchTree(tree1, tree2):
         k = hist1.KolmogorovTest(hist2, "UON")
         if not k == 1.:
             nameBranchDistinct.append(nameBranch)
+            print(nameBranch)
 
         del hist1
         del hist2
