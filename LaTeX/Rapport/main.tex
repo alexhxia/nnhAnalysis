@@ -37,27 +37,21 @@
 \newcommand{\analysis}{\texttt{analysis}\xspace}
 \newcommand{\nnhAnalysis}{\texttt{nnhAnalysis}\xspace}
 
+% nom de particules
+\newcommand{\bbar}{\overline{b}}
+
 % corps du document
 \begin{document}
 
 \maketitle
 
-\input{Preambule.tex}
+\input{start.tex}
 
 \tableofcontents
 
 \input{Introduction.tex}
 
 \input{iLCSoft.tex}
-\cite{Gaede:2003ip}
-
-\cite{garillot:tel-02141420}
-
-\cite{ilc:Chadeau}
-
-\cite{liu:tel-03405418}
-
-\cite{garillot:tel-02141420}
 
 \input{FCC.tex}
 
@@ -73,9 +67,9 @@
 % Afficher toute la biblio
 %\nocite{*}
 
-\printbibliography[keyword = {sdhcal}, 	 title = {SDHCAL}]
-\printbibliography[keyword = {ilcsoft}, 	 title = {iLCSoft}]
-\printbibliography[keyword = {fcc}, 		 title = {FCC}]
+\printbibliography[keyword = {sdhcal}, title = {SDHCAL}]
+\printbibliography[keyword = {ilcsoft}, title = {iLCSoft}]
+\printbibliography[keyword = {fcc}, title = {FCC}]
 \printbibliography[keyword = {particles}, title = {Physique des Particules}]
 
 

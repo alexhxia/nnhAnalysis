@@ -1,7 +1,9 @@
 #!/bin/bash
 
-pdflatex notes.tex
-pdflatex notes.tex
-biber notes
-pdflatex notes.tex
-pdflatex notes.tex
+nameMainFile=main
+
+pdflatex "$nameMainFile".tex
+pdflatex $nameMainFile.tex
+biber $nameMainFile
+pdflatex $nameMainFile.tex
+pdflatex $nameMainFile.tex
