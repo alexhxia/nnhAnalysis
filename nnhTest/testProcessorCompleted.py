@@ -46,9 +46,9 @@ def outputFile(nameOutputFile, pathDir, processusMissing):
     """Write result on output file"""
         
     jsonData = {
-        "pathDirectory": pathDir,
-        "lastUpdate": datetime.datetime.now().isoformat(),
-        "numProcessusMissing": processusMissing
+        "pathDirectory": pathDir "\n",
+        "lastUpdate": datetime.datetime.now().isoformat() "\n",
+        "numProcessusMissing": processusMissing "\n"
     }
     
     with open(nameOutputFile, "w") as outfile:
