@@ -41,9 +41,6 @@ function syntax {
 
 # ENVIRONMENT + in export.sh 
 
-nb_BDT=1
-nb_runByBDT=1
-
 ## option choice by user
 while  getopts ":b:n:i:o:h" option ; do
     case "${option}" in 
@@ -84,12 +81,13 @@ mkdir $NNH_ANALYSIS_OUTPUT
 ## prepareBDT
 
 echo "  -> Prepare BDT ..."
-./prepareBDT.sh -n $NNH_HOME -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT -c
+./prepareBDT.sh -n $home -b $branch -i $NNH_ANALYSIS_INPUT -c
 
 ## launchBDT
 
 echo "  -> Launch  BDT..."
-./launchBDT.sh -n $NNH_HOME -b $branch
+echo "$home, $branch"
+./launchBDT.sh -n $home -b $branch
 
 echo
 echo "...Terminate nnhAnalysis"
