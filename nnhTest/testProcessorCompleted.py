@@ -97,15 +97,11 @@ if __name__ == "__main__":
     # num processus list if missing
     processusMissing = list()
     
-    
-    
     # TEST : all processus file exit
     for numP in numProcessus:
         
         numPFileName = str(numP) + ".root"
         path = os.path.join(pathDir, numPFileName)
-        
-        
         
         if not os.path.exists(path):
             processusMissing.append(numP)
