@@ -4,8 +4,9 @@
 path=~/nnhAnalysis
 
 home=$path/nnhHome
-test=$path/nnhTest
 script=$path/nnhScript
+stat=$path/nnhStat
+test=$path/nnhTest
 
 branch=original
 
@@ -68,8 +69,9 @@ function nnh_export {
     
     # HOME
     export NNH_HOME=$home/$branch
-    export NNH_SCRIPT=$script
     export NNH_TEST=$test
+    export NNH_SCRIPT=$script
+    export NNH_STAT=$stat
 
     # SERVER
     export NNH_INPUT=$input
