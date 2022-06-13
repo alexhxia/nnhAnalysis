@@ -10,6 +10,7 @@ import os, os.path
 import sys 
 import ROOT 
 import datetime
+import json 
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
@@ -44,18 +45,14 @@ def outputStream(processusMissing):
 def outputFile(nameOutputFile, pathDir, processusMissing):
     """Write result on output file"""
         
-    f = open(nameOutputFile, "a")
-    f.write("\nTest if a directory containts all files created by processor program.\n")
-    f.write(str(datetime.datetime.now()) + "\n\n")
+    jsonData = {
+        "pathDirectory": pathDir,
+        "lastUpdate": datetime.datetime.now(),
+        "numProcessusMissing": processusMissing
+    }
     
-    if len(processusMissing) == 0:
-        f.write(pathDir + " is completed.\n")
-    else:
-        f.write(pathDir + " is not completed, it's missing:\n")
-        for p in processusMissing:
-            f.write("\t" + str(p) + "\n")
-            
-    f.write("\n------------------------------------------------------------\n")
+    f = open(nameOutputFile, "w")
+    json.dump(jsonData, f)
     f.close() 
 
 
@@ -77,7 +74,7 @@ if __name__ == "__main__":
     testInputDirectory(pathDir)
     
     # Output: name output file
-    nameOutputFile = "testProcessorCompleted.txt"
+    nameOutputFile = "testNNHAnalysisFiles.json"
     
     # num processus list
     try:
@@ -100,11 +97,15 @@ if __name__ == "__main__":
     # num processus list if missing
     processusMissing = list()
     
+    
+    
     # TEST : all processus file exit
     for numP in numProcessus:
         
         numPFileName = str(numP) + ".root"
         path = os.path.join(pathDir, numPFileName)
+        
+        
         
         if not os.path.exists(path):
             processusMissing.append(numP)
