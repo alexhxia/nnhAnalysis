@@ -51,8 +51,8 @@ def outputFile(nameOutputFile, pathDir, processusMissing):
         "numProcessusMissing": processusMissing
     }
     
-   # with open(nameOutputFile, "w") as outfile:
-    #    json.dump(jsonData, outfile)
+    with open(nameOutputFile, "w") as outfile:
+        json.dump(jsonData, outfile)
 
 
 if __name__ == "__main__":
