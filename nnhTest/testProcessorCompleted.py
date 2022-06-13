@@ -47,7 +47,7 @@ def outputFile(nameOutputFile, pathDir, processusMissing):
         
     jsonData = {
         "pathDirectory": pathDir,
-        "lastUpdate": datetime.datetime.now(),
+        "lastUpdate": datetime.datetime.now().isoformat(),
         "numProcessusMissing": processusMissing
     }
     
