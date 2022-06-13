@@ -76,7 +76,7 @@ export  NNH_PROCESSOR_INPUT=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \ # input dire
 mkdir $NNH_PROCESSOR_OUTPUT
 ```
 ```
-python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUTFILES -o $NNH_PROCESSOR_OUTPUTFILES
+python3 $NNH_HOME/processor/script/launchNNHProcessor.py -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT
 ```
 
 #### Output data
