@@ -437,126 +437,96 @@ array<fastjet::PseudoJet, 2> findParticleByMass(
     return toReturn;
 }
 
-std::array<int, 2> NNHProcessor::findDecayMode(const EVENT::MCParticle* part1, const EVENT::MCParticle* part2) const
-{
-    std::array<int, 2> toReturn{-1, -1};
+array<int, 2> NNHProcessor::findDecayMode(
+        const EVENT::MCParticle* part1, 
+        const EVENT::MCParticle* part2) const {
+    
+    array<int, 2> toReturn{-1, -1};
 
-    auto decay1 = std::abs(part1->getPDG());
-    auto decay2 = std::abs(part2->getPDG());
+    int decay1 = abs(part1->getPDG());
+    int decay2 = abs(part2->getPDG());
 
-    if (decay1 != 22 && decay1 != 23)
-    {
-        if (decay1 != decay2)
-            throw std::logic_error("weird higgs decay : " + std::to_string(decay1) + ", " + std::to_string(decay2));
+    if (decay1 != PHOTON && decay1 != Z0) {
+        if (decay1 != decay2) {
+            throw logic_error("weird higgs decay : " 
+                    + to_string(decay1) + ", " 
+                    + to_string(decay2));
+        }
     }
 
-    if (decay1 != decay2)
-        decay1 = 25;
+    if (decay1 != decay2) {
+        decay1 = HIGGS;
+    }
 
     decay2 = 0;
-    if (decay1 == 24 || decay1 == 23)
-    {
+    if (decay1 == W || decay1 == Z0) {
+        
         auto vec0 = part1->getDaughters();
         auto vec1 = part2->getDaughters();
 
-        if (vec0.size() != 2 || vec1.size() != 2)
-            throw std::logic_error("weird higgs subdecay for WW or ZZ : " + std::to_string(vec0.size() + vec1.size()) +
-                                   "particles");
-
-        std::array<int, 4> subDecay = {{std::abs(vec0[0]->getPDG()), std::abs(vec0[1]->getPDG()),
-                                        std::abs(vec1[0]->getPDG()), std::abs(vec1[1]->getPDG())}};
-
-        std::sort(subDecay.begin(), subDecay.end());
-
-        if (subDecay[1] < 10) // qq--
-        {
-            if (subDecay[3] < 10) // qqqq
-                decay2 = 1;
-            else if (subDecay[2] % 2 != 0 && subDecay[3] % 2 != 0) // qqll
-            {
-                if (subDecay[2] == 11)
-                    decay2 = 21;
-                else if (subDecay[2] == 13)
-                    decay2 = 22;
-                else if (subDecay[2] == 15)
-                    decay2 = 23;
-                else
-                    throw std::logic_error("weird qqll decay");
-            }
-            else if (subDecay[2] % 2 == 0 && subDecay[3] % 2 == 0) // qqvv
-            {
-                decay2 = 4;
-            }
-            else // qqlv
-            {
-                if (subDecay[2] == 11)
-                    decay2 = 31;
-                else if (subDecay[2] == 13)
-                    decay2 = 32;
-                else if (subDecay[2] == 15)
-                    decay2 = 33;
-                else
-                    throw std::logic_error("weird qqlv decay");
-            }
+        if (vec0.size() != 2 || vec1.size() != 2) {
+            throw logic_error("weird higgs subdecay for WW or ZZ : " 
+                    + to_string(vec0.size() + vec1.size()) + "particles");
         }
-        else
-        {
+
+        array<int, 4> subDecay = {{
+                abs(vec0[0]->getPDG()), abs(vec0[1]->getPDG()),
+                abs(vec1[0]->getPDG()), abs(vec1[1]->getPDG())
+        }};
+
+        sort(subDecay.begin(), subDecay.end());
+
+        if (isQuark(subDecay[1])) { // qq--
+            if (isQuark(subDecay[3])) { // qqqq
+                decay2 = 1;
+            } else if (isChargedLepton(subDecay[2]) && isChargedLepton(subDecay[3])) { // qqll
+                decay2 = 20 + getFlavorLeptonAbs(subDecay[2]);
+            } else if (isNeutrino(subDecay[2]) && isNeutrino(subDecay[3])) {// qqvv
+                decay2 = 4;
+            } else {// qqlv
+               decay2 = 30 + getFlavorLeptonAbs(subDecay[2]);
+            }
+        } else {
             int nbNu = 0;
-            for (const auto& i : subDecay)
-            {
-                if (i % 2 == 0)
+            for (int i : subDecay) {
+                if (isNeutrino(i)) {
                     nbNu++;
+                }
             }
-
-            if (nbNu == 0) // llll
-            {
+            std::cout << " n neutrinos " << nbNu << endl;
+            if (nbNu == 0) {// llll
                 decay2 = 500;
-                if (subDecay[0] == 11)
-                    decay2 += 10;
-                else if (subDecay[0] == 13)
-                    decay2 += 20;
-                else if (subDecay[0] == 15)
-                    decay2 += 30;
-                else
-                    throw std::logic_error("weird llll decay");
 
-                if (subDecay[2] == 11)
-                    decay2 += 1;
-                else if (subDecay[2] == 13)
-                    decay2 += 2;
-                else if (subDecay[2] == 15)
-                    decay2 += 3;
-                else
-                    throw std::logic_error("weird llll decay");
-            }
-            else if (nbNu == 2) // llvv
-            {
+                if (isChargedLepton(subDecay[0])) {
+                    decay2 += 10 * getFlavorLeptonAbs(subDecay[0]);
+                } else {
+                    throw logic_error("weird llll decay");
+                }
+                if (isChargedLepton(subDecay[2])) {
+                    decay2 += getFlavorLeptonAbs(subDecay[2]);
+                } else {
+                    throw logic_error("weird llll decay");
+                }
+            } else if (nbNu == 2) { // llvv
                 decay2 = 600;
-                std::vector<int> temp = {};
-                for (const auto& i : subDecay)
-                {
-                    if (i % 2 != 0)
-                    {
-                        if (i == 11)
-                            temp.push_back(1);
-                        else if (i == 13)
-                            temp.push_back(2);
-                        else if (i == 15)
-                            temp.push_back(3);
-                        else
-                            throw std::logic_error("weird llvv decay");
+                cout << "Hello" << endl;
+                vector<int> temp = {};
+                for (int i : subDecay) {
+                    cout << "subdecay is " << i << endl;
+                    if (isChargedLepton(i)) {
+                        temp.push_back(getFlavorLeptonAbs(i));
                     }
                 }
+                cout << "Fine" << endl;
 
-                if (temp.size() != 2)
-                    throw std::logic_error("weird llvv decay");
-
-                std::sort(temp.begin(), temp.end());
+                if (temp.size() != 2) {
+                    throw logic_error("weird llvv decay");
+                }
+                cout << "Cool" << endl;
+                sort(temp.begin(), temp.end());
 
                 decay2 = decay2 + 10 * temp[0] + temp[1];
-            }
-            else // vvvv
-            {
+            } else {// vvvv
                 decay2 = 7;
             }
         }
@@ -616,8 +586,11 @@ double NNHProcessor::computeSphericity(
     return 1.5 * (val[0] + val[1]);
 }
 
-void NNHProcessor::processEvent(LCEvent* evt)
-{
+/**
+ * For each event :
+ *      - init event variables
+ */
+void NNHProcessor::processEvent(LCEvent* evt) {
     clear();
 
     std::cout << "Event : " << evt->getEventNumber() << std::endl;
@@ -630,38 +603,35 @@ void NNHProcessor::processEvent(LCEvent* evt)
     recoCol = evt->getCollection(reconstructedParticleCollectionName);
 
     // MC stuff
-    const auto mc_gamma0 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(6));
-    const auto mc_gamma1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(7));
-    const auto mc_nu0 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(8));
-    const auto mc_nu1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(9));
-    const auto mc_higgs = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(10));
+    EVENT::MCParticle* mc_gamma0 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(6));
+    EVENT::MCParticle* mc_gamma1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(7));
+    EVENT::MCParticle* mc_nu0 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(8));
+    EVENT::MCParticle* mc_nu1 = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(9));
+    EVENT::MCParticle* mc_higgs = dynamic_cast<EVENT::MCParticle*>(mcCol->getElementAt(10));
 
-    try
-    {
+    try {
         processISR(mc_gamma0, mc_gamma1);
+    } catch (std::logic_error& e) {
+        streamlog_out(DEBUG) 
+                << "Run : " << evt->getRunNumber() << ", "
+                << "Event : " << evt->getEventNumber() << " : " << e.what() 
+                << std::endl;
     }
-    catch (std::logic_error& e)
-    {
-        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
-                             << e.what() << std::endl;
-    }
-    try
-    {
+    try {
         processNeutrinos(mc_nu0, mc_nu1);
+    } catch (std::logic_error& e) {
+        streamlog_out(DEBUG) 
+                << "Run : " << evt->getRunNumber() << ", "
+                << "Event : " << evt->getEventNumber() << " : " << e.what() 
+                << std::endl;
     }
-    catch (std::logic_error& e)
-    {
-        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
-                             << e.what() << std::endl;
-    }
-    try
-    {
+    try {
         processHiggs(mc_higgs);
-    }
-    catch (std::logic_error& e)
-    {
-        streamlog_out(DEBUG) << "Run : " << evt->getRunNumber() << ", Event : " << evt->getEventNumber() << " : "
-                             << e.what() << std::endl;
+    } catch (std::logic_error& e) {
+        streamlog_out(DEBUG) 
+                << "Run : " << evt->getRunNumber() << ", "
+                << "Event : " << evt->getEventNumber() << " : " << e.what() 
+                << std::endl;
     }
     // end of MC stuff
 
@@ -669,43 +639,40 @@ void NNHProcessor::processEvent(LCEvent* evt)
     majorThrust = recoCol->getParameters().getFloatVal("majorThrustValue");
     minorThrust = recoCol->getParameters().getFloatVal("minorThrustValue");
 
-    auto ta = FloatVec{};
+    FloatVec ta = FloatVec{};
     recoCol->getParameters().getFloatVals("principleThrustAxis", ta);
-    const auto principleThrustAxis = CLHEP::Hep3Vector(ta[0], ta[1], ta[2]);
+    CLHEP::Hep3Vector principleThrustAxis = CLHEP::Hep3Vector(ta[0], ta[1], ta[2]);
 
     cosThrust = std::abs(principleThrustAxis.cosTheta());
     oblateness = recoCol->getParameters().getFloatVal("Oblateness");
 
-    if (minorThrust != minorThrust) // handle NaN case
+    if (minorThrust != minorThrust) { // handle NaN case 
         minorThrust = 0;
+    }
 
     sphericity = recoCol->getParameters().getFloatVal("sphericity");
 
     // treat isolated leptons
     isolatedLeptons.clear();
     eIsoLep = 0;
-    for (const auto& colName : isolatedLeptonsCollectionNames)
-    {
-        auto col = evt->getCollection(colName);
-        auto n = col->getNumberOfElements();
+    for (std::string colName : isolatedLeptonsCollectionNames) { // std::vector<std::string>
+        LCCollection* col = evt->getCollection(colName);
+        int n = col->getNumberOfElements();
 
-        for (auto i = 0; i < n; ++i)
-        {
-            auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
+        for (int i = 0; i < n; ++i) {
+            EVENT::ReconstructedParticle* particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedLeptons.insert(particle);
             eIsoLep += particle->getEnergy();
         }
     }
     nIsoLep = isolatedLeptons.size();
 
-    isolatedPhotons.clear();
-    {
-        auto col = evt->getCollection(isolatedPhotonsCollectionName);
-        auto n = col->getNumberOfElements();
+    isolatedPhotons.clear(); {
+        LCCollection* col = evt->getCollection(isolatedPhotonsCollectionName);
+        int n = col->getNumberOfElements();
 
-        for (auto i = 0; i < n; ++i)
-        {
-            auto particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
+        for (int i = 0; i < n; ++i) {
+            EVENT::ReconstructedParticle* particle = dynamic_cast<EVENT::ReconstructedParticle*>(col->getElementAt(i));
             isolatedPhotons.insert(particle);
         }
     }
@@ -715,52 +682,56 @@ void NNHProcessor::processEvent(LCEvent* evt)
 
     particles.reserve(nParticles);
 
-    for (int index = 0; index < nParticles; ++index)
-    {
-        auto recoPart = dynamic_cast<EVENT::ReconstructedParticle*>(recoCol->getElementAt(index));
+    for (int index = 0; index < nParticles; ++index) {
+        EVENT::ReconstructedParticle* recoPart = dynamic_cast<EVENT::ReconstructedParticle*>(recoCol->getElementAt(index));
 
         visible_e += recoPart->getEnergy();
 
-        auto particle = reconstructedParticleToPseudoJet(recoPart);
+        fastjet::PseudoJet particle = reconstructedParticleToPseudoJet(recoPart);
         particles.push_back(particle);
     }
 
     // Jets study
 
-    const auto sortJetsByEnergy = [](const EVENT::ReconstructedParticle* a,
-                                     const EVENT::ReconstructedParticle* b) -> bool
-    { return a->getEnergy() > b->getEnergy(); };
+    const auto sortJetsByEnergy = [](
+            const EVENT::ReconstructedParticle* a,
+            const EVENT::ReconstructedParticle* b) -> bool { 
+        return a->getEnergy() > b->getEnergy(); 
+    };
 
-    const auto _2JetsCol = evt->getCollection(_2JetsCollectionName);
-    const auto _3JetsCol = evt->getCollection(_3JetsCollectionName);
-    const auto _4JetsCol = evt->getCollection(_4JetsCollectionName);
+    LCCollection* _2JetsCol = evt->getCollection(_2JetsCollectionName);
+    LCCollection* _3JetsCol = evt->getCollection(_3JetsCollectionName);
+    LCCollection* _4JetsCol = evt->getCollection(_4JetsCollectionName);
 
-    auto _2Jets = std::vector<EVENT::ReconstructedParticle*>{};
-    auto _3Jets = std::vector<EVENT::ReconstructedParticle*>{};
-    auto _4Jets = std::vector<EVENT::ReconstructedParticle*>{};
+    std::vector<EVENT::ReconstructedParticle*> _2Jets = std::vector<EVENT::ReconstructedParticle*>{};
+    std::vector<EVENT::ReconstructedParticle*> _3Jets = std::vector<EVENT::ReconstructedParticle*>{};
+    std::vector<EVENT::ReconstructedParticle*> _4Jets = std::vector<EVENT::ReconstructedParticle*>{};
 
-    for (auto index = 0; index < _2JetsCol->getNumberOfElements(); ++index)
+    for (int index = 0; index < _2JetsCol->getNumberOfElements(); ++index) {
         _2Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_2JetsCol->getElementAt(index)));
-    for (auto index = 0; index < _3JetsCol->getNumberOfElements(); ++index)
+    }
+    for (int index = 0; index < _3JetsCol->getNumberOfElements(); ++index) {
         _3Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_3JetsCol->getElementAt(index)));
-    for (auto index = 0; index < _4JetsCol->getNumberOfElements(); ++index)
+    }
+    for (int index = 0; index < _4JetsCol->getNumberOfElements(); ++index) {
         _4Jets.push_back(dynamic_cast<EVENT::ReconstructedParticle*>(_4JetsCol->getElementAt(index)));
-
+    }
+    
     std::sort(_2Jets.begin(), _2Jets.end(), sortJetsByEnergy);
     std::sort(_3Jets.begin(), _3Jets.end(), sortJetsByEnergy);
     std::sort(_4Jets.begin(), _4Jets.end(), sortJetsByEnergy);
 
-    if (_2Jets.size() != 2)
+    if (_2Jets.size() != 2) {
         isValid_bb = false;
-    else
-    {
+    } else {
         isValid_bb = true;
-        auto jets = std::vector<fastjet::PseudoJet>{};
-        for (const auto& lcioJet : _2Jets)
+        std::vector<fastjet::PseudoJet> jets = std::vector<fastjet::PseudoJet>{};
+        for (EVENT::ReconstructedParticle* lcioJet : _2Jets) {
             jets.push_back(reconstructedParticleToPseudoJet(lcioJet));
+        }
 
-        const auto higgs = join(jets[0], jets[1]);
-        const auto higgs_mom = CLHEP::Hep3Vector(jets[0].px(), jets[0].py(), jets[0].pz());
+        fastjet::PseudoJet higgs = join(jets[0], jets[1]);
+        CLHEP::Hep3Vector higgs_mom = CLHEP::Hep3Vector(jets[0].px(), jets[0].py(), jets[0].pz());
 
         higgs_e = higgs.e();
         higgs_pt = higgs.pt();
@@ -777,8 +748,8 @@ void NNHProcessor::processEvent(LCEvent* evt)
         b2_pt = jets[1].pt();
         b2_e = jets[1].e();
 
-        const auto b1_mom = CLHEP::Hep3Vector(jets[0].px(), jets[0].py(), jets[0].pz());
-        const auto b2_mom = CLHEP::Hep3Vector(jets[1].px(), jets[1].py(), jets[1].pz());
+        CLHEP::Hep3Vector b1_mom = CLHEP::Hep3Vector(jets[0].px(), jets[0].py(), jets[0].pz());
+        CLHEP::Hep3Vector b2_mom = CLHEP::Hep3Vector(jets[1].px(), jets[1].py(), jets[1].pz());
 
         higgs_bb_cosBetw = std::cos(b1_mom.angle(b2_mom));
 
@@ -792,37 +763,38 @@ void NNHProcessor::processEvent(LCEvent* evt)
         y_56 = 0;
         y_67 = 0;
 
-        auto intValues = IntVec{};
-        auto strValues = StringVec{};
+        IntVec intValues = IntVec{};
+        StringVec strValues = StringVec{};
         _2JetsCol->getParameters().getIntVals("PIDAlgorithmTypeID", intValues);
         _2JetsCol->getParameters().getStringVals("PIDAlgorithmTypeName", strValues);
 
-        auto algoBtag = -1;
-        auto algoYth = -1;
-        for (auto i = 0U; i < strValues.size(); ++i)
-        {
-            if (strValues[i] == "lcfiplus")
+        int algoBtag = -1;
+        int algoYth = -1;
+        for (unsigned int i = 0U; i < strValues.size(); ++i) {
+            if (strValues[i] == "lcfiplus") {
                 algoBtag = intValues[i];
-            if (strValues[i] == "yth")
+            }
+            if (strValues[i] == "yth") {
                 algoYth = intValues[i];
+            }
         }
 
-        const auto particle1IDs = _2Jets[0]->getParticleIDs();
-        const auto particle2IDs = _2Jets[1]->getParticleIDs();
+        const ParticleIDVec particle1IDs = _2Jets[0]->getParticleIDs(); // virtual const ParticleIDVec & getParticleIDs () const =0
+        const ParticleIDVec particle2IDs = _2Jets[1]->getParticleIDs(); // typedef std::vector<ParticleID*> EVENT::ParticleIDVec
 
-        for (const auto& particleID : particle1IDs)
-        {
-            if (particleID->getAlgorithmType() == algoYth)
-            {
-                const auto params = particleID->getParameters();
+        for (ParticleID* particleID : particle1IDs) { 
+            if (particleID->getAlgorithmType() == algoYth) {
+                FloatVec params = particleID->getParameters(); // virtual const FloatVec & getParameters () const =0
 
-                auto yCutVec = std::vector<float>{};
-                for (const auto& param : params)
+                std::vector<float> yCutVec = std::vector<float>{};
+                for (float param : params) { // typedef std::vector< float > EVENT::FloatVec
                     yCutVec.push_back(param);
+                }
 
                 constexpr float minYCut = std::numeric_limits<float>::min();
-                for (auto& yCut : yCutVec)
+                for (auto& yCut : yCutVec) {
                     yCut = std::max(yCut, minYCut);
+                }
 
                 y_12 = -log10(yCutVec[1]);
                 y_23 = -log10(yCutVec[2]);
@@ -832,57 +804,58 @@ void NNHProcessor::processEvent(LCEvent* evt)
                 y_67 = -log10(yCutVec[6]);
             }
 
-            if (particleID->getAlgorithmType() == algoBtag)
+            if (particleID->getAlgorithmType() == algoBtag) {
                 higgs_bTag1 = particleID->getParameters()[0];
+            }
         }
 
-        for (const auto& particleID : particle2IDs)
-        {
-            if (particleID->getAlgorithmType() == algoBtag)
+        for (ParticleID* particleID : particle2IDs) {
+            if (particleID->getAlgorithmType() == algoBtag) {
                 higgs_bTag2 = particleID->getParameters()[0];
+            }
         }
     }
 
     // 3 jets study
-    if (_3Jets.size() == 3)
-    {
-        auto jets = std::vector<fastjet::PseudoJet>{};
-        for (const auto& lcioJet : _3Jets)
+    if (_3Jets.size() == 3) {
+        std::vector<fastjet::PseudoJet> jets = std::vector<fastjet::PseudoJet>{};
+        for (EVENT::ReconstructedParticle* lcioJet : _3Jets) {
             jets.push_back(reconstructedParticleToPseudoJet(lcioJet));
+        }
 
         std::vector<fastjet::PseudoJet> osef{};
 
-        auto W_jetPair = findParticleByMass(jets, W_MASS_REF, osef);
-        auto W = join(W_jetPair[0], W_jetPair[1]);
+        array<fastjet::PseudoJet, 2> W_jetPair = findParticleByMass(jets, W_MASS_REF, osef);
+        fastjet::PseudoJet W = join(W_jetPair[0], W_jetPair[1]);
 
         sl_w_m = W.m();
         sl_rec_m = computeRecoilMass(W, sqrtS);
     }
 
     // 4 jets study
-    if (_4Jets.size() != 4)
+    if (_4Jets.size() != 4) {
         isValid_ww = false;
-    else
-    {
+    } else {
         isValid_ww = true;
 
-        auto jets = std::vector<fastjet::PseudoJet>{};
-        for (const auto& lcioJet : _4Jets)
+        std::vector<fastjet::PseudoJet> jets = std::vector<fastjet::PseudoJet>{};
+        for (EVENT::ReconstructedParticle* lcioJet : _4Jets) {
             jets.push_back(reconstructedParticleToPseudoJet(lcioJet));
+        }
 
         std::vector<fastjet::PseudoJet> smallW_jetPair{};
 
-        auto bigW_jetPair = findParticleByMass(jets, W_MASS_REF, smallW_jetPair);
+        array<fastjet::PseudoJet, 2> bigW_jetPair = findParticleByMass(jets, W_MASS_REF, smallW_jetPair);
 
-        auto bigW = join(bigW_jetPair[0], bigW_jetPair[1]);
-        auto bigW_mom = CLHEP::Hep3Vector(bigW.px(), bigW.py(), bigW.pz());
-        auto bigW_jet1Mom = CLHEP::Hep3Vector(bigW_jetPair[0].px(), bigW_jetPair[0].py(), bigW_jetPair[0].pz());
-        auto bigW_jet2Mom = CLHEP::Hep3Vector(bigW_jetPair[1].px(), bigW_jetPair[1].py(), bigW_jetPair[1].pz());
+        fastjet::PseudoJet bigW = join(bigW_jetPair[0], bigW_jetPair[1]);
+        CLHEP::Hep3Vector bigW_mom = CLHEP::Hep3Vector(bigW.px(), bigW.py(), bigW.pz());
+        CLHEP::Hep3Vector bigW_jet1Mom = CLHEP::Hep3Vector(bigW_jetPair[0].px(), bigW_jetPair[0].py(), bigW_jetPair[0].pz());
+        CLHEP::Hep3Vector bigW_jet2Mom = CLHEP::Hep3Vector(bigW_jetPair[1].px(), bigW_jetPair[1].py(), bigW_jetPair[1].pz());
 
-        auto smallW = join(smallW_jetPair[0], smallW_jetPair[1]);
-        auto smallW_mom = CLHEP::Hep3Vector(smallW.px(), smallW.py(), smallW.pz());
-        auto smallW_jet1Mom = CLHEP::Hep3Vector(smallW_jetPair[0].px(), smallW_jetPair[0].py(), smallW_jetPair[0].pz());
-        auto smallW_jet2Mom = CLHEP::Hep3Vector(smallW_jetPair[1].px(), smallW_jetPair[1].py(), smallW_jetPair[1].pz());
+        fastjet::PseudoJet smallW = join(smallW_jetPair[0], smallW_jetPair[1]);
+        CLHEP::Hep3Vector smallW_mom = CLHEP::Hep3Vector(smallW.px(), smallW.py(), smallW.pz());
+        CLHEP::Hep3Vector smallW_jet1Mom = CLHEP::Hep3Vector(smallW_jetPair[0].px(), smallW_jetPair[0].py(), smallW_jetPair[0].pz());
+        CLHEP::Hep3Vector smallW_jet2Mom = CLHEP::Hep3Vector(smallW_jetPair[1].px(), smallW_jetPair[1].py(), smallW_jetPair[1].pz());
 
         w1_m = bigW.m();
         w1_pt = bigW.pt();
@@ -899,10 +872,10 @@ void NNHProcessor::processEvent(LCEvent* evt)
         // background study
         std::vector<fastjet::PseudoJet> smallZ_jetPair{};
 
-        auto bigZ_jetPair = findParticleByMass(jets, Z_MASS_REF, smallZ_jetPair);
+        array<fastjet::PseudoJet, 2> bigZ_jetPair = findParticleByMass(jets, Z_MASS_REF, smallZ_jetPair);
 
-        auto bigZ = join(bigZ_jetPair[0], bigZ_jetPair[1]);
-        auto smallZ = join(smallZ_jetPair[0], smallZ_jetPair[1]);
+        fastjet::PseudoJet bigZ = join(bigZ_jetPair[0], bigZ_jetPair[1]);
+        fastjet::PseudoJet smallZ = join(smallZ_jetPair[0], smallZ_jetPair[1]);
 
         zz_z1_m = bigZ.m();
         zz_z2_m = smallZ.m();
@@ -911,8 +884,11 @@ void NNHProcessor::processEvent(LCEvent* evt)
     outputTree->Fill();
 
     nEventsProcessed++;
-    if (nEventsProcessed % 10000 == 0)
-        streamlog_out(MESSAGE) << nEventsProcessed << " events processed" << std::endl;
+    if (nEventsProcessed % 10000 == 0) {
+        streamlog_out(MESSAGE) 
+                << nEventsProcessed << " events processed" 
+                << std::endl;
+    }
 }
 
 /**

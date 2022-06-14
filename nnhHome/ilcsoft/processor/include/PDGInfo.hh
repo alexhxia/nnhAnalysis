@@ -15,6 +15,7 @@
  * PDGInfo class is a util class for help to readability.
  */
 enum PGDCode {
+    
     // Leptons
     ELECTRON = 11,
     ELECTRON_NEUTRINO = 12,
