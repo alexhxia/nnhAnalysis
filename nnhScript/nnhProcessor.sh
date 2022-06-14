@@ -6,7 +6,7 @@
 # OUTPUT: directory with once root file by processus number
 
 echo
-echo "--> BEGIN : processor ($branch) <--"
+echo "--> BEGIN : processor <--"
 echo
 
 # INCLUDE TOOL 
@@ -40,6 +40,8 @@ function testNeedBuild {
         if ! [ -f $NNH_HOME/processor/lib/libnnhProcessor.so ]; then 
             recompile=0
         fi
+    elif ! [ -d $NNH_HOME/processor/BUILD ]; then
+        recompile=0
     fi
 } 
 
@@ -58,7 +60,8 @@ while getopts hcn:b:i: flag ; do
         
         n)  setHome ${OPTARG};; # export.sh
             
-        b)  setBranch ${OPTARG};; # export.sh
+        b)  setBranch ${OPTARG}
+            echo "$branch";; # export.sh
             
         i)  p_input=${OPTARG};;
                 
@@ -73,7 +76,7 @@ export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
 ## test env
 
-#test_isValidHome && error "home is no valid."
+test_isValidHome
 testNeedBuild
 
 # BUILD 
@@ -108,9 +111,12 @@ mkdir $NNH_PROCESSOR_OUTPUT
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
         -i $NNH_PROCESSOR_INPUT \
         -o $NNH_PROCESSOR_OUTPUT \
-        1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
-        2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err
+        -p 402012 #402001 # 402002 402013 402014 402003 402004 
+         #\
+        #1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
+        #2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err
 
 echo
 echo "--> END : processor ($branch) <--"
 echo
+

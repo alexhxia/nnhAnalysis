@@ -223,51 +223,80 @@ class AnalysisFlow(Observer):
 
 if __name__ == "__main__":
 
+    # DEFAULT VALUE
+    NB_CORES = 64
+    INPUT_DIR = "/gridgroup/ilc/nnhAnalysisFiles/AHCAL"
+
+    # PARAMETERS
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--ncores', help='Number of threads', required=False, default=8)
+    parser.add_argument('-n', '--ncores', help='Number of threads', required=False, default=NB_CORES)
     parser.add_argument('-p', '--processes', help='ProcessIDs to analyse', required=False, nargs='+')
-    parser.add_argument('-i', '--inputDirectory', help='Path of input files', required=True)
+    parser.add_argument('-i', '--inputDirectory', help='Path of input files', required=False, default = INPUT_DIR)
     parser.add_argument('-r', '--remote', help='indicate that files need to be downloaded', action='store_true', default=False)
     parser.add_argument('-o', '--outputDirectory', help='output directory', required=True)
     args = vars(parser.parse_args())
 
+    # ENVIRONMENT
+    
+    ## home variable
     if 'NNH_HOME' not in os.environ:
         print('ERROR : env variable NNH_HOME is not set')
         sys.exit(1)
 
+    ## cores number
     nCores = int(args['ncores'])
 
-    processesID = [402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004,
-                   402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 500066, 500068, 500070, 500072, 500074, 500076,
-                   500078, 500080, 500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112,
-                   500086, 500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 500115, 500116, 500117, 500118,
-                   500119, 500120, 500122, 500124, 500125, 500126, 500127, 500128]
-
+    ## num processus list
     if args['processes']:
         processesID = []
         for p in args['processes']:
             processesID.append(p)
+    else:
+        try:
+            ### Get all processus in local server 
+            processesID = os.listdir(INPUT_DIR)
+        except:
+            ### num processus list
+            processesID = [
+                402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 
+                402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004, 
+                402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 
+                500066, 500068, 500070, 500072, 500074, 500076, 500078, 500080, 
+                500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 
+                500107, 500108, 500110, 500112, 500086, 500088, 500090, 500092, 
+                500094, 500096, 500098, 500100, 500113, 500114, 500115, 500116, 
+                500117, 500118, 500119, 500120, 500122, 500124, 500125, 500126, 
+                500127, 500128
+            ]
     processesID.sort()
 
+    ## input directory
     filesDirectory = args['inputDirectory']
     remote = False
     if args['remote']:
         remote = True
 
+    ## output directory
     outputDirectory = args['outputDirectory']
-
+    if not os.path.exists(outputDirectory) and not os.path.isdir(outputDirectory):
+        outputDirectory = join(os.getenv('NNH_HOME'), "/processor/RESULTS")
+    
     os.system(f'mkdir -p {outputDirectory}')
+    print("Output Directory:" + outputDirectory)
 
+    ## Download files in distant server
     nDownloadThreads = 0
     if remote:
         nDownloadThreads = 1
 
     analysis = AnalysisFlow.initAnalysisFlow(nDownloadThreads, nCores, 1)
 
+    # RUN 
     for processID in processesID:
         analysis.launchAnalysis(processID, filesDirectory, outputDirectory, remote)
 
     analysis.event.wait()
     AnalysisFlow.close()
 
+    ## output logs
     os.system(f'mv ./logs {outputDirectory}/logs')

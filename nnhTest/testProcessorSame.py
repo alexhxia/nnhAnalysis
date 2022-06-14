@@ -182,7 +182,7 @@ if __name__ == "__main__":
             file1.Close()
             file2.Close()
         
-        k=k+1
+        k = k + 1
     
     # OUTPUT
     
