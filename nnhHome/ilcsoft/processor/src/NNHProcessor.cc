@@ -2,6 +2,7 @@
 
 #include "EventShape.hh"
 #include "ParticleInfo.hh"
+#include "PDGInfo.hh"
 
 #include <LCIOSTLTypes.h>
 #include <algorithm>
@@ -231,57 +232,95 @@ double computeRecoilMass(const fastjet::PseudoJet& particle, float energy)
     return computeRecoilMass(vec, energy);
 }
 
-void NNHProcessor::processISR(const EVENT::MCParticle* gamma0, const EVENT::MCParticle* gamma1)
-{
+/**
+ * Init root tree variables in ISR process : "mc_ISR_*"
+ * AE : isPhoton(gamma0) && isPhoton(gamma1)
+ */
+void NNHProcessor::processISR(
+            const EVENT::MCParticle* gamma0, const EVENT::MCParticle* gamma1) {
+    
+    // Reinit mc_ISR_*
     mc_ISR_e = -1;
     mc_ISR_pt = -1;
 
-    if (gamma0->getPDG() != 22 || gamma1->getPDG() != 22)
+    // Exception
+    if (!isAbsPDG(PHOTON, gamma0) || !isAbsPDG(PHOTON, gamma1)) {
         throw std::logic_error("not gammas");
+    }
 
-    auto gamma0_4Vec = CLHEP::HepLorentzVector(gamma0->getMomentum()[0], gamma0->getMomentum()[1],
-                                               gamma0->getMomentum()[2], gamma0->getEnergy());
-    auto gamma1_4Vec = CLHEP::HepLorentzVector(gamma1->getMomentum()[0], gamma1->getMomentum()[1],
-                                               gamma1->getMomentum()[2], gamma1->getEnergy());
-    auto ISR_4Vec = gamma0_4Vec + gamma1_4Vec;
+    // 4-Vector gammas sum
+    CLHEP::HepLorentzVector gamma0_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            gamma0->getMomentum()[0], gamma0->getMomentum()[1],
+            gamma0->getMomentum()[2], gamma0->getEnergy());
+            
+    CLHEP::HepLorentzVector gamma1_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            gamma1->getMomentum()[0], gamma1->getMomentum()[1],
+            gamma1->getMomentum()[2], gamma1->getEnergy());
+            
+    CLHEP::HepLorentzVector ISR_4Vec = gamma0_4Vec + gamma1_4Vec; // auto ? CLHEP::HepLorentzVector
 
+    // Init mc_ISR_*
     mc_ISR_e = ISR_4Vec.e();
     mc_ISR_pt = ISR_4Vec.perp();
 }
 
-void NNHProcessor::processNeutrinos(const EVENT::MCParticle* nu0, const EVENT::MCParticle* nu1)
-{
+/**
+ * Init root tree variables for neutrinos process : "mc_nu_*"
+ * AE : isNeutrino(nu0) && isNeutrino(nu1) && isTwin(nu0, nu1)
+ */
+void NNHProcessor::processNeutrinos(
+        const EVENT::MCParticle* nu0, const EVENT::MCParticle* nu1) {
+    
+    // Reinit mv_nu_*
     mc_nu_flavor = -1;
     mc_nu_e = -1;
     mc_nu_pt = -1;
     mc_nu_m = -1;
     mc_nu_cosBetw = -2;
 
-    auto nu0_flavor = nu0->getPDG();
-    auto nu1_flavor = nu1->getPDG();
-
-    auto flavor = std::abs(nu0_flavor);
-
-    bool isNeutrinos = (nu0_flavor == -nu1_flavor) && (flavor == 12 || flavor == 14 || flavor == 16);
-
-    if (!isNeutrinos)
+    // Exception
+    if (!isNeutrino(nu0->getPDG()) || !isNeutrino(nu1->getPDG())
+            || !isSameParticleAbsPDG(nu0, nu1)) {
         throw std::logic_error("not neutrinos");
+    }
 
-    auto nu0_4Vec =
-        CLHEP::HepLorentzVector(nu0->getMomentum()[0], nu0->getMomentum()[1], nu0->getMomentum()[2], nu0->getEnergy());
-    auto nu1_4Vec =
-        CLHEP::HepLorentzVector(nu1->getMomentum()[0], nu1->getMomentum()[1], nu1->getMomentum()[2], nu1->getEnergy());
-    auto angleBetw = nu0_4Vec.v().angle(nu1_4Vec.v());
+    //int nu0_flavor = nu0->getPDG();
+    //int nu1_flavor = nu1->getPDG();
 
+    int flavor = std::abs(nu0->getPDG());
+
+    //bool isNeutrinos = (nu0_flavor == -nu1_flavor) && (flavor == 12 || flavor == 14 || flavor == 16);
+
+    CLHEP::HepLorentzVector nu0_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            nu0->getMomentum()[0], nu0->getMomentum()[1], 
+            nu0->getMomentum()[2], nu0->getEnergy());
+            
+    CLHEP::HepLorentzVector nu1_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            nu1->getMomentum()[0], nu1->getMomentum()[1], 
+            nu1->getMomentum()[2], nu1->getEnergy());
+    
+    // 4-Vector neutrinos sum
+    CLHEP::HepLorentzVector nu_4Vec = nu0_4Vec + nu1_4Vec;
+    
+    // angle between 2 neutrinos 4-vector 
+    double angleBetw = nu0_4Vec.v().angle(nu1_4Vec.v()); // auto ? double
+
+    // Init mc_nu_*
     mc_nu_flavor = flavor;
-    mc_nu_e = (nu0_4Vec + nu1_4Vec).e();
-    mc_nu_pt = (nu0_4Vec + nu1_4Vec).perp();
-    mc_nu_m = (nu0_4Vec + nu1_4Vec).m();
+    mc_nu_e = nu_4Vec.e();
+    mc_nu_pt = nu_4Vec.perp();
+    mc_nu_m = nu_4Vec.m();
     mc_nu_cosBetw = std::cos(angleBetw);
 }
 
-void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs)
-{
+
+/**
+ * Init root tree variables for Higgs process : "mc_higgs_*"
+ * AE : isHiggs(higgs)
+ */
+void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs) {
+    
+    // Reinit mc_higgs_*
     mc_higgs_e = -1;
     mc_higgs_pt = -1;
     mc_higgs_m = -1;
@@ -297,29 +336,47 @@ void NNHProcessor::processHiggs(const EVENT::MCParticle* higgs)
     mc_higgs_decay2_m = -1;
     mc_higgs_decay_cosBetw = -1;
 
-    if (higgs->getPDG() != 25)
-        throw std::logic_error("not a higgs");
+    // Exception
+    if (!isAbsPDG(HIGGS, higgs)) {
+        throw logic_error("not a higgs");
+    }
 
-    auto higgs_4Vec = CLHEP::HepLorentzVector(higgs->getMomentum()[0], higgs->getMomentum()[1], higgs->getMomentum()[2],
-                                              higgs->getEnergy());
+    CLHEP::HepLorentzVector higgs_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            higgs->getMomentum()[0], higgs->getMomentum()[1], 
+            higgs->getMomentum()[2], higgs->getEnergy());
 
-    auto vec = higgs->getDaughters();
+    const MCParticleVec vec = higgs->getDaughters(); // auto ? CLHEP::HepLorentzVector*
 
-    if (vec.size() != 2)
-        throw std::logic_error("weird higgs decay : not 2 particles");
+    // We need exactly 2 daughters to continue without error
+    if (vec.size() != 2) {
+        throw logic_error("weird higgs decay : not 2 particles");
+    }
 
-    auto decay = findDecayMode(vec[0], vec[1]);
+    std::array<int, 2> decay; 
+    try {
+        decay = findDecayMode(vec[0], vec[1]);
+    } catch (exception const& e) {
+        stringstream str ;
+        str << e.what(); 
+        throw logic_error("Higgz decay: " + str.str());
+    }
+                
+    CLHEP::HepLorentzVector decay1_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            vec[0]->getMomentum()[0], vec[0]->getMomentum()[1],
+            vec[0]->getMomentum()[2], vec[0]->getEnergy());
+    
+    CLHEP::HepLorentzVector decay2_4Vec = CLHEP::HepLorentzVector( // auto ? CLHEP::HepLorentzVector
+            vec[1]->getMomentum()[0], vec[1]->getMomentum()[1],
+             vec[1]->getMomentum()[2], vec[1]->getEnergy());
 
-    auto decay1_4Vec = CLHEP::HepLorentzVector(vec[0]->getMomentum()[0], vec[0]->getMomentum()[1],
-                                               vec[0]->getMomentum()[2], vec[0]->getEnergy());
-    auto decay2_4Vec = CLHEP::HepLorentzVector(vec[1]->getMomentum()[0], vec[1]->getMomentum()[1],
-                                               vec[1]->getMomentum()[2], vec[1]->getEnergy());
-
-    if (decay2_4Vec.e() > decay1_4Vec.e())
+    // we choose 1 have more energy 
+    if (decay2_4Vec.e() > decay1_4Vec.e()) {
         std::swap(decay1_4Vec, decay2_4Vec);
+    }
 
-    auto angleBetw = decay1_4Vec.v().angle(decay2_4Vec.v());
+    double angleBetw = decay1_4Vec.v().angle(decay2_4Vec.v()); // auto ? double
 
+    // Init mc_higgs_*
     mc_higgs_e = higgs_4Vec.e();
     mc_higgs_pt = higgs_4Vec.perp();
     mc_higgs_m = higgs_4Vec.m();
