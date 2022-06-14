@@ -24,13 +24,20 @@ source tools/help.sh
 ## Display Help
 function syntax {
     echo
+    echo "Run 'prepareBDT'."
     echo "Prepare for BDT program."
+    echo 
+    echo "WARNING: input directory deleted"
+    echo
+    echo "ENTRY: processor output root files"
+    echo
+    echo "RETURN: DATA.root"
     echo
     echo 'SYNTAX:'
     echo '    ./prepareBDT.sh [options]'
     echo
     
-    syntaxOption h c b n i #help.sh
+    syntaxOption h c b n i o #help.sh
 }
 
 ## Test if it need build
@@ -64,12 +71,14 @@ while getopts hcn:b:i:o: flag ; do
         
         c)  recompile=0;;
         
-        n)  setHome ${OPTARG};;
+        n)  setPath ${OPTARG};;
             
         b)  setBranch ${OPTARG};;
             
-        i)  a_input=${OPTARG}
+        i)  setAnalysisInput ${OPTARG}
             isInputUser=0;;
+            
+        o)  setAnalysisOutput ${OPTARG};;
         
         *) error 'option no exist';;
     esac
@@ -77,7 +86,8 @@ done
 
 ## update env
 
-nnh_export && print_export
+nnh_export
+print_export
 
 ## test
 
@@ -116,7 +126,9 @@ echo "--> RUN : prepareBDT ($branch) <--"
 #echo
 
 cd $NNH_HOME/analysis/bin
-./prepareForBDT \
+
+# add option -o $NNH_ANALYSIS_OUTPUT
+./prepareForBDT \ 
         1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
         2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 

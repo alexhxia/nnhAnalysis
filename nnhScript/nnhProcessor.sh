@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This program build and run for all processus project.
+# WARNING : NNH_PROCESSOR_OUTPUT directory deleted
 #
 # INPUT: directory with processus directory with LCIO files
 # OUTPUT: directory with once root file by processus number
@@ -22,25 +23,28 @@ source tools/help.sh
 ## Display Help
 function syntax {
     echo
-    echo "Run 'processor'."
+    echo "Run 'nnhProcessor'."
     echo
-    echo "Entry: directory path which contains directory processus with LCIO files."
-    echo "Exit: one files ROOT by processus number"
+    echo "WARNING : -o directory will be ecrased."
+    echo
+    echo "ENTRY: directory path which contains directory processus with LCIO files."
+    echo
+    echo "RETURN: one files ROOT by processus number"
     echo
     echo 'SYNTAX:'
     echo '    ./nnhProcessor.sh [options]'
     
-    syntaxOption h c n b i #help.sh
+    syntaxOption h c n b i o #help.sh
 }
 
 ## Test if it need build
 function testNeedBuild {
     
     if [ $recompile -eq 1 ]; then
-        if ! [ -f $NNH_HOME/processor/lib/libnnhProcessor.so ]; then 
+        if ! [ -f $home/processor/lib/libnnhProcessor.so ]; then 
             recompile=0
         fi
-    elif ! [ -d $NNH_HOME/processor/BUILD ]; then
+    elif ! [ -d $home/processor/BUILD ]; then
         recompile=0
     fi
 } 
@@ -50,7 +54,7 @@ function testNeedBuild {
 recompile=1 # no build
 
 ## option choice by user
-while getopts hcn:b:i: flag ; do
+while getopts hcn:b:i:o flag ; do
     case "${flag}" in 
     
         h)  syntax
@@ -58,12 +62,13 @@ while getopts hcn:b:i: flag ; do
         
         c)  recompile=0;;
         
-        n)  setHome ${OPTARG};; # export.sh
+        n)  setPath ${OPTARG};; # export.sh
             
-        b)  setBranch ${OPTARG}
-            echo "$branch";; # export.sh
+        b)  setBranch ${OPTARG};; # export.sh
             
-        i)  p_input=${OPTARG};;
+        i)  setProcessorInput ${OPTARG};; # export.sh
+        
+        o)  setProcessorOutput ${OPTARG};; # export.sh
                 
         *)  error 'option no exist';;
     esac
@@ -71,7 +76,9 @@ done
 
 ## update env
 
-nnh_export && print_export
+nnh_export
+print_export
+
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
 ## test env
@@ -111,8 +118,7 @@ mkdir $NNH_PROCESSOR_OUTPUT
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
         -i $NNH_PROCESSOR_INPUT \
         -o $NNH_PROCESSOR_OUTPUT 
-        #-p 402012 #402001 # 402002 402013 402014 402003 402004 
-         #\
+        #-p 402012 # 402001 402002 402013 402014 402003 402004 \
         #1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
         #2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err
 

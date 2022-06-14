@@ -25,8 +25,9 @@
 
 # INCLUDE TOOL 
 
-source export.sh
-source help.sh
+source tools/functions.sh
+source tools/export.sh 
+source tools/help.sh
 
 # FUNCTION TOOL 
 
@@ -35,39 +36,42 @@ function syntax {
     echo
     echo "Run 'processor', 'prepareBDT', and 'analysis'."
     echo
+    echo "WARNING: processor and analysis output directories deleted"
+    echo
+    echo "ENTRY: lcio files in processor number directories"
+    echo
+    echo "RETURN: statistic analysis files"
+    echo
     echo 'SYNTAX:'
     echo '    ./nnh.sh [options]'
     echo
     
-    syntaxOption h p t a b n i o # help.sh
+    syntaxOption h b p a n i o # help.sh
 }
 
 # ENVIRONMENT + in export.sh 
 
-nb_runProcessor=1
+nb_processor=1
 nb_BDT=1
-nb_runByBDT=1
 
 ## option choice by user
-while  getopts ":b:p:a:t:n:i:o:h" option ; do
+while  getopts ":b:p:a:n:i:o:h" option ; do
     case "${option}" in 
     
         h)  syntax
             exit 0;;
             
-        b)  branch=${OPTARG};;
+        b)  setBranch ${OPTARG};;
         
-        p)  nb_runProcessor=${OPTARG};;
+        p)  nb_processor=${OPTARG};;
         
         a)  nb_BDT=${OPTARG};;
+                
+        n)  setPath ${OPTARG};;
         
-        t)  nb_runByBDT=${OPTARG};;
+        i)  setServerInput ${OPTARG};;
         
-        n)  home=${OPTARG};;
-        
-        i)  input=${OPTARG};;
-        
-        o)  output=${OPTARG};;
+        o)  setServerOutput ${OPTARG};;
         
         *) error 'option no exist';;
     esac
@@ -77,7 +81,11 @@ done
 
 ## Test env
 
-if [[ $nb_runProcessor -lt 0 ]] ; then
+nnh_export && print_export
+
+test_isValidHome
+
+if [[ $nb_processor -lt 0 ]] ; then
     error "-p: $nb_processor < 0"
 fi
 
@@ -85,75 +93,45 @@ if [[ $nb_BDT -lt 0 ]] ; then
     error "-a: $nb_BDT < 0"
 fi
 
-if [[ $nb_runByBDT -lt 0 ]] ; then
-    error "-t: $nb_runByBDT < 0"
-fi
-
-nnh_export && print_export
-
-test_isValidHome
-
 # RUN 
 
 echo
-echo "Start nnh on the $branch branch with $nb_bdt BDT for each $nb_processor processors..."
+echo "Start nnh on the $branch branch with $nb_BDT BDT for each $nb_processor processors..."
 
 ## processor
-for ((p = 1; p <= $nb_runProcessor; p++)); do
+serverOutputDir=$NNH_INPUT/$branch
+for ((p = 1; p <= $nb_processor; p++)); do
     echo
     echo "    Start "$p"th processor:"
     
-    # OUTPUT DIRECTORY IN SERVER 
+    ### OUTPUT DIRECTORY IN SERVER 
     k=1
-    outputDir=$NNH_OUTPUT/run_$k
-    while [ -d $outputDir ]; do
+    serverOutputDir=$serverOutputDir/run_$k
+    while [ -d $serverOutputDir ]; do
         k=$((k + 1))
-        outputDir=$NNH_OUTPUT/run_$k
+        serverOutputDir=$serverOutputDir/run_$k
     done 
-    mkdir -v $outputDir \
-             $outputDir/processor \
-             $outputDir/analysis
     
-    # RUN PROCESSOR
+    mkdir -v $serverOutputDir \
+             $serverOutputDir/processor \
+             $serverOutputDir/analysis
+    
+    setProcessorOutput $serverOutputDir/processor # export.sh: a_input change too
+    nnh_export # export.sh: export update
+    
+    ### RUN PROCESSOR
     if [ $p = 1 ]; then # build
-        ./nnhProcessor.sh -n $home -b $branch -i $NNH_INPUT -c
+        ./nnhProcessor.sh -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT -c
     else
-        ./nnhProcessor.sh -n $home -b $branch -i $NNH_INPUT
+        ./nnhProcessor.sh -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT
     fi 
     
-    # MOVE OUTPUT PROCESSOR DATA IN SERVER 
-    mv $NNH_PROCESSOR_OUTPUT/* $outputDir/processor
-    rm -R $NNH_PROCESSOR_OUTPUT
-    echo "    Output processor files save in $OUTPUT_DIRECTORY/processor"
-    
     ### analysis 
-    
     for ((a = 1; a <= $nb_BDT; a++)); do
-    
-        # prepareBDT
-        echo
-        echo "    Start "$a"th BDT at "$p"th processor: "
-        outputDirA=$outputDir/analysis/run_"$a"
-        mkdir -v $outputDirA
-        
-        echo "      -> Prepare BDT: ..."
-        ./prepareBDT.sh -n $NNH_HOME -b $branch -i $outputDir/processor -o $NNH_ANALYSIS_OUTPUT -c
-        cp $NNH_ANALYSIS_OUTPUT $outputDirA
-        
-        # launchBDT
-        for ((t = 1; t <= $nb_BDT; t++)); do
-            echo "      -> Launch  BDT: "$t"..."
-            ./launchBDT.sh -n $NNH_HOME -b $branch
-            outputDirAT=outputDirA/run_"$t"
-            mkdir -v $outputDirAT
-            cp $NNH_ANALYSIS_OUTPUT/* $outputDirAT
-            echo "      -> Save result in $outputDirAT"
-        done 
-        rm -R $NNH_ANALYSIS_OUTPUT
-        
-        mv $NNH_ANALYSIS_OUTPUT/* $outDir
-        echo "      -> Save result in $outputDirA"
-        rm -R $NNH_ANALYSIS_OUTPUT
+        setAnalysisOutput $serverOutputDir/analysis/run_$a # export.sh
+        nnh_export # export.sh : export update
+        mkdir -v $NNH_ANALYSIS_OUTPUT
+        ./nnhAnalysis -c -n $path -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT
     done
 done
 

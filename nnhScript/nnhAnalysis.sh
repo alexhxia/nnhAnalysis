@@ -30,7 +30,13 @@ source tools/help.sh
 ## Display Help
 function syntax {
     echo
-    echo "Run 'prepareBDT', and 'analysis'."
+    echo "Run 'nnhAnalysis': ie 'prepareBDT' and 'launchBDT'."
+    echo
+    echo "WARNING: delete analysis output last directory"
+    echo
+    echo "ENTRY: root files create by processor"
+    echo
+    echo "RETURN: statistic analysis files"
     echo
     echo 'SYNTAX:'
     echo '    ./nnhAnalysis.sh [options]'
@@ -50,11 +56,11 @@ while  getopts ":b:n:i:o:h" option ; do
             
         b)  setBranch ${OPTARG};;
                                 
-        n)  setHome ${OPTARG};;
+        n)  setPath ${OPTARG};;
                 
-        i)  a_input=${OPTARG};;
+        i)  setAnalysisInput ${OPTARG};;
         
-        o)  a_output=${OPTARG};;
+        o)  setAnalysisOutput ${OPTARG};;
         
         *) error 'option no exist';;
     esac
@@ -62,7 +68,8 @@ done
 
 ## update environment
 
-nnh_export && print_export
+nnh_export
+print_export
 
 ## test environment
 
@@ -81,13 +88,12 @@ mkdir $NNH_ANALYSIS_OUTPUT
 ## prepareBDT
 
 echo "  -> Prepare BDT ..."
-./prepareBDT.sh -n $home -b $branch -i $NNH_ANALYSIS_INPUT -c
+./prepareBDT.sh -c -n $path -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT
 
 ## launchBDT
 
 echo "  -> Launch  BDT..."
-echo "$home, $branch"
-./launchBDT.sh -n $home -b $branch
+./launchBDT.sh -n $path -b $branch -i $NNH_ANALYSIS_INPUT
 
 echo
 echo "...Terminate nnhAnalysis"

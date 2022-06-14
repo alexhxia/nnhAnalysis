@@ -18,15 +18,21 @@ source tools/functions.sh
 ## Display Help
 function syntax {
     echo
-    echo    "With processor root files, "\
-            "create analysis/DATA/DATA.root " \
-            "and run 'analysis/bin/prepareBDT'."
+    echo "Run 'launchBDT', ie '$NNH_HOME/analysis/bin/prepareBDT'."
+    echo 
+    echo "NB: input and output directories are same."
+    echo
+    echo "WARNING: delete last analysis output directory"
+    echo
+    echo "ENTRY: DATA.root files"
+    echo
+    echo "RETURN: analysis stat files"
     echo
     echo 'SYNTAX:'
     echo '    ./launchBDT.sh [options]'
     echo
     
-    syntaxOption h d b n  #help.sh
+    syntaxOption h d b n i #help.sh
 }
 
 # ENVIRONMENT + in export.sh ###
@@ -34,7 +40,7 @@ function syntax {
 conda=0
 
 ## option choice by user
-while getopts hdn:b: flag ; do
+while getopts hdn:b:i: flag ; do
     case "${flag}" in 
     
         h)  syntax 
@@ -42,16 +48,19 @@ while getopts hdn:b: flag ; do
         
         d)  conda=1;;
             
-        n)  setHome ${OPTARG};;
+        n)  setPath ${OPTARG};;
             
         b)  setBranch ${OPTARG};;
-            
+        
+        i)  setAnalysisInput ${OPTARG};;
+                    
         *)  error 'option no exist';;
             
     esac
 done 
 
-nnh_export && print_export
+nnh_export
+print_export
 
 test_isValidHome
 
@@ -72,13 +81,15 @@ fi
 particles=("bb" "WW")
 for p in ${particles[@]}; do
     echo "    launch launchBDT_$p"
+    # add option -i $NNH_ANALYSIS_INPUT
     python3 launchBDT_$p.py \
-            1> $NNH_HOME/analysis/DATA/launchBDT_$p.out \
-            2> $NNH_HOME/analysis/DATA/launchBDT_$p.err 
+            1> $NNH_ANALYSIS_INPUT/launchBDT_$p.out \
+            2> $NNH_ANALYSIS_INPUT/launchBDT_$p.err 
 done 
 
 if [ $conda -eq 0 ]; then
     conda deactivate
+    echo "    conda deactivate"
 fi
 
 echo

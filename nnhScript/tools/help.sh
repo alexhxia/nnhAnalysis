@@ -22,8 +22,8 @@ function syntaxOption {
             b)  echo '   -b [name]         branch (name projet) - example : fcc, ilcsoft'
                 echo "                     DEFAULT VALUE: $branch";;
             
-            n)  echo '   -n [directory]    nnhHome directory'
-                echo "                     DEFAULT VALUE: $home";;
+            n)  echo '   -n [directory]    nnhAnalysis directory'
+                echo "                     DEFAULT VALUE: $path";;
             
             i)  echo '   -i [directory]    input directory'
                 echo "                     DEFAULT VALUE: $input";;
@@ -36,9 +36,6 @@ function syntaxOption {
 
             a)  echo '   -a [integer]      number of prepareBDT run'
                 echo "                     DEFAULT VALUE: $nb_BDT";;
-                
-            t)  echo '   -t [integer]      number of launchBDT run by BDT'
-                echo "                     DEFAULT VALUE: $nb_runByBDT";;
             
             *)  echo 'option unidentified';;
         esac
