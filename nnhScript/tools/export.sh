@@ -73,8 +73,8 @@ function setTest {
 function setHome {
     home=$1
     
-    setProcessorInput $home/processor/RESULTS
-    a_output=$home/analysis/DATA
+    setProcessorOutput $home/processor/RESULTS
+    setAnalysisOutput $home/analysis/DATA
 }
 
 function setBranch {
@@ -99,7 +99,6 @@ function setAnalysisInput {
 
 function setAnalysisOutput {
     a_output=$1
-    echo "set $a_output"
 }
 
 # Print environment variables

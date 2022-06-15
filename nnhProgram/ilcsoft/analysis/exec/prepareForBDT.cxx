@@ -446,17 +446,26 @@ void createFriendTree(
     bigFile->Close();
 }
 
-int main() {
-    
-    const float trainProp = 0.2f;
-
-    const char* nnhHome = getenv("NNH_HOME");
-    if (!nnhHome) {
-        cerr << "ERROR : NNH_HOME env variable is not set" << endl;
+int main(int argc, char **argv) {
+    cout << "argc" << argc << endl;
+    if (argc == 1) {
+        cerr    << "ERROR: Path to directory missing.\n"
+                << "SYNTAX: prepareForBDT path/to/DATA_directory"
+                << endl;
+        return 1;
+    } else if (argc > 2) {
+        cerr    << "ERROR: Just one argument.\n"
+                << "SYNTAX: prepareForBDT path/to/DATA_directory"
+                << endl;
         return 1;
     }
+    cout << "argv" << argv[1] << endl;
+    /*const float trainProp = 0.2f;
 
-    const string dataPATH = string(nnhHome) + "/analysis/DATA";
+    const string dataPATH = string(argv[1]);
+    
+    cout << "Working directory" << dataPATH << endl;
+    
     const string bigFileName = dataPATH + "/DATA.root";
 
     createFriendTree(bigFileName, dataPATH + "/split_bb_e-0.8_p+0.3.root", true, trainProp, -0.8, 0.3);
@@ -464,6 +473,6 @@ int main() {
 
     createFriendTree(bigFileName, dataPATH + "/split_ww_e-0.8_p+0.3.root", false, trainProp, -0.8, 0.3);
     createFriendTree(bigFileName, dataPATH + "/split_ww_e+0_p+0.root", false, trainProp, 0, 0);
-
+*/
     return 0;
 }

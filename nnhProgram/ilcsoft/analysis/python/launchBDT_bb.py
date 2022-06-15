@@ -21,11 +21,19 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 
 
 INPUT_NAMES = [
-        "visible_e",   "nParticles",       "eIsoLep",     "higgs_e",    "higgs_pt", "higgs_m",    "higgs_cosTheta",
-        "higgs_bTag1", "higgs_bTag2",      "b1_m",        "b1_pt",      "b1_e",     "b2_m",       "b2_pt",
-        "b2_e",        "higgs_bb_cosBetw", "y_12",        "y_23",       "y_34",     "y_45",       "y_56",
-        "y_67",        "zz_z1_m",          "zz_z2_m",     "sl_w_m",     "sl_rec_m", "oblateness", "sphericity",
-        "cosThrust",   "principleThrust",  "majorThrust", "minorThrust"]
+        "visible_e",   
+        "nParticles",       
+        "eIsoLep",     
+        "higgs_e", "higgs_pt", "higgs_m", "higgs_cosTheta",
+        "higgs_bTag1", "higgs_bTag2",      
+        "b1_m", "b1_pt", "b1_e",     
+        "b2_m", "b2_pt", "b2_e",        
+        "higgs_bb_cosBetw", 
+        "y_12", "y_23", "y_34", "y_45", "y_56", "y_67",        
+        "zz_z1_m", "zz_z2_m",     
+        "sl_w_m", "sl_rec_m", 
+        "oblateness", "sphericity", "cosThrust",   
+        "principleThrust", "majorThrust", "minorThrust"]
 
 NNH_HOME = ""
 dataPath = ""

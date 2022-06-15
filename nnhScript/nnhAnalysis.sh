@@ -99,7 +99,7 @@ if [ $recompile -eq 0 ]; then
             -i $NNH_ANALYSIS_INPUT \
             -o $NNH_ANALYSIS_OUTPUT
 else 
-    ./prepareBDT.sh  \
+    ./prepareBDT.sh \
             -n $path \
             -b $branch \
             -i $NNH_ANALYSIS_INPUT \

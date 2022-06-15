@@ -126,11 +126,20 @@ echo "--> RUN : prepareBDT ($branch) <--"
 #echo
 
 cd $NNH_HOME/analysis/bin
-
-# add option -o $NNH_ANALYSIS_OUTPUT
-./prepareForBDT \ 
+echo "$branch"
+if [ "$branch" == "original" ]; then 
+    echo "original"
+    exit 0
+    ./prepareForBDT \
         1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
         2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+else 
+    echo "other"
+    exit 0
+    ./prepareForBDT $NNH_ANALYSIS_OUTPUT \
+        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+fi
 
 echo
 echo "--> END : prepareBDT ($branch) <--"
