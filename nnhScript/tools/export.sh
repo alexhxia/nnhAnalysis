@@ -99,6 +99,7 @@ function setAnalysisInput {
 
 function setAnalysisOutput {
     a_output=$1
+    echo "set $a_output"
 }
 
 # Print environment variables
@@ -154,12 +155,12 @@ function nnh_export {
     export NNH_OUTPUT=$NNH_SERVER/result
     
     # FOR RUN PROCESSOR
-    export NNH_PROCESSOR_INPUT=$NNH_INPUT 
-    export NNH_PROCESSOR_OUTPUT=$NNH_HOME/processor/RESULTS
+    export NNH_PROCESSOR_INPUT=$p_input
+    export NNH_PROCESSOR_OUTPUT=$p_output
     
     # FOR RUN ANALYSIS
-    export NNH_ANALYSIS_INPUT=$NNH_HOME/processor/RESULTS 
-    export NNH_ANALYSIS_OUTPUT=$NNH_HOME/analysis/DATA 
+    export NNH_ANALYSIS_INPUT=$a_input
+    export NNH_ANALYSIS_OUTPUT=$a_output
 }
 
 
@@ -169,7 +170,7 @@ function test_isValidHome {
         error '-p: path is not find'
     elif ! [ -d $home ]; then 
         error '-b: home directory no exist'
-    elif ! [ -d $home/anaysis ]; then 
+    elif ! [ -d $home/analysis ]; then 
         error '-n: home/analysis directory no exist'
     elif ! [ -d $home/processor ]; then 
         error '-n: home/processor directory no exist'

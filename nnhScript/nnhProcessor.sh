@@ -54,7 +54,7 @@ function testNeedBuild {
 recompile=1 # no build
 
 ## option choice by user
-while getopts hcn:b:i:o flag ; do
+while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
     
         h)  syntax
@@ -76,14 +76,14 @@ done
 
 ## update env
 
-nnh_export
-print_export
+nnh_export # export.sh
+print_export # export.sh
 
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 
 ## test env
 
-test_isValidHome
+test_isValidHome # export.sh
 testNeedBuild
 
 # BUILD 
@@ -101,6 +101,7 @@ if [ $recompile -eq 0 ]; then
 
     mkdir $NNH_HOME/processor/BUILD
     cd $NNH_HOME/processor/BUILD
+
     cmake -C $ILCSOFT/ILCSoft.cmake .. 
     make
     make install
@@ -117,10 +118,10 @@ mkdir $NNH_PROCESSOR_OUTPUT
 
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
         -i $NNH_PROCESSOR_INPUT \
-        -o $NNH_PROCESSOR_OUTPUT 
-        #-p 402012 # 402001 402002 402013 402014 402003 402004 \
-        #1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
-        #2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err
+        -o $NNH_PROCESSOR_OUTPUT \
+        1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
+        2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err 
+        #-p 402012 # 402001 402002 402013 402014 402003 402004 
 
 echo
 echo "--> END : processor ($branch) <--"

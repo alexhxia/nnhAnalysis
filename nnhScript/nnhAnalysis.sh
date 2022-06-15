@@ -42,17 +42,21 @@ function syntax {
     echo '    ./nnhAnalysis.sh [options]'
     echo
     
-    syntaxOption h b n i o #help.sh
+    syntaxOption h c b n i o #help.sh
 }
 
 # ENVIRONMENT + in export.sh 
 
+recompile=1 # no build
+
 ## option choice by user
-while  getopts ":b:n:i:o:h" option ; do
-    case "${option}" in 
+while getopts hcn:b:i:o: flag ; do
+    case "${flag}" in 
     
         h)  syntax
             exit 0;;
+            
+        c)  recompile=0;;
             
         b)  setBranch ${OPTARG};;
                                 
@@ -62,7 +66,7 @@ while  getopts ":b:n:i:o:h" option ; do
         
         o)  setAnalysisOutput ${OPTARG};;
         
-        *) error 'option no exist';;
+        *) error '    Option no exist';;
     esac
 done 
 
@@ -79,7 +83,7 @@ test_isValidHome
 
 echo
 echo "Start nnhAnalysis on the $branch branch..."
-
+echo "here $NNH_ANALYSIS_OUTPUT"
 if [ -d $NNH_ANALYSIS_OUTPUT ]; then
     rm -R $NNH_ANALYSIS_OUTPUT
 fi
@@ -88,7 +92,19 @@ mkdir $NNH_ANALYSIS_OUTPUT
 ## prepareBDT
 
 echo "  -> Prepare BDT ..."
-./prepareBDT.sh -c -n $path -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT
+if [ $recompile -eq 0 ]; then
+    ./prepareBDT.sh -c \
+            -n $path \
+            -b $branch \
+            -i $NNH_ANALYSIS_INPUT \
+            -o $NNH_ANALYSIS_OUTPUT
+else 
+    ./prepareBDT.sh  \
+            -n $path \
+            -b $branch \
+            -i $NNH_ANALYSIS_INPUT \
+            -o $NNH_ANALYSIS_OUTPUT
+fi 
 
 ## launchBDT
 
