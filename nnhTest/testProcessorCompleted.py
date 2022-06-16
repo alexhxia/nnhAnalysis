@@ -47,7 +47,7 @@ def buildOutputFile(nameOutputFile, pathDir, processusMissing):
         
     jsonData = {
         "pathDirectory": pathDir,
-        "lastUpdate": datetime.datetime.now().isoformat(),
+        "date": datetime.datetime.now().isoformat(),
         "numProcessusMissing": processusMissing
     }
     jsonString = json.dumps(jsonData)

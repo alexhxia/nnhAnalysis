@@ -41,7 +41,7 @@ def outputStream(fileMissing):
             print("\t" + nameFile + "")
 
 
-def outputFile(nameOutputFile, pathDir, fileMissing):
+def buildOutputFile(nameOutputFile, pathDir, fileMissing):
     """Write result on output file"""
     
     f = open(nameOutputFile, "a")
@@ -54,9 +54,16 @@ def outputFile(nameOutputFile, pathDir, fileMissing):
         f.write(pathDir + " is not completed, missing:\n")
         for nameFile in fileMissing:
             f.write("\t" + nameFile + "\n")
-            
-    f.write("\n------------------------------------------------------------\n")
-    f.close() 
+        
+    jsonData = {
+        "pathDirectory": pathDir,
+        "date": datetime.datetime.now().isoformat(),
+        "fileMissing": fileMissing
+    }
+    jsonString = json.dumps(jsonData)
+    jsonFile = open(nameOutputFile, "a")
+    jsonFile.write(jsonString)
+    jsonFile.close()
     
     
 def getAnalysisNameFiles():
@@ -94,16 +101,24 @@ if __name__ == "__main__":
     ## Entry: directory path to test
     parser = argparse.ArgumentParser()
     parser.add_argument(
-            '-d', '--directory', 
-            help='Path of analysis directory', 
+            '-a', '--analysis', 
+            help='Path to analysis directory', 
             required=True)
-    args = vars(parser.parse_args())
+                       
+    parser.add_argument(
+            '-o', '--output', 
+            help='Path to output file', 
+            required=False)
     
-    pathDir = args['directory']
+    ## analysis directory for test
+    pathDir = args['analysis']
     testDirectory(pathDir)
     
-    ## Output: name output file
-    nameOutputFile = "testAnalysisCompleted.txt"
+    ## output file
+    if args['output']:
+        outputFile = args['output']
+    else:
+        outputFile = "testAnalysisCompleted.json"
     
     ## list of files created by analysis program
     nameFileList = getAnalysisNameFiles()
@@ -129,7 +144,7 @@ if __name__ == "__main__":
     outputStream(fileMissing)
             
     ## Files
-    outputFile(nameOutputFile, pathDir, fileMissing)
+    buildOutputFile(outputFile, pathDir, fileMissing)
     
     # END
     
