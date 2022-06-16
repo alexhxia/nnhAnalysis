@@ -102,6 +102,7 @@ if __name__ == "__main__":
         try:
             # Get all processus in local server 
             numProcessus = os.listdir(serverDir)
+        except:
     
     ## output file
     if args['output']:
