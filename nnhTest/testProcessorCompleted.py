@@ -51,7 +51,7 @@ def buildOutputFile(nameOutputFile, pathDir, processusMissing):
         "numProcessusMissing": processusMissing
     }
     jsonString = json.dumps(jsonData)
-    jsonFile = open(nameOutputFile, "w+")
+    jsonFile = open(nameOutputFile, "a")
     jsonFile.write(jsonString)
     jsonFile.close()
 
