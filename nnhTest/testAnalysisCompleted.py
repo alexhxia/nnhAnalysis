@@ -44,17 +44,6 @@ def outputStream(fileMissing):
 
 def buildOutputFile(nameOutputFile, pathDir, fileMissing):
     """Write result on output file"""
-    
-    f = open(nameOutputFile, "a")
-    f.write("Test directory containts all files created by analysis program.\n")
-    f.write(str(datetime.datetime.now()) + "\n\n")
-    
-    if len(fileMissing) == 0:
-        f.write(pathDir + " completed.\n")
-    else:
-        f.write(pathDir + " is not completed, missing:\n")
-        for nameFile in fileMissing:
-            f.write("\t" + nameFile + "\n")
         
     jsonData = {
         "pathDirectory": pathDir,
