@@ -50,9 +50,10 @@ def outputFile(nameOutputFile, pathDir, processusMissing):
         "lastUpdate": datetime.datetime.now().isoformat(),
         "numProcessusMissing": processusMissing
     }
-    
-    with open(nameOutputFile, "w") as outfile:
-        json.dump(jsonData, outfile)
+    jsonString = json.dumps(jsonData)
+    jsonFile = open(nameOutputFile, "w+")
+    jsonFile.write(jsonString)
+    jsonFile.close()
 
 
 if __name__ == "__main__":
