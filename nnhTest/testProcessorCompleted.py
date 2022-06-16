@@ -55,46 +55,61 @@ def outputFile(nameOutputFile, pathDir, processusMissing):
     jsonFile.write(jsonString)
     jsonFile.close()
 
-
 if __name__ == "__main__":
     
     print("\n----- BEGING TEST_PROCESSOR_COMPLETED -----\n")
     
     # PARAMETERS
     
-    # Entry: directory path to test
+    ## Entry: directory path to test
     parser = argparse.ArgumentParser()
+    
     parser.add_argument(
-            '-d', '--directory', 
-            help='Path of processor directory', 
+            '-p', '--processor', 
+            help='Path to processor directory', 
             required=True)
+     
+    parser.add_argument(
+            '-s', '--server', 
+            help='Path to server input directory', 
+            required=False)
+                       
+    parser.add_argument(
+            '-o', '--output', 
+            help='Path to output file', 
+            required=False)
+            
     args = vars(parser.parse_args())
     
-    pathDir = args['directory']
+    ## processor directory for test
+    pathDir = args['processor']
     testInputDirectory(pathDir)
     
-    # Output: name output file
-    nameOutputFile = "testNNHAnalysisFiles.json"
+    ## num processus list
+    numProcessus = [
+        402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 
+        402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004, 
+        402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 
+        500066, 500068, 500070, 500072, 500074, 500076, 500078, 500080, 
+        500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 
+        500107, 500108, 500110, 500112, 500086, 500088, 500090, 500092, 
+        500094, 500096, 500098, 500100, 500113, 500114, 500115, 500116, 
+        500117, 500118, 500119, 500120, 500122, 500124, 500125, 500126, 
+        500127, 500128
+    ]
+    if args['server']:
+        serverDir = args['server']
+        try:
+            # Get all processus in local server 
+            numProcessus = os.listdir(serverDir)
     
-    # num processus list
-    try:
-        # Get all processus in local server 
-        numProcessus = os.listdir("/gridgroup/ilc/nnhAnalysisFiles/AHCAL")
-    except:
-        # num processus list
-        numProcessus = [
-            402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 
-            402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004, 
-            402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 
-            500066, 500068, 500070, 500072, 500074, 500076, 500078, 500080, 
-            500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 
-            500107, 500108, 500110, 500112, 500086, 500088, 500090, 500092, 
-            500094, 500096, 500098, 500100, 500113, 500114, 500115, 500116, 
-            500117, 500118, 500119, 500120, 500122, 500124, 500125, 500126, 
-            500127, 500128
-        ]
-    
-    # num processus list if missing
+    ## output file
+    if args['output']:
+        outputFile = args['output']
+    else:
+        outputFile = "testProcessorCompleted.json"
+
+    ## num processus list missing
     processusMissing = list()
     
     # TEST : all processus file exit
@@ -112,7 +127,7 @@ if __name__ == "__main__":
     outputStream(processusMissing)
             
     ## Files
-    outputFile(nameOutputFile, pathDir, processusMissing)
+    outputFile(outputFile, pathDir, processusMissing)
     
     # END
     
