@@ -129,16 +129,14 @@ cd $NNH_HOME/analysis/bin
 echo "$branch"
 if [ "$branch" == "original" ]; then 
     echo "original"
-    exit 0
-    ./prepareForBDT \
-        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
-        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+    ./prepareForBDT #\
+        # 1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+        # 2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 else 
     echo "other"
-    exit 0
-    ./prepareForBDT $NNH_ANALYSIS_OUTPUT \
-        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
-        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+    ./prepareForBDT $NNH_ANALYSIS_OUTPUT #\
+        # 1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+        # 2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 fi
 
 echo
