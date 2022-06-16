@@ -23,7 +23,7 @@ git clone https://github.com/alexhxia/nnhAnalysis.git
 
 Mon rapport et ma présentaion de stage.
 
-## [`nnhHome`](nnhHome)
+## [`nnhProgram`](nnhProgram)
 
 Dans ce dossiers se trouve les codes des différents projets.
 
@@ -34,3 +34,7 @@ Ici vous trouverez des scripts permettant d'automatiser la compilation, l'exécu
 ## [`nnhTest`](nnhTest)
 
 Dans ce dossier vous trouverez des programmes python qui permettent de vérifier les données générées par les programmes.
+
+## [`nnhResult`](nnhResult)
+
+Dans ce dossier vous trouverez résultats en JSON qui vérifie les données générées par les programmes.
