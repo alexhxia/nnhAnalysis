@@ -110,6 +110,8 @@ if __name__ == "__main__":
             help='Path to output file', 
             required=False)
     
+    args = vars(parser.parse_args())
+    
     ## analysis directory for test
     pathDir = args['analysis']
     testDirectory(pathDir)
