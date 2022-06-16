@@ -33,7 +33,7 @@ def testDirectory(directory):
 
 
 def distinctBranchTree(tree1, tree2):
-    """Return branch name list what are different with Kolmogorov definition."""
+    """Return branch name dictionary what are different with Kolmogorov definition."""
     
     nameBranchDistinct = list()
     
@@ -60,15 +60,17 @@ def distinctBranchTree(tree1, tree2):
     
         k = hist1.KolmogorovTest(hist2, "UON")
         if not k == 1.:
-            nameBranchDistinct.append(nameBranch)
-            print(nameBranch)
+            nameBranchDistinct.append({
+                    "branch" : nameBranch,
+                    "Komogorov" : str(k)
+            }
 
         del hist1
         del hist2
             
     return nameBranchDistinct
 
-def outputStream(processusMissing):
+def outputStream(processusDistinct):
     """Print result on output stream"""
     
     print("RESULTS: ")
@@ -79,27 +81,20 @@ def outputStream(processusMissing):
         print("\nProcessus1 and Processus2 are distinct for:\n\t" + str(processusDistinct))
         for numP in numProcessus:
             print(str(numP) + ": " + str(processusDistinct[numP]))
-            
-def outputFile(nameOutputFile, pathDir1, pathDir2, processusMissing):
+
+def buildOutputFile(outputFile, pathDir1, pathDir2, processusDistinct):
     """Write result on output file"""
-    
-    f = open(nameOutputFile, "a")
-    f.write("# Test 2 processor directories have the same root files.\n")
-    f.write(str(datetime.datetime.now()) + "\n\n")
-    
-    f.write("Directory 1: " + pathDir1 + "\n")
-    f.write("Directory 2: " + pathDir2 + "\n\n")
-    
-    if len(processusDistinct) == 0:
-        f.write("Same.")
-    else:
-        f.write("Distinct for:\n")
         
-        for key in processusDistinct:
-            f.write("\t" + key + ": " + str(key))
-    
-    f.write("\n------------------------------------------------------------\n")
-    f.close() 
+    jsonData = {
+        "directory1": pathDir1,
+        "directory2": pathDir2,
+        "date": datetime.datetime.now().isoformat(),
+        "processusDistinct": processusDistinct
+    }
+    jsonString = json.dumps(jsonData)
+    jsonFile = open(outputFile, "a")
+    jsonFile.write(jsonString)
+    jsonFile.close()
 
 if __name__ == "__main__":
     
@@ -111,43 +106,61 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument(
-            '-d1', '--directory1', 
+            '-p1', '--processor1', 
             help='Path of processor directory', 
             required=True)
     
     parser.add_argument(
-            '-d2', '--directory2', 
+            '-p2', '--processor2', 
             help='Path of processor directory', 
             required=True)
             
+    parser.add_argument(
+            '-s', '--server', 
+            help='Path to server input directory', 
+            required=False)
+                       
+    parser.add_argument(
+            '-o', '--output', 
+            help='Path to output file', 
+            required=False)
+            
     args = vars(parser.parse_args())
     
-    pathDir1 = args['directory1']
+    ## analysis directory for test
+    pathDir1 = args['processor1']
     testDirectory(pathDir1)
     
-    pathDir2 = args['directory2']
+    pathDir2 = args['processor2']
     testDirectory(pathDir2)
     
     ## Output: name output file
     nameOutputFile = "testProcessorCompleted.txt"
     
     ## Processus number list
-    try:
-        numProcessus = os.listdir("/gridgroup/ilc/nnhAnalysisFiles/AHCAL")
-    except:
-        numProcessus = [
-            402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 
-            402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004, 
-            402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 
-            500066, 500068, 500070, 500072, 500074, 500076, 500078, 500080, 
-            500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 
-            500107, 500108, 500110, 500112, 500086, 500088, 500090, 500092, 
-            500094, 500096, 500098, 500100, 500113, 500114, 500115, 500116, 
-            500117, 500118, 500119, 500120, 500122, 500124, 500125, 500126, 
-            500127, 500128
-        ]
+    numProcessusList = [
+        402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 
+        402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004, 
+        402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 
+        500066, 500068, 500070, 500072, 500074, 500076, 500078, 500080, 
+        500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 
+        500107, 500108, 500110, 500112, 500086, 500088, 500090, 500092, 
+        500094, 500096, 500098, 500100, 500113, 500114, 500115, 500116, 
+        500117, 500118, 500119, 500120, 500122, 500124, 500125, 500126, 
+        500127, 500128
+    ]
+    
+    if args['server']:
+        serverDir = args['server']
+        try:
+            # Get all processus in local server 
+            numProcessus = os.listdir(serverDir)
+        except:
+            numProcessus = numProcessusList
+    else:
+        numProcessus = numProcessusList
         
-    nbProcessus = len(numProcessus)
+    nbProcessus = len(numProcessus)    
     
     # add if processus 1 and 2 are different tree
     processusDistinct = {}
@@ -191,7 +204,8 @@ if __name__ == "__main__":
     outputStream(processusDistinct)
             
     ## Files
-    outputFile(nameOutputFile, pathDir1, pathDir2, processusDistinct)
+    if args['output']:
+        buildOutputFile(args['output'], pathDir1, pathDir2, processusDistinct)
     
     # END
     

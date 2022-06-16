@@ -98,27 +98,19 @@ def outputStream(analysisDistinct):
             
             
     
-def outputFile(nameFile, pathDir1, pathDir2, analysisDistinct):
-    """Do a file output"""
-    
-    f = open(nameOutputFile, "a")
-    f.write("Test 2 directories are same.\n")
-    f.write(str(datetime.datetime.now()) + "\n\n")
-    f.write("Directory 1:" + pathDir1 + "\n")
-    f.write("Directory 2:" + pathDir2 + "\n\n")
-    
-    if len(analysisDistinct) == 0:
-        f.write("\tSame.")
-    else:
-        f.write("\tDistinct for:\n")
+def buildOutputFile(outputFile, pathDir1, pathDir2, analysisDistinct):
+    """Write result on output file"""
         
-        keys = analysisDistinct.keys()
-        for key in analysisDistinct:
-            print("\t\t" + key + ": " + str(analysisDistinct[key]))
-    
-    f.write("\n------------------------------------------------------------\n")
-    f.close() 
-
+    jsonData = {
+        "directory1": pathDir1,
+        "directory2": pathDir2,
+        "date": datetime.datetime.now().isoformat(),
+        "analysisDistinct": analysisDistinct
+    }
+    jsonString = json.dumps(jsonData)
+    jsonFile = open(outputFile, "a")
+    jsonFile.write(jsonString)
+    jsonFile.close()
 
 def sortNameFileByTypeFile(nameFileList):
     """ Sort the name files by type file (root, json, ...)"""
@@ -157,6 +149,11 @@ if __name__ == "__main__":
             '-d2', '--directory2',
             help='Path of analysis directory', 
             required=True)
+            
+    parser.add_argument(
+            '-o', '--output', 
+            help='Path to output file', 
+            required=False)
             
     args = vars(parser.parse_args())
     
@@ -217,7 +214,8 @@ if __name__ == "__main__":
     outputStream(analysisDistinct)
             
     ## Files
-    outputFile(nameOutputFile, pathDir1, pathDir2, analysisDistinct)
+    if args['output']:
+        buildOutputFile(nameOutputFile, pathDir1, pathDir2, analysisDistinct)
             
     # END
     

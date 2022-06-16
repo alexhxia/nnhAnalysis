@@ -137,7 +137,8 @@ if __name__ == "__main__":
     outputStream(fileMissing)
             
     ## Files
-    buildOutputFile(outputFile, pathDir, fileMissing)
+    if args['output']:
+        buildOutputFile(outputFile, pathDir, fileMissing)
     
     # END
     

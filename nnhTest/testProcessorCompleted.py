@@ -108,12 +108,6 @@ if __name__ == "__main__":
     else:
         numProcessus = numProcessusList
     
-    ## output file
-    if args['output']:
-        outputFile = args['output']
-    else:
-        outputFile = "testProcessorCompleted.json"
-
     ## num processus list missing
     processusMissing = list()
     
@@ -132,7 +126,8 @@ if __name__ == "__main__":
     outputStream(processusMissing)
             
     ## Files
-    buildOutputFile(outputFile, pathDir, processusMissing)
+    if args['output']:
+        buildOutputFile(args['output'], pathDir, processusMissing)
     
     # END
     
