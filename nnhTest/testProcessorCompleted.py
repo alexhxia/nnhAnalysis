@@ -86,7 +86,7 @@ if __name__ == "__main__":
     testInputDirectory(pathDir)
     
     ## num processus list
-    numProcessus = [
+    numProcessusList = [
         402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 
         402011, 402012, 402001, 402002, 402013, 402014, 402003, 402004, 
         402005, 402006, 500006, 500008, 500010, 500012, 500062, 500064, 
@@ -103,6 +103,9 @@ if __name__ == "__main__":
             # Get all processus in local server 
             numProcessus = os.listdir(serverDir)
         except:
+            numProcessus = numProcessusList
+    else:
+        numProcessus = numProcessusList
     
     ## output file
     if args['output']:
