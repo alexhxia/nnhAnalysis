@@ -42,7 +42,7 @@ def outputStream(processusMissing):
             print("\t\t" + str(p))
 
 
-def outputFile(nameOutputFile, pathDir, processusMissing):
+def buildOutputFile(nameOutputFile, pathDir, processusMissing):
     """Write result on output file"""
         
     jsonData = {
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     outputStream(processusMissing)
             
     ## Files
-    outputFile(outputFile, pathDir, processusMissing)
+    buildOutputFile(outputFile, pathDir, processusMissing)
     
     # END
     
