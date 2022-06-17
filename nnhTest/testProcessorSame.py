@@ -63,12 +63,13 @@ def distinctBranchTree(tree1, tree2):
             nameBranchDistinct.append({
                     "branch" : nameBranch,
                     "Komogorov" : str(k)
-            }
+            })
 
         del hist1
         del hist2
             
     return nameBranchDistinct
+    
 
 def outputStream(processusDistinct):
     """Print result on output stream"""
@@ -81,6 +82,7 @@ def outputStream(processusDistinct):
         print("\nProcessus1 and Processus2 are distinct for:\n\t" + str(processusDistinct))
         for numP in numProcessus:
             print(str(numP) + ": " + str(processusDistinct[numP]))
+            
 
 def buildOutputFile(outputFile, pathDir1, pathDir2, processusDistinct):
     """Write result on output file"""
@@ -94,7 +96,9 @@ def buildOutputFile(outputFile, pathDir1, pathDir2, processusDistinct):
     jsonString = json.dumps(jsonData)
     jsonFile = open(outputFile, "a")
     jsonFile.write(jsonString)
+    jsonFile.write("\n\n")
     jsonFile.close()
+    
 
 if __name__ == "__main__":
     

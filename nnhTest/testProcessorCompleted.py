@@ -53,6 +53,7 @@ def buildOutputFile(nameOutputFile, pathDir, processusMissing):
     jsonString = json.dumps(jsonData)
     jsonFile = open(nameOutputFile, "a")
     jsonFile.write(jsonString)
+    jsonFile.write("\n\n")
     jsonFile.close()
 
 if __name__ == "__main__":

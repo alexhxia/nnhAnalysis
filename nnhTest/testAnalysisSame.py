@@ -69,6 +69,7 @@ def distinctBranchTree(tree1, tree2):
         tree2.Draw(nameBranch + ">>hist2")
     
         k = hist1.KolmogorovTest(hist2, "UON")
+        print("\t" + nameBranch + ": " + str(k))
         if not k == 1.:
             nameBranchDistinct.append({
                     "branch" : nameBranch,
@@ -110,6 +111,7 @@ def buildOutputFile(outputFile, pathDir1, pathDir2, analysisDistinct):
     jsonString = json.dumps(jsonData)
     jsonFile = open(outputFile, "a")
     jsonFile.write(jsonString)
+    jsonFile.write("\n\n")
     jsonFile.close()
 
 def sortNameFileByTypeFile(nameFileList):
@@ -162,10 +164,7 @@ if __name__ == "__main__":
     
     pathDir2 = args['directory2']
     testDirectory(pathDir2)
-    
-    ## Output
-    nameOutputFile = "testAnalysSame.txt"
-    
+        
     ## Get all name files in 2 analysis directories
     
     nameFile1List = os.listdir(pathDir1)
@@ -185,7 +184,8 @@ if __name__ == "__main__":
     #print("\nROOT files... ")
     rootFiles = nameFileByType[".root"]
 
-    for rootFile  in rootFiles:
+    for rootFile  in rootFiles: 
+        print("\nroot File: " + rootFile + "...")
         path_p1 = os.path.join(pathDir1, rootFile)
         path_p2 = os.path.join(pathDir2, rootFile)
     
@@ -202,8 +202,7 @@ if __name__ == "__main__":
             
             distinctBranchTreeList = distinctBranchTree(tree1, tree2)
             
-            if not len(distinctBranchTreeList) == 0:
-                analysisDistinct[rootFile] = distinctBranchTreeList
+            analysisDistinct[rootFile] = distinctBranchTreeList
             
             file1.Close()
             file2.Close()
@@ -215,7 +214,7 @@ if __name__ == "__main__":
             
     ## Files
     if args['output']:
-        buildOutputFile(nameOutputFile, pathDir1, pathDir2, analysisDistinct)
+        buildOutputFile(args['output'], pathDir1, pathDir2, analysisDistinct)
             
     # END
     
