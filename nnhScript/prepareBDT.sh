@@ -47,10 +47,10 @@ function testNeedBuild {
         if ! [ -f $NNH_HOME/analysis/bin/prepareForBDT ]; then 
             echo "prepareForBDT no exist"
             recompile=0
-        fi
-        if ! [ -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then 
+        elif ! [ -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then 
             echo "DATA.root no exist"
-            recompile=0
+            #recompile=0
+            hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
         fi
     fi
 } 
@@ -102,11 +102,12 @@ if [ $recompile -eq 0 ]; then
     echo "--> BUILD : prepareBDT ($branch) <--"
     echo
     
-    if [ -d $NNH_ANALYSIS_OUTPUT ]; then
-        rm -R $NNH_ANALYSIS_OUTPUT
-    fi
-    mkdir $NNH_ANALYSIS_OUTPUT
-    #hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
+    #if [ -d $NNH_ANALYSIS_OUTPUT ]; then
+    #    rm -R $NNH_ANALYSIS_OUTPUT
+    #fi
+    ls $NNH_ANALYSIS_OUTPUT
+    mkdir -vp $NNH_ANALYSIS_OUTPUT
+    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
 
     if [ -d $NNH_HOME/analysis/BUILD ]; then
         rm -R $NNH_HOME/analysis/BUILD
@@ -118,7 +119,7 @@ if [ $recompile -eq 0 ]; then
     make
     make install
 fi
-
+exit 0
 # RUN 
 
 echo

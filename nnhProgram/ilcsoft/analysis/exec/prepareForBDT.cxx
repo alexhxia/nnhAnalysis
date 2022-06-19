@@ -463,6 +463,7 @@ void createFriendTree(
 
 int main(int argc, char **argv) {
 
+    // Initial condition : we must have 1 parameter : path to data work directory
     if (argc == 1) {
         cerr    << "ERROR: Path to directory missing.\n"
                 << "SYNTAX: prepareForBDT path/to/DATA_directory"
@@ -474,18 +475,13 @@ int main(int argc, char **argv) {
                 << endl;
         return 1;
     }
-    cout << "argv " << argv[1] << endl;
-    
-    const float trainProp = 0.2f;
 
     const string dataPATH = string(argv[1]);
-    
-    cout << "Working directory" << dataPATH << endl;
+    cout << "Working directory " << dataPATH << endl;
     
     const string bigFileName = dataPATH + "/DATA.root";
     
-    return 0;
-
+    const float trainProp = 0.2f;
     createFriendTree(bigFileName, dataPATH + "/split_bb_e-0.8_p+0.3.root", true, trainProp, -0.8, 0.3);
     createFriendTree(bigFileName, dataPATH + "/split_bb_e+0_p+0.root", true, trainProp, 0, 0);
 
