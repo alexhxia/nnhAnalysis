@@ -98,9 +98,9 @@ if [ $recompile -eq 0 ]; then
     echo "--> BUILD : prepareBDT ($branch) <--"
     echo
     
-    #if [ -d $NNH_ANALYSIS_OUTPUT ]; then
-    #    rm -R $NNH_ANALYSIS_OUTPUT
-    #fi
+    if [ -d $NNH_ANALYSIS_OUTPUT ]; then
+        rm -R $NNH_ANALYSIS_OUTPUT
+    fi
     mkdir -vp $NNH_ANALYSIS_OUTPUT
     hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
 
