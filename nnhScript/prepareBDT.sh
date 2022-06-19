@@ -93,6 +93,7 @@ print_export
 
 test_isValidHome
 testNeedBuild
+exit 0
 
 # BUILD 
 
@@ -105,7 +106,6 @@ if [ $recompile -eq 0 ]; then
     #if [ -d $NNH_ANALYSIS_OUTPUT ]; then
     #    rm -R $NNH_ANALYSIS_OUTPUT
     #fi
-    ls $NNH_ANALYSIS_OUTPUT
     mkdir -vp $NNH_ANALYSIS_OUTPUT
     hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
 
