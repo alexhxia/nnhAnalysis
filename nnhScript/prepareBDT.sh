@@ -59,9 +59,6 @@ function testNeedBuild {
 
 recompile=1
 
-isInputUser=1
-isOutputUser=1
-
 ## option choice by user
 while getopts hcn:b:i:o: flag ; do
     case "${flag}" in 
@@ -75,8 +72,7 @@ while getopts hcn:b:i:o: flag ; do
             
         b)  setBranch ${OPTARG};;
             
-        i)  setAnalysisInput ${OPTARG}
-            isInputUser=0;;
+        i)  setAnalysisInput ${OPTARG};;
             
         o)  setAnalysisOutput ${OPTARG};;
         
