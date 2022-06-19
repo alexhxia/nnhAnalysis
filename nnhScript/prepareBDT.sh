@@ -49,8 +49,7 @@ function testNeedBuild {
             recompile=0
         elif ! [ -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then 
             echo "DATA.root no exist"
-            #recompile=0
-            hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
+            recompile=0
         fi
     fi
 } 
@@ -114,7 +113,7 @@ if [ $recompile -eq 0 ]; then
     make
     make install
 fi
-exit 0
+
 # RUN 
 
 echo
