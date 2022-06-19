@@ -475,19 +475,22 @@ int main(int argc, char **argv) {
         return 1;
     }
     cout << "argv " << argv[1] << endl;
-    /*const float trainProp = 0.2f;
+    
+    const float trainProp = 0.2f;
 
     const string dataPATH = string(argv[1]);
     
     cout << "Working directory" << dataPATH << endl;
     
     const string bigFileName = dataPATH + "/DATA.root";
+    
+    return 0;
 
     createFriendTree(bigFileName, dataPATH + "/split_bb_e-0.8_p+0.3.root", true, trainProp, -0.8, 0.3);
     createFriendTree(bigFileName, dataPATH + "/split_bb_e+0_p+0.root", true, trainProp, 0, 0);
 
     createFriendTree(bigFileName, dataPATH + "/split_ww_e-0.8_p+0.3.root", false, trainProp, -0.8, 0.3);
     createFriendTree(bigFileName, dataPATH + "/split_ww_e+0_p+0.root", false, trainProp, 0, 0);
-*/
+
     return 0;
 }

@@ -106,7 +106,7 @@ if [ $recompile -eq 0 ]; then
         rm -R $NNH_ANALYSIS_OUTPUT
     fi
     mkdir $NNH_ANALYSIS_OUTPUT
-    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
+    #hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
 
     if [ -d $NNH_HOME/analysis/BUILD ]; then
         rm -R $NNH_HOME/analysis/BUILD
