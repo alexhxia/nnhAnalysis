@@ -456,7 +456,7 @@ void createFriendTree(
     tempFile->Close();
 
     // remove the now useless temp file
-    remove(tempNameFile);
+    remove("temp.root"); //tempNameFile);
 
     bigFile->Close();
 }
