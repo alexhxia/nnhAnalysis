@@ -89,7 +89,6 @@ print_export
 
 test_isValidHome
 testNeedBuild
-exit 0
 
 # BUILD 
 
