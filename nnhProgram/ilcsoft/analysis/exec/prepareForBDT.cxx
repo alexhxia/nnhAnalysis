@@ -31,9 +31,13 @@ using namespace std;
 // dirty global variables
 
 // these following channels won't change depending if it's h->bb or h->WW study
-const set<int> CHANNELS_FERMIONS_2_L = {500006, 500008};
+const set<int> CHANNELS_FERMIONS_2_L = {
+    500006, 500008
+};
 
-const set<int> CHANNELS_FERMIONS_2_H = {500010, 500012};
+const set<int> CHANNELS_FERMIONS_2_H = {
+    500010, 500012
+};
 
 const set<int> CHANNELS_FERMIONS_4_H = {
     500062, 500064, 500066, 500068, 500070, 500072
@@ -51,7 +55,9 @@ const set<int> CHANNELS_FERMIONS_4_L = {
 };
 
 // these two will change
-set<int> CHANNELS_SIGNAL = {402007};
+set<int> CHANNELS_SIGNAL = {
+    402007
+};
 
 set<int> CHANNELS_OTHERHIGGS = {
     402001, 402002, 402003, 402004, 402005, 402006, 402008, 402009,
@@ -145,7 +151,8 @@ void createFriendTree(
             << "trainProportion = " << trainProportion 
             << endl;
 
-    // depending on bb or ww case, add the corresponding signal and background channelIDs
+    // depending on bb or ww case, add the corresponding signal and background 
+    // channelIDs
     if (isBB) {
         CHANNELS_SIGNAL.insert(402173);
         CHANNELS_OTHERHIGGS.insert(402176);
@@ -208,12 +215,15 @@ void createFriendTree(
             .Define("isTrain", lambda_isTrain)
             .Define("preSelected", preCut, cols);
 
-    // Do a temporary save of the file to fix the RNG generation otherwise it will change on each operation on the
-    // dataframe
-    df.Snapshot("tempTree", "temp.root", 
+    // Do a temporary save of the file to fix the RNG generation otherwise
+    // it will change on each operation on the dataframe
+    string tempNameFile = "temp.root";
+    
+    df.Snapshot("tempTree", tempNameFile, 
             {"isSignal", "channelType", "isTrain", "preSelected"});
 
-    TFile* tempFile = TFile::Open("temp.root");
+    
+    TFile* tempFile = TFile::Open(tempNameFile);
     TTree* tempTree = tempFile->Get<TTree>("tempTree");
 
     bigTree->AddFriend(tempTree, "temp");
@@ -441,7 +451,7 @@ void createFriendTree(
     tempFile->Close();
 
     // remove the now useless temp file
-    remove("temp.root");
+    remove(tempNameFile);
 
     bigFile->Close();
 }
