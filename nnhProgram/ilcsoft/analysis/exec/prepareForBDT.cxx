@@ -462,7 +462,7 @@ void createFriendTree(
 }
 
 int main(int argc, char **argv) {
-    cout << "argc" << argc << endl;
+
     if (argc == 1) {
         cerr    << "ERROR: Path to directory missing.\n"
                 << "SYNTAX: prepareForBDT path/to/DATA_directory"
@@ -474,7 +474,7 @@ int main(int argc, char **argv) {
                 << endl;
         return 1;
     }
-    cout << "argv" << argv[1] << endl;
+    cout << "argv " << argv[1] << endl;
     /*const float trainProp = 0.2f;
 
     const string dataPATH = string(argv[1]);
