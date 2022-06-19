@@ -217,13 +217,18 @@ void createFriendTree(
 
     // Do a temporary save of the file to fix the RNG generation otherwise
     // it will change on each operation on the dataframe
-    string tempNameFile = "temp.root";
+    //string tempNameFile = "temp.root";
     
-    df.Snapshot("tempTree", tempNameFile, 
+    df.Snapshot("tempTree", "temp.root", //tempNameFile, 
             {"isSignal", "channelType", "isTrain", "preSelected"});
 
     
-    TFile* tempFile = TFile::Open(tempNameFile);
+    TFile* tempFile = TFile::Open("temp.root"); //tempNameFile);
+    if (!tempFile) {
+       cerr << "Error opening file" << endl;
+       exit(-1);
+    }
+
     TTree* tempTree = tempFile->Get<TTree>("tempTree");
 
     bigTree->AddFriend(tempTree, "temp");

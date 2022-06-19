@@ -81,8 +81,7 @@ fi
 particles=("bb" "WW")
 for p in ${particles[@]}; do
     echo "    launch launchBDT_$p"
-    # add option -i $NNH_ANALYSIS_INPUT
-    python3 launchBDT_$p.py #\
+    python3 launchBDT_$p.py -i $NNH_ANALYSIS_INPUT #\
             # 1> $NNH_ANALYSIS_INPUT/launchBDT_$p.out \
             # 2> $NNH_ANALYSIS_INPUT/launchBDT_$p.err 
 done 
