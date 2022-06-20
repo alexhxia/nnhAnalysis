@@ -92,13 +92,14 @@ if [ $recompile -eq 0 ]; then
     echo
     echo "--> BUILD : processor ($branch) <--"
     echo
-    if [ -d $NNH_HOME/processor/BUILD ]; then 
-        rm -R $NNH_HOME/processor/BUILD
-    fi
+    
     if [ -d $NNH_HOME/processor/lib ]; then 
         rm -R $NNH_HOME/processor/lib
     fi
-
+    
+    if [ -d $NNH_HOME/processor/BUILD ]; then 
+        rm -R $NNH_HOME/processor/BUILD
+    fi
     mkdir $NNH_HOME/processor/BUILD
     cd $NNH_HOME/processor/BUILD
 
@@ -119,9 +120,10 @@ mkdir $NNH_PROCESSOR_OUTPUT
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
         -i $NNH_PROCESSOR_INPUT \
         -o $NNH_PROCESSOR_OUTPUT \
+        -p 402012 402001 402002 402013 402014 \
         1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
         2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err 
-        #-p 402012 # 402001 402002 402013 402014 402003 402004 
+        
 
 echo
 echo "--> END : processor ($branch) <--"
