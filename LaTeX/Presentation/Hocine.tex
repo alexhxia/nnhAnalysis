@@ -1,4 +1,4 @@
-\documentclass[11pt]{beamer}
+\documentclass[9pt]{beamer}
 
 \usetheme{Pittsburgh}
 
@@ -12,6 +12,7 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{tikz}
+\usepackage{tabularx}
 
 \author[Hocine]{Alexia HOCINE}
 
@@ -31,7 +32,7 @@
 \setbeamertemplate{navigation symbols}{} 
 \logo{} 
 \institute[UCBL]{Université de Claude Bernard Lyon 1} 
-\date[2022]{Juillet 2022} 
+\date[2022]{Juin 2022} 
 \subject{nnhA} 
 
 % Décompte des pages sans les annexes
@@ -47,6 +48,10 @@
    \addtocounter{framenumber}{\value{framenumberappendix}} 
 }
 
+
+% math 
+\newcommand{\bbar}{\overline{b}}
+
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,9 +61,30 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduction}
+\section{Physique analysée}
 
 \begin{frame}{Introduction}
+
+	$$ e^{+} e^{-} \longrightarrow \nu \nu h $$
+
+	\begin{columns}
+		
+		\begin{column}{0.55\textwidth}
+			\begin{description}
+				\item[$e^{+} e^{-}$] collisionneur leptonique
+				\item[$\nu \nu h$] neutrinos-neutrinos-higgs
+			\end{description}
+		\end{column}
+		
+		\begin{column}{0.4\textwidth}
+			\begin{block}{Canaux à analyser}
+				\begin{enumerate}
+					\item $h \longrightarrow WW \longrightarrow qqqq$
+					\item $h \longrightarrow b\bbar$
+				\end{enumerate}
+			\end{block}
+		\end{column}
+	\end{columns}
 
 \end{frame}
 
@@ -69,16 +95,158 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{iLCSoft}
+\section{Programme}
 
-\begin{frame}{iLCSoft}
+\subsection{original}
+
+\begin{frame}{original}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram/original}
+
+\begin{block}{Projet initial}
+	\url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}
+\end{block}
+
+\begin{columns}
+
+	\begin{column}{0.33\textwidth}
+		\begin{block}{\texttt{miniDSTMaker}}
+			Télécharge du server \texttt{lyogrid06} les fichiers \texttt{DST} de \texttt{DESY} : \texttt{.lcio}
+		\end{block}
+	\end{column}
+	
+	\begin{column}{0.33\textwidth}
+		\begin{block}{\texttt{processor}}
+			Transforme les fichiers \texttt{.lcio} en \texttt{.root} par type de processus
+		\end{block}
+	\end{column}
+	
+	\begin{column}{0.33\textwidth}
+		\begin{block}{\texttt{analysis}}
+			Entraine une BDT, pour obtenir l'analyse statistique des évènements
+		\end{block}
+	\end{column}
+
+\end{columns}
+
+\begin{block}{Type de processus}
+	\begin{figure}
+		\center
+		\includegraphics[width=\textwidth]{../img/listeProcessus.png} 
+	\end{figure}
+\end{block}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{FCC}
+\subsection{iLCSoft}
 
-\begin{frame}{FCC}
+\begin{frame}{iLCSoft}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram/ilcsoft}
+
+	\begin{block}{Améliorations apporter à \texttt{processor} et \texttt{analysis}}
+		\begin{itemize}
+			\item Réécritures minimes (typographie, typage \texttt{auto})
+			\item Modification des noms de certaines fonctions
+			\item Ajouts de commentaires (clarification des contrats)
+			\item Nouvelle classe pour simplifier l'utilisation des codes PDG : \texttt{PDGInfo.XX}\\
+					\texttt{XX = \{hh, cc\}}
+			\item Réorganisation de la gestion des fichiers des sortis pour permettre l'exécution en parallèle 
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{miniDSTMaker}}
+		\begin{itemize}
+			\item Non pertinent pour ce stage, puisque les données sont locales
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{FCC}
+
+\begin{frame}{FCC}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram}
+
+	\begin{block}{Ajout du programme en amont : \texttt{gaudi}}
+		\begin{itemize}
+			\item Tranforme les fichiers \texttt{.lcio} en fichier exploitable par iLCSoft en fichier exploitable pour FCC.
+			\item De \texttt{EDM4HEP} vers \texttt{FCCEDM}
+		\end{itemize}
+	\end{block}
+
+	\begin{block}{\texttt{processor}}
+		\begin{itemize}
+			\item Change toutes les utilisations de la suite logicielle d'iLCSoft vers key4HEP
+		\end{itemize}
+	\end{block}
+
+	\begin{block}{\texttt{analysis}}
+		\begin{itemize}
+			\item Ne demande aucune modification
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Outils de Numérique}
+
+\subsection{Script}
+
+\begin{frame}{Outils de Numérique : \texttt{Script}}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhScript}
+
+\begin{block}{Liste de nouveaux scripts}
+	\begin{description}
+		\item[\texttt{nnh}] programme général 
+		\begin{itemize}
+			\item permet de choisir :
+			\begin{itemize}
+				\item combien de programme \texttt{processus} et \texttt{analysis} on souhaite
+			\end{itemize}
+		\end{itemize}
+		\begin{description}
+			\item[\texttt{nnhProcessor}] lance un programme \texttt{processus} complet
+			\item[\texttt{nnhAnalysis}] lance un programme \texttt{analysis} complet
+			\begin{description}
+				\item[\texttt{prepareBDT}] lance le programme \texttt{prepareBDT}
+				\item[\texttt{launchBDT}] lance le programme \texttt{launchBDT}
+			\end{description}
+		\end{description}
+	\end{description}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Test}
+
+\begin{frame}{Outils de Numérique : \texttt{Test}}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhTest}
+
+\begin{block}{Programme de tests : \texttt{testXxYy.py}}
+	\begin{itemize}
+		\item Teste grâce à le fonction de Kolmogorov - développé par ROOT (CERN)
+		\item Teste les fichiers de sortis :
+		\begin{itemize}
+			\item des programmes \texttt{Xx = \{processus, analysis\}}
+			\item de type \texttt{Yy = \{Completed, Same\}}
+		\end{itemize}
+	\end{itemize}
+	\begin{tabular}{| c | c | c |}
+		\hline
+			\texttt{•} & \texttt{Processus} & \texttt{Analysis} \\
+		\hline
+			\texttt{Completed} & \texttt{testProcessorCompleted.py} & \texttt{testAnalysisCompleted.py} \\
+		\hline
+			\texttt{Same} & \texttt{testProcessorSame.py} & \texttt{testAnalysisSame.py} \\
+		\hline
+	\end{tabular}
+	\begin{description}
+		\item[\texttt{Completed}] teste si tous les fichiers ont bien été générer
+		\item[\texttt{Same}]	teste les différences entre 2 fichiers
+		\begin{description}
+			\item[\texttt{processus}] tous les fichiers sont sensés être identiques
+			\item[\texttt{analysis}]	tous les fichiers sont sensés être équivalents
+		\end{description}
+	\end{description}
+\end{block}
 
 \end{frame}
 
@@ -87,9 +255,30 @@
 
 \begin{frame}{Conclusion}
 
-%\begin{description}
-	%\item[\ref{fig:Michelson}] \url{public.virgo-gw.eu/index.php?gmedia=Rv7bB&t=g\#photoBox-54}
-%\end{description}
+\begin{columns}
+
+	\begin{column}{0.45\textwidth}
+		\begin{block}{Travails réalisés}
+			\begin{itemize}
+		 		\item Optimisation des codes pour iLCSoft
+		 		\item Adaptation au projet FCC
+		 		\item Automatisation des programmes
+		 		\item Programmation de codes de test
+			\end{itemize}
+		\end{block}
+	\end{column}
+	
+	\begin{column}{0.45\textwidth}
+		\begin{block}{Compétences}
+			\begin{itemize}
+		 		\item Programmation C++, ROOT, Python, Script bash
+		 		\item Utilisation de BDT
+		 		\item Statistiques
+			\end{itemize}
+		\end{block}
+	\end{column}
+
+\end{columns}
 
 \end{frame}
 
