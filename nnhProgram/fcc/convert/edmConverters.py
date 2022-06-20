@@ -47,6 +47,8 @@ def readLCIOEvent(slcioFile):
 
     # Add the algorithm LcioEvent to the algorithm list.
     algList.append(read)
+    print(algList)
+    return algList
     
     
 def writeEDM4hepEvent(outputRootFile):
@@ -98,8 +100,10 @@ def converterEDM4hepToLCIO():
     # * Arguments are read in groups of 2: name of the EDM4hep collection, 
     #   name of the LCIO converted collection.
     edmConvTool.Parameters = [
-        "EFlowTrack", "EFlowTrack_LCIO",
-        "ReconstructedParticles", "ReconstructedParticle_LCIO"
+        "EFlowTrack", 
+        "EFlowTrack_LCIO",
+        "ReconstructedParticles", 
+        "ReconstructedParticle_LCIO"
     ]
     edmConvTool.OutputLevel = DEBUG
 
@@ -126,10 +130,14 @@ def converterLCIOToEDM4hep():
     # * Arguments are read in groups of 2: name of the LCIO collection, 
     #   name of the EDM4hep converted collection.
     lcioConvTool.Parameters = [
-        "EFlowTrackConv", "EFlowTrackEDM4hep",
-        "ReconstructedParticle", "ReconstructedParticlesEDM4hep",
-        "BuildUpVertices", "BuildUpVerticesEDM4hep",
-        "PrimaryVertices", "PrimaryVerticesEDM4hep"
+        "EFlowTrackConv", 
+        "EFlowTrackEDM4hep",
+        "ReconstructedParticle", 
+        "ReconstructedParticlesEDM4hep",
+        "BuildUpVertices", 
+        "BuildUpVerticesEDM4hep",
+        "PrimaryVertices", 
+        "PrimaryVerticesEDM4hep"
     ]
     lcioConvTool.OutputLevel = DEBUG
 
@@ -137,10 +145,12 @@ def converterLCIOToEDM4hep():
     JetClusteringAndRefiner = MarlinProcessorWrapper("JetClusteringAndRefiner")
 
     # Add the Tool to the Gaudi Algorithm.
-    JetClusteringAndRefiner.Lcio2EDM4hepTool=lcioConvTool
+    JetClusteringAndRefiner.Lcio2EDM4hepTool = lcioConvTool
     
 
 if __name__ == "__main__":
     
+    readLCIOEvent("muons.slcio")
+    #converterLCIOToEDM4hep()
     print("marche")
     
