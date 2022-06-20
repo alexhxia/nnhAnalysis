@@ -4,6 +4,7 @@ Team : FCC, IP2I, UCBLyon 1, France, 2022
 Execute NNHProcessor.py program for all files lcio.
 Entry condition: NNH_HOME and MARLIN_DLL exist like environment variables.
 """
+
 #!/usr/bin/env python
 import argparse
 import os
@@ -57,16 +58,25 @@ class AnalysisFlow(Observer):
         NNHProcessorThread.closeThreads()
         MergeThread.closeThreads()
 
-    def addFile(self, targetMergedFileName, fileNamesToBeMerged, outputDirectory, remoteDirectory=None):
+    def addFile(self, targetMergedFileName, fileNamesToBeMerged, outputDirectory, remoteDirectory = None):
 
         self.event.clear()
 
-        mergedFile = {'notProcessed': [], 'processed': [], 'failed': [], 'outputDir': outputDirectory}
+        mergedFile = {
+                'notProcessed': [], 
+                'processed': [], 
+                'failed': [], 
+                'outputDir': outputDirectory
+        }
+        
         with AnalysisFlow.lock:
             for i, file in enumerate(fileNamesToBeMerged):
                 outputIndivName = targetMergedFileName.replace('.root', f'-{i}.root')
 
-                AnalysisFlow.individualFiles[outputIndivName] = {'mergeInto': targetMergedFileName, 'slcioFileToDelete': None}
+                AnalysisFlow.individualFiles[outputIndivName] = {
+                        'mergeInto': targetMergedFileName, 
+                        'slcioFileToDelete': None
+                }
 
                 if remoteDirectory:
                     AnalysisFlow.filesToDownload[file] = {'rootFileName': outputIndivName}
@@ -193,7 +203,13 @@ class AnalysisFlow(Observer):
         if not remote:
             fileNameList = [f'{filesDirectory}/{file}' for file in os.listdir(filesDirectory) if f'{processID}' in file]
         else:
-            listFiles = subprocess.Popen(f'gfal-ls {filesDirectory}', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            listFiles = subprocess.Popen(
+                    f'gfal-ls {filesDirectory}', 
+                    stdout = subprocess.PIPE, 
+                    stderr = subprocess.PIPE, 
+                    shell = True
+            )
+            
             stdout, stderr = listFiles.communicate()
 
             if stderr:
@@ -216,9 +232,16 @@ class AnalysisFlow(Observer):
         print(f'{processID} : {len(fileNameList)} files to process')
 
         if not remote:
-            self.addFile(f'{processID}.root', fileNameList, outputDirectory)
+            self.addFile(
+                    f'{processID}.root', 
+                    fileNameList, 
+                    outputDirectory)
         else:
-            self.addFile(f'{processID}.root', fileNameList, outputDirectory, filesDirectory)
+            self.addFile(
+                    f'{processID}.root', 
+                    fileNameList, 
+                    outputDirectory, 
+                    filesDirectory)
 
 
 if __name__ == "__main__":
@@ -229,11 +252,36 @@ if __name__ == "__main__":
 
     # PARAMETERS
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--ncores', help='Number of threads', required=False, default=NB_CORES)
-    parser.add_argument('-p', '--processes', help='ProcessIDs to analyse', required=False, nargs='+')
-    parser.add_argument('-i', '--inputDirectory', help='Path of input files', required=False, default = INPUT_DIR)
-    parser.add_argument('-r', '--remote', help='indicate that files need to be downloaded', action='store_true', default=False)
-    parser.add_argument('-o', '--outputDirectory', help='output directory', required=True)
+    
+    parser.add_argument(
+            '-n', '--ncores', 
+            help='Number of threads', 
+            required = False, 
+            default = NB_CORES)
+    
+    parser.add_argument(
+            '-p', '--processes', 
+            help = 'ProcessIDs to analyse', 
+            required = False, 
+            nargs = '+')
+    
+    parser.add_argument(
+            '-i', '--inputDirectory', 
+            help = 'Path of input files', 
+            required = False, 
+            default = INPUT_DIR)
+    
+    parser.add_argument(
+            '-r', '--remote', 
+            help = 'indicate that files need to be downloaded', 
+            action = 'store_true', 
+            default = False)
+    
+    parser.add_argument(
+            '-o', '--outputDirectory', 
+            help = 'output directory', 
+            required = True)
+    
     args = vars(parser.parse_args())
 
     # ENVIRONMENT
@@ -293,7 +341,11 @@ if __name__ == "__main__":
 
     # RUN 
     for processID in processesID:
-        analysis.launchAnalysis(processID, filesDirectory, outputDirectory, remote)
+        analysis.launchAnalysis(
+                processID, 
+                filesDirectory, 
+                outputDirectory, 
+                remote)
 
     analysis.event.wait()
     AnalysisFlow.close()
