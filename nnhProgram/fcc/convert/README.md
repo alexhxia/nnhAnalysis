@@ -22,6 +22,9 @@ source /cvmfs/sw-nightlies.hsf.org/key4hep/setup.sh
 source /cvmfs/sw-nightlies.hsf.org/spackages5/key4hep-stack/master-2022-06-21/x86_64-centos7-gcc11.2.0-opt/qvsnn/setup.sh
 ```
 ```
+source /cvmfs/sw-nightlies.hsf.org/key4hep/setup.sh
+```
+```
 cd k4MarlinWrapper
 ```
 ```
