@@ -15,8 +15,8 @@
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 % biblio
-\usepackage{biblatex}
-\addbibresource{biblio.bib}
+%\usepackage{biblatex}
+%\addbibresource{biblio.bib}
 
 % Page de garde
 \author{Alexia \textsc{HOCINE}}
@@ -68,12 +68,13 @@
 %\printbibheading
 
 % Afficher toute la biblio
-%\nocite{*}
-
-\printbibliography[keyword = {sdhcal}, title = {SDHCAL}]
-\printbibliography[keyword = {ilcsoft}, title = {iLCSoft}]
-\printbibliography[keyword = {fcc}, title = {FCC}]
-\printbibliography[keyword = {particles}, title = {Physique des Particules}]
+\nocite{*}
+\bibliographystyle{plain} %{Nabbrv}
+\bibliography{biblio}
+%\printbibliography[keyword = {sdhcal}, title = {SDHCAL}]
+%\printbibliography[keyword = {ilcsoft}, title = {iLCSoft}]
+%\printbibliography[keyword = {fcc}, title = {FCC}]
+%\printbibliography[keyword = {particles}, title = {Physique des Particules}]
 
 
 \end{document}
