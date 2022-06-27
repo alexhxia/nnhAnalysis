@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# SERVER
+server=/gridgroup/ilc/nnhAnalysisFiles
+
+input=$server/AHCAL
+output=$server/result
+
 # HOME
 path=~/nnhAnalysis
 
@@ -10,12 +16,6 @@ test=$path/nnhTest
 
 branch=ilcsoft
 home=$program/$branch
-
-# SERVER
-server=/gridgroup/ilc/nnhAnalysisFiles
-
-input=$server/AHCAL
-output=$server/result
 
 # PROCESSOR
 p_input=$input
