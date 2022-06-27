@@ -17,7 +17,11 @@ result=$path/nnhResult # path to results
 script=$path/nnhScript # path to script for run program easier
 test=$path/nnhTest # path to result file tests
 
-### HOME
+### HOMES
+original=$program/original
+ilcsoft=$program/ilcsoft
+fcc=$program/fcc
+
 home=""
 
 ################################### COMMANDS ###################################
@@ -25,23 +29,27 @@ home=""
 # SERVER
 
 function setServer {
+    #test_isValidPath $1
     server=$1
 
-    input=$server/AHCAL
-    output=$server/result
+    setServerInput $server/AHCAL
+    setServerOutput $server/result
 }
 
 function setServerInput {
+    #test_isValidPath $1
     input=$1
 }
 
 function setServerOutput { 
-    p_output=$1
+    #test_isValidPath $1
+    output=$1
 }
 
 # PROJET
 
 function setPath {
+    test_isValidPath $1
     path=$1
     
     setProgram $path/nnhProgram
@@ -53,6 +61,7 @@ function setPath {
 # SUB-PROJET
 
 function setProgram {
+    test_isValidPath $1
     program=$1
     
     original=$program/original
@@ -61,14 +70,17 @@ function setProgram {
 }
 
 function setResult {
+    test_isValidPath $1
     result=$1
 }
 
 function setScript {
+    test_isValidPath $1
     script=$1
 }
 
 function setTest {
+    test_isValidPath $1
     test=$1
 }
 
