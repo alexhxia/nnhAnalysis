@@ -1,74 +1,84 @@
+% Introduction
+
 \chapter{Introduction}
 
 \section{Physique des collisionneurs}
 
 Le principe des collisionneurs est simple, on accélère des particules à des 
-énergies cinétiques suffisantes pour provoquer des collisions inélastiques.
+énergies cinétiques suffisantes pour provoquer des collisions inélastiques, et ainsi comprendre les interactions fondamentales et les constituants élémentaires de la physique.\\
 
-Il en existe de 2 types que l'on distingue par le type de particules que l'on 
-utilise.
+On distingue 2 familles de collisionneurs en fonction des particules qui sont utilisés.
 
 \subsection{Collisionneurs hadroniques}
 
-Dans les collisionneurs hadroniques on utilise des hadrons, qui sont des 
-particules complexes composées de 3 quarks et de gluons (bosons médiateurs 
-de l'interaction forte qui maintiennent les quarks ensembles). 
-En pratique au LHC (Large Hadron Collider) du CERN, on utilise des protons, 
-2 quarks up et un quark down. 
+Les collisionneurs hadroniques utilisent des hadrons, qui sont des 
+particules complexes composées de 3 quarks et de gluons\footnote{Gluon : boson médiateurs de l'interaction forte qui maintiennent les quarks ensembles.}. 
+En pratique au LHC (Large Hadron Collider) du CERN, on utilise des protons, 2 quarks up et un quark down. 
 
-Comme il s'agit de particules composites, ce sont pas le protons qui colisionnent 
-directement mais ces contituants, appelés partons. Chacuns porte une fraction de 
-l'énergie du proton. 
-Ce qui permet d'avoir des énergies de collisions indéterminées en amont.
-C'est pourquoi, ils sont utiles pour la découverte de nouvelles particules de 
-masse inconnue, puisqu'il permettent de balayer tout le spectre de masse d'une 
-gamme d'énergie.
+Comme il s'agit de particules composites, ce sont pas le protons qui collisionnent directement mais ces constituants, appelés partons. Chacun porte une fraction indéterminée de l'énergie du proton. 
+Ce qui permet d'avoir des énergies de collisions inconnues en amont.
+C'est pourquoi, ils sont utiles pour la découverte de nouvelles particules de masse inconnue, puisqu'il permettent de balayer tout le spectre de masse sous la gamme d'énergie du collisionneur (au LHC < 14 \TeV)\footnote{D'où l'intérêt de nouveaux collisionneurs à des énergies plus élevées et donc des masses de particules produites plus lourdes.}.
 
 \subsection{Collisionneurs leptoniques}
 
-En revanche, les collisionneurs leptoniques collisionnent des leptons, qui sont
-des particules élémentaires. Donc on connait parfaitement leur énergie et on les 
-utilise pour faire de la recherche à un niveau d'énergie choisi.  
-Ce sont des collisionneurs de précision.\\
+En revanche, les collisionneurs leptoniques utilisent des leptons, qui sont des particules élémentaires. Comme le LEP (Large Electron-Positron), le prédécesseur du LHC, qui collisionnait des électrons et des positrons \cite{cern:lep}.
 
-Les prochaines générations de collisionneurs, ILC, CEPC, CLIC et FCC, sont des 
-collisionneurs leptoniques. Leur objectif est de préciser les données du LHC, 
-notamment sur le boson de Higgs découvert en 2012 par le LHC, qui était la pièce 
-manquante du modèle standard des particules, car il permet aux particules 
-d'acquérir une masse.
+Cette fois-ci, chaque lepton qui collisionne, possède une énergie complète. Donc on connait parfaitement leur énergie, puisque on peut leurs impulser une énergie choisie et ainsi augmenter la statistique pour un niveau d'énergie précis.
+Ces collisionneurs sont donc utilisés pour la recherche de précision.\\
+
+
+Les prochaines générations de collisionneurs, comme ILC, CEPC, CLIC et FCC, ce sont des collisionneurs leptoniques. 
+Leur objectif est de préciser les données du LHC, notamment sur le boson de Higgs découvert en 2012 par le LHC, qui était la pièce manquante du modèle standard des particules, car il permet aux particules d'acquérir une masse.
 
 \section{Physique du boson de Higgs}
 
 \subsection{Production du boson de Higgs}
 
-Concrètement, on ne mesure pas directement le boson de Higgs mais les particules 
-qu'ils produitent sous la forme de jets.
-Ainsi on veut améliorer la résolutions en énergie des jets que l'on détecte \cite{liu:tel-03405418}.
+Concrètement, on ne mesure pas directement le boson de Higgs mais les particules qu'il produit sous la forme de jets.
+Ainsi on veut améliorer la résolutions en énergie de ces jets que l'on détecte \cite{liu:tel-03405418}.
 
+\subsection{Détecteur}
 
-\section{SDHCAL (Semi-Digital Hadronic CALorimeter)}
+En physique des particules, on utilise des détecteurs appelés calorimètres pour mesurer l'énergie des particules. 
+Cette énergie va être déposer par ionisation avec le matériau le long de la trajectoire des particules qui le traverse. 
+Il faut donc des algorithmes de reconstruction pour déduire les énergies, les types de particules et les trajectoires.
 
-Pour cela, on utilise ici des calorimètres à grande granularité qui permet une 
-très bonne performance des Algorithmes de Flux de Particules (PFA) \cite{liu:tel-03405418}.
+Pour cela, on utilise des calorimètres à grande granularité qui permet une très bonne performance des Algorithmes de Flux de Particules (PFA) \cite{liu:tel-03405418}. \\
 
-Dans le cadre de la collaboration internationale CALICE, le premier prototype de la famille de calorimètres granulaires SDHCAL a été développer au grande partie à l'IP2I.
-
-tests en Septembre
+C'est dans ce cadre que la collaboration internationale CALICE, à développer le premier prototype de la famille de calorimètre granulaire SDHCAL, pour Semi-Digital Hadronic CALorimeter, qui a été développer en grande partie à l'IP2I dans l'équipe CMS, auquel j'appartiens pour ce stage.
 
 \subsection{Collisions}
-Au cours, de ce stage, je me concentrerais sur les collisions de type \texttt{nnh} pour neutrino-neutrino-higgs
 
-%\section{iLCSoft}
+Au cours, de ce stage, je me concentrerais sur les collisions de type \texttt{nnh} pour neutrino-neutrino-higgs.
 
-%\section{FCC}
+D'où voici les diagrammes de Feynman :
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	
+	\end{tikzpicture}
+	\label{feynmann}
+\end{figure}
 
 \section{Présentation \& Objectif du Stage}
 
-analyse des canaux :
+Pour ce stage, j'ai récupéré les codes de Guillaume Garillot, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
+Ils sont en libre accès à l'adresse \url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}.\\
+
+Ce programme \nnhAnalysis permet l'étude de fichiers \SLCIO pour la collision :
 \begin{equation}
-	e^{+} e^{-} \longrightarrow \nu \nu h \left(h \longrightarrow WW \longrightarrow qqqq \right)
+	\positron \electron \longrightarrow \nnh
 \end{equation}
 
-\begin{equation}
-	e^{+} e^{-} \longrightarrow \nu \nu h \left(h \longrightarrow b \bbar \right)
-\end{equation}
+Et l'analyse des canaux de désintégration :
+
+\begin{align}
+	h &\longrightarrow W \Wstar \longrightarrow qqqq \\
+	h &\longrightarrow b \bbar 
+\end{align}
+
+Pour cela, il a utilisé les suites logiciels de \iLCSoft, \url{https://github.com/iLCSoft} (plus précisément \LCIO et \Marlin), qui sont les anciennes suites logicielles.
+Mais les nouveaux projets de collisionneurs changent de suites logicielles et passent à \texttt{Key4HEP} et \Gaudi.\\
+
+Mon objectif est double. Dans un premier temps, comprendre et optimiser les codes existants, \cad les programmes \LCIO, \Marlin et ceux de \nnhAnalysis. Puis, je vais devoir transformer \nnhAnalysis pour qu'il puisque correspondre aux nouvelles normes \texttt{Key4HEP} et \Gaudi.

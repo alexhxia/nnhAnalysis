@@ -12,6 +12,9 @@
 \usepackage{url}
 \usepackage{xspace}
 \usepackage{tikz}
+\usepackage{listings}
+%\usepackage{feynmp}
+%\usepackage{tikz-feynman}
 
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
@@ -22,9 +25,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Page de garde %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \author{Alexia \textsc{HOCINE}}
 
-\title{Comparaison des prédictions des suites logicielles\\
-	de ILC (iLCSoft) et de FCC (key4HEP) \\
-	sur un signal $ e^{+} e^{-} \longrightarrow Z H $ 
+\title{Détecteur SDHCAL pour le signal  $ e^{+} e^{-} \longrightarrow \nu \nu h $ :\\Optimisation et Adaptation de l'analyse de données\\pour le Projet FCC 
 }
 %Stage M2 Physique, parcours SUBA\\Université de Claude Bernard Lyon 1
 \date{Juillet 2022}
@@ -33,6 +34,7 @@
 
 % raccourci français
 \newcommand{\cad}{c'est-à-dire\xspace}
+\newcommand{\qqs}{quelque soit\xspace}
 \newcommand{\MS}{Modèle Standard\xspace}
 
 
@@ -44,7 +46,6 @@
 \newcommand{\Marlin}{\texttt{Marlin}\xspace}
 %\newcommand{\Key4HEP}{\texttt{Key4HEP}\xspace}
 \newcommand{\Gaudi}{\texttt{Gaudi}\xspace}
-
 
 \newcommand{\nnhAnalysis}{\texttt{nnhAnalysis}\xspace}
 
@@ -59,124 +60,54 @@
 
 
 % nom de particules
+\newcommand{\particle}[1]{$\texttt{#1}$}
+
 \newcommand{\bbar}{\overline{b}}
+
+\newcommand{\Wstar}{W^{\star}}
+
+\newcommand{\electron}{e^{+}}
+\newcommand{\positron}{e^{-}}
+
+\newcommand{\nnh}{\nu \nu h}
+
+% physique
+\newcommand{\GeV}{\texttt{GeV}}
+\newcommand{\TeV}{\texttt{TeV}}
+
+% LaTeX
+
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\ee}{\end{enumerate}}
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% corps du document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
-\maketitle
+\input{FirstPage.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter*{Préambule}
-
-\section*{Remerciements}
-
-Je souhaite d'abord remercier Gérald \textsc{Grenier} pour m'avoir donner la chance de montrer ce que je peux faire. Et aussi pour son encadrement, son accompagnement et son temps.
-
-Je souhaite plus largement remercier mon équipe, Gérald \textsc{Grenier}, Imad \textsc{Laktineh} et Clément \textsc{Devanne}, pour l'atmosphère positive, détendue et stimulante.
-
-Et plus largement, les employés de l'IP2I pour leur gentillesse et leur accueil.
-
-\section*{Participation à la \textit{Geek and Japan Touch}}
-
-Au cours de mon stage, j'ai participé à l'atelier tenu par l'IP2I à la \textit{Geek and Japon Touch}, organisé par Stéphanie \textsc{Beauceron} (IP2I, CNRS, CMS).
-
-Durant ce week-end, avec 2 autres chercheuses (non physiciennes), Florence \textsc{Boyer} et Liliane \textsc{De Araujo}, on a tenu un débat sur le film \textit{Don't look up : Déni Cosmique} de Adam \textsc{McKay}, sur la crédibilité du discours scientifiques.
-
-Ensuite sur le stand, j'ai pu expliquer les bases scientifiques et des recherches menées par le CNRS et CMS, ainsi que Virgo au près du grand publique. 
-
-De plus, j'ai aussi animé le stand de l'association ?? dont l'objectif est d'expliquer les principes de base de la gravité en 2D avec un drap tenu.
+\input{start.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Introduction.tex}
 
-\chapter{Introduction}
-
-\section{Physique des collisionneurs}
-
-Le principe des collisionneurs est simple, on accélère des particules à des 
-énergies cinétiques suffisantes pour provoquer des collisions inélastiques, et ainsi comprendre les interactions fondamentales et les constituants élémentaires de la physique.\\
-
-On distingue 2 familles de collisionneurs en fonction des particules qui sont utilisés.
-
-\subsection{Collisionneurs hadroniques}
-
-Les collisionneurs hadroniques utilisent des hadrons, qui sont des 
-particules complexes composées de 3 quarks et de gluons\footnote{Gluon : boson médiateursde l'interaction forte qui maintiennent les quarks ensembles.}. 
-En pratique au LHC (Large Hadron Collider) du CERN, on utilise des protons, 2 quarks up et un quark down. 
-
-Comme il s'agit de particules composites, ce sont pas le protons qui collisionnent directement mais ces contituants, appelés partons. Chacun porte une fraction indéterminée de l'énergie du proton. 
-Ce qui permet d'avoir des énergies de collisions inconnues en amont.
-C'est pourquoi, ils sont utiles pour la découverte de nouvelles particules de masse inconnue, puisqu'il permettent de balayer tout le spectre de masse sous la gamme d'énergie du collisionneur (au LHC < 14 TeV)\footnote{D'où l'intérêt de nouveaux collisionneurs à des énergies plus élevées et donc des masses de particules produites plus lourdes.}.
-
-\subsection{Collisionneurs leptoniques}
-
-En revanche, les collisionneurs leptoniques utilisent des leptons, qui sont des particules élémentaires. Comme le LEP (Large Electron-Positron), le prédécesseur du LHC, qui collisionnait des électrons et des positrons \cite{cern:lep}.
-
-Cette fois-ci, chaque lepton qui collisionne, possède une énergie complète. Donc on connait parfaitement leur énergie, puisque on peut leurs impulser une énergie choisie et ainsi augmenter la statistique pour un niveau d'énergie précis.
-Ces collisionneurs sont donc utilisés pour la recherche de précision.\\
+%\feynmandiagram [horizontal=a to b] {
+%  i1 -- [fermion] a -- [fermion] i2,
+%  a -- [photon] b,
+%  f1 -- [fermion] b -- [fermion] f2,
+%};
 
 
-Les prochaines générations de collisionneurs, comme ILC, CEPC, CLIC et FCC, ce sont des collisionneurs leptoniques. 
-Leur objectif est de préciser les données du LHC, notamment sur le boson de Higgs découvert en 2012 par le LHC, qui était la pièce manquante du modèle standard des particules, car il permet aux particules d'acquérir une masse.
-
-\section{Physique du boson de Higgs}
-
-\subsection{Production du boson de Higgs}
-
-Concrètement, on ne mesure pas directement le boson de Higgs mais les particules qu'il produit sous la forme de jets.
-Ainsi on veut améliorer la résolutions en énergie de ces jets que l'on détecte \cite{liu:tel-03405418}.
-
-\subsection{Détecteur}
-
-En physique des particules, on utilise des détecteurs appelés calorimètres pour mesurer l'énergie des particules. 
-Cette énergie va être déposer par ionisation avec le matériau le long de la trajectoire des particules qui le traverse. 
-Il faut donc des algorithmes de reconstruction pour déduire les énergies, les types de particules et les trajectoires.
-
-Pour cela, on utilise des calorimètres à grande granularité qui permet une très bonne performance des Algorithmes de Flux de Particules (PFA) \cite{liu:tel-03405418}. \\
-
-C'est dans ce cadre que la collaboration internationale CALICE, à développer le premier prototype de la famille de calorimètre granulaire SDHCAL, pour Semi-Digital Hadronic CALorimeter, qui a été développer en grande partie à l'IP2I dans l'équipe CMS, auquel j'appartiens pour ce stage.
-
-\subsection{Collisions}
-
-Au cours, de ce stage, je me concentrerais sur les collisions de type \texttt{nnh} pour neutrino-neutrino-higgs.
-
-D'où voici les diagrammes de Feynman :
-
-\begin{figure}
-	\centering
-	\begin{tikzpicture}
-	
-	\end{tikzpicture}
-	\label{feynmann}
-\end{figure}
-
-\section{Présentation \& Objectif du Stage}
-
-Pour ce stage, j'ai récupéré les codes de Guillaume Garillot, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
-Ils sont en libre accès à l'adresse \url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}.\\
-
-Ce programme \nnhAnalysis permet l'étude de fichiers \SLCIO pour la collision :
-\begin{equation}
-	e^{+} e^{-} \longrightarrow \nu \nu h 
-\end{equation}
-
-Et l'analyse des canaux de désintégration :
-
-\begin{align}
-	h &\longrightarrow WW \longrightarrow qqqq \\
-	h &\longrightarrow b \bbar 
-\end{align}
-
-Pour cela, il a utilisé les suites logiciels de \iLCSoft, \url{https://github.com/iLCSoft} (plus précisément \LCIO et \Marlin), qui sont les anciennes suites logicielles.
-Mais les nouveaux projets de collisionneurs changent de suites logicielles et passent à \texttt{Key4HEP} et \Gaudi.\\
-
-Mon objectif est double. Dans un premier temps, comprendre et optimiser les codes existants, \cad les programmes \LCIO, \Marlin et ceux de \nnhAnalysis. Puis, je vais devoir transformer \nnhAnalysis pour qu'il puisque correspondre aux nouvelles normes \texttt{Key4HEP} et \Gaudi.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -184,11 +115,7 @@ Mon objectif est double. Dans un premier temps, comprendre et optimiser les code
 
 \section{Présentation du Projet ILC}
 
-Le projet ILC (International Linear Collider) est un collisionneur linéaire, électron-positron, de 31 km conçu pour atteindre une énergie de centre de masse de 500 GeV \cite{cern:ilc}. \\
-
-L'objectif de l'ILC est de produire beaucoup de boson de Higgs afin de rechercher de la nouvelle physique, par de nouveaux écarts avec le \MS et il va surtout essayer de découvrir s'il y en a d'autre génération du boson de Higgs. \\
-
-Ce projet est toujours en attente pour commencer sa construction, probablement dans les montage du Nord du Japon. Et le détecteur SDHCAL est en course pour y être installer. C'est pourquoi, l'IP2I développe dans programme d'analyse en parallèle du détecteur.
+Le projet ILC (International Linear Collider) est un collisionneur linéaire, électron-positron, de 31 km conçu pour atteindre une énergie de centre de masse de 500 \GeV \cite{cern:ilc}. \\
 
 \begin{figure}[h!]
 	\center
@@ -197,16 +124,26 @@ Ce projet est toujours en attente pour commencer sa construction, probablement d
 	\label{ilc:schema}
 \end{figure}
 
+L'objectif de l'ILC est de produire beaucoup de boson de Higgs notamment pour découvrir s'il y en a d'autre génération du boson de Higgs. Et plus globalement pour rechercher de la nouvelle physique, par de nouveaux écarts avec le \MS.\\
+
+Ce projet est toujours en attente pour commencer sa construction, probablement dans les montagne du Nord du Japon. Et le détecteur SDHCAL est en course pour y être installer. C'est pourquoi, l'IP2I développe des programme d'analyse en parallèle de ce détecteur.
+
 \section{Projet numérique : \original}
 
+% Contexte
 Pour ce stage j'ai récupéré les codes de Guillaume Garillot, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
 
-\subsection{Programme : \minidstmarker}
+Son programme permet l'identification et l'analyse statistique de collision du détecteur SDHCAL.
 
-Initialement, 
+\subsection{Données initiales}
 
+% données distantes : miniDSTMarker
+La première étape est de récupérer les données (aujourd'hui simulées, plus tard obtenues dans le détecteur) sur le serveur distant où elles sont stockées, grâce au programme \minidstmarker. 
 
-on m'a mis à disposition des fichiers \SLCIO, qui sera le format de fichier du détecteur.
+Mais pour le temps du stage je n'ai pas obtenu l'accès à ce serveur donc je n'ai pas pu utilisé cette partie de code. Je l'ai donc pas réutilisé dans ma propre version.\\
+
+% données locales
+Initialement, on m'a mis à disposition certains de ces fichiers \SLCIO, ceux des collisions de 250 \GeV. 
 Chaque fichier est rangés dans un des 66 dossiers (Figure~\ref{listeProcessus}), qui correspond au code du type de processus.
 
 \begin{figure}[h!]
@@ -215,37 +152,56 @@ Chaque fichier est rangés dans un des 66 dossiers (Figure~\ref{listeProcessus})
 	\label{listeProcessus}
 \end{figure}
 
+Ce dossier a été placé sur le serveur local de l'IP2I : \texttt{/gridgroup/ilc/nnhAnalysisFiles/AHCAL}.
+
 %\paragraph{Numéro des processus ???}
 
-\subsection{Programme : \processor}
+\subsection{Conversion des fichiers initiaux en fichiers \ROOT}
 
-\subsubsection{Méthodes}
+Grâce au programme \processor on va pouvoir convertir les fichiers initiaux \SLCIO en fichiers \ROOT standards, afin de pouvoir les analyser.\\
 
-On cherche à convertir ces fichiers \SLCIO en arbre \ROOT par processus.
+On obtient ainsi pour chaque dossier de fichier de donnée \SLCIO un fichier \ROOT en sortie, \cad que l'on obtiendra un arbre \ROOT par type de processus.\\
 
-\subsubsection{Résultats}
+Ce programme doit être robuste et donc à partir des mêmes fichiers toujours générer les fichiers \ROOT strictement identiques.
 
-%\paragraph{Des fichiers \ROOT :}
-Chaque dossier de fichier de donnée \SLCIO produira un fichier \ROOT en sortie, \cad que l'on obtiendra un arbre \ROOT par processus.
+\subsection{Analyses des collisions}
+
+Avant de commencer l'analyse des fichiers \ROOT générés précédemment, on va terminer ce que le programme \processor avait commencé, et fusionner l'intégralité de ces fichiers en un seul gros fichier \texttt{DATA.root}, grâce à la commande \texttt{hadd}. 
+Cette commande a été développé par le CERN et elle fusionne tous les histogrammes de différents fichiers en un seul. 
+
+Donc là aussi tous les fichiers \texttt{DATA.root} doivent être strictement identique. \\
+
+Pour la deuxième étape de ce programme \analysis on va de nouveau séparer nos données en 4 fichiers distincts. 
+Mais au lieu de les séparer par leur numéro de processus, qui est un critère numérique, on va les diviser par le type de particules produit par le boson de Higgs, soit $b\bbar$, soit $W\Wstar$, et par la polarisation de particules incidentes, \cad l'électron et le positron avec une polarisation de -0,8 et 0,3 soit nulles.
+Ce qui va nous créer les 4 fichiers suivants :
+
+\begin{figure}[h!]
+	\centering
+	\begin{lstlisting}
+			split_bb_e-0.8_p+0.3.root
+			split_bb_e+0_p+0.root
+			split_ww_e-0.8_p+0.3.root
+			split_ww_e+0_p+0.root
+	\end{lstlisting}
+	\label{files:split}
+	\caption{Fichiers où les évènements sont séparés en fonction des caractéristiques des polarisations des particules incidentes et des types de particules résultantes.}
+\end{figure}
+
+Pour trier les données du fichier \texttt{DATA.root}, on va utiliser des arbres de décision, BDT pour Boosted Decision Tree. 
 
 
-\subsubsection{Interprétation}
+HERE !!!!!!!!!!!!!!!
 
-\subsection{Programme \analysis}
 
-\subsubsection{Données}
+Une fois encore l'API du CERN, nous aura été très utile. Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Car les BDT utilisent la génération aléatoire, ce qui engendre des variations dans les entraînements.\\
 
-On récupère les fichiers \ROOT du programme \processor précédent. 
+Pour terminer, on peut effectuer l'analyse à proprement parlé de nos données.
 
-$ hadd $ qui va créer le fichier DATA.root
 
-\subsubsection{Méthodes}
+HERE !!!!!!!!!!!!!!!
 
-\paragraph{\texttt{BDT}}
 
-Entrainement
-
-\paragraph{L'analyse}
+Et même si cette analyse sera toujours la même \qqs les fichiers \texttt{split\_XX.root}, c'est dernier étant légèrement différent d'un entraînement à l'autre les résultats statistiques seront, là encore, légèrement différent mais équivalent.
 
 \section{Projet numérique \ilcsoft}
 
@@ -313,7 +269,7 @@ Dont la fin de l'exploitation est prévu en 2040 \cite{cern:fcc}
 
 Pour le FCC, on prévoit un anneau de 100 km, contre 27 km pour le LEP et le LHC 
 (comme montrer Figure~\ref{fcc:img}).
-Ce qui devrait nous permettra d'atteindre une énergie de 100 TeV contre 13 TeV
+Ce qui devrait nous permettra d'atteindre une énergie de 100 \TeV contre 13 \TeV
 actuellement pour le LHC.
 
 L'objectif est de rechercher d'une nouvelle physique, en mettant au jour de 
@@ -394,41 +350,51 @@ Le processus est complet si tous les dossiers de
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion}
 
-\section{Résumer du travail effectué}
-
-Mon stage est principalement du développement numérique, et l'ensemble des codes à conserver par l'IP2I sont sur mon GitHub publique : 
-
-\url{https://github.com/alexhxia/nnhAnalysis}
-
-\paragraph{Email Gérald Grenier :}
-
-\subparagraph{Un tutorial de \texttt{ilcsoft} :} 
-\url{https://agenda.linearcollider.org/event/9272/}
-
-\subparagraph{Initialisation \texttt{ilcsoft} :}
-%source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
-
-\subparagraph{La documentation et le packet \texttt{git} du format de données \texttt{LCIO} et de la librairie \texttt{Marlin}}
-\begin{itemize}
-	\item \url{https://github.com/iLCSoft/LCIO} \cite{Gaede:2003ip}
-	\item \url{https://github.com/iLCSoft/Marlin}
-\end{itemize}
-
-
-\subparagraph{Pour la deuxième partie du stage :}
-\begin{itemize}
-
-	\item le software en développement : 
-			\url{https://github.com/key4hep}
-			
-	\item et plus particulièrement l'adaptateur \texttt{ilcsoft} vers \texttt{key4hep} : 
-			\url{https://github.com/key4hep/k4MarlinWrapper}
-			
-\end{itemize}  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Résumé du travail effectué}
+
+\section{Bibliographie}
+
+\paragraph{\url{https://tel.archives-ouvertes.fr/tel-03405418}}
+\begin{itemize}
+	\item Étude du calorilmètre hadronique semi-digital et étude du canal physique 
+	$$ \positron \electron \longrightarrow \nnh \ (H \longrightarrow WW \longrightarrow qqqq)$$ 
+	au collisionneur circulaire électron positon (CEPC) 
+	\item Bing Liu, IP2I
+	\item 2020
+\end{itemize}
+
+\paragraph{\url{https://tel.archives-ouvertes.fr/tel-02141420}}
+\begin{itemize}
+	\item Étude des gerbes hadroniques dans un calorimètre à grande granularité et étude du canal $$ \positron \electron \longrightarrow HZ \ (Z \longrightarrow qq) $$ dans les futurs collisionneurs leptoniques
+	\item Guillaume Garillot, IPNL
+	\item 2019
+\end{itemize}
+
+\section{Tutoriels}
+
+\begin{description}
+	\item[\texttt{LCIO}] \url{https://github.com/iLCSoft/LCIO}
+	\item[\texttt{ILDConfig}] \url{https://github.com/iLCSoft/ILDConfig}
+	\item[\texttt{Marlin}] \url{https://github.com/iLCSoft/Marlin}
+	\item[\texttt{key4hep}] \url{https://github.com/key4hep/k4MarlinWrapper}
+\end{description}
+
+\section{Code initial}
+
+\url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}
+
+\section{Code final}
+
+\url{https://github.com/alexhxia/nnhAnalysis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Organisation du Projet}
 
@@ -552,6 +518,20 @@ Donc dans le projet initial, il s'agissait de \texttt{NNH\_HOME=$\backslash$nnhA
 	\item \texttt{NNH\_HOME = $\backslash$nnhAnalysis$\backslash$nnhProgram$\backslash$fcc}
 \end{itemize}
 
+
+\chapter{Fichiers \ROOT de sorties du programme \processor}
+
+On a vu précédemment que \processor converti une série de fichier \SLCIO en fichiers \ROOT. 
+
+Il considère deux canaux de désintégration du Higgs :
+\begin{align}
+	& h \longrightarrow b \bbar \label{eq:bbar}\\
+	& h \longrightarrow W \Wstar \longrightarrow qqqq \label{eq:WWstar}
+\end{align}
+
+La première équation (\ref{eq:bbar}) sera mesuré par le détecteur sous la forme de 2 jets reconstruit et identifié comme 2 quark \particle{b}.
+
+Alors que la seconde équation (\ref{eq:WWstar}) sera reconstruit comme 4 jets, 2 par boson \particle{W}\footnote{\particle{W} sur couche de masse, \particle{Wstar} hors couche de masse}.
 
 \end{appendix}
 
