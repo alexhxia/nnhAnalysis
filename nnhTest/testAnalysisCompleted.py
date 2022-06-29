@@ -53,10 +53,15 @@ def buildOutputFile(nameOutputFile, pathDir, fileMissing):
         "date": datetime.datetime.now().isoformat(),
         "fileMissing": fileMissing
     }
-    jsonString = json.dumps(jsonData, indent=4, ensure_ascii=False, sort_keys=True)
+    
+    jsonString = json.dumps(
+            jsonData, 
+            indent = 4, 
+            ensure_ascii = False, 
+            sort_keys = True)
+    
     jsonFile = open(nameOutputFile, "a")
     jsonFile.write(jsonString)
-    jsonFile.write("\n\n")
     jsonFile.close()
     
     
