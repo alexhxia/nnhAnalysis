@@ -120,7 +120,6 @@ mkdir $NNH_PROCESSOR_OUTPUT
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
         -i $NNH_PROCESSOR_INPUT \
         -o $NNH_PROCESSOR_OUTPUT \
-        -p 402012 402001 402002 402013 402014 \
         1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
         2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err 
         
