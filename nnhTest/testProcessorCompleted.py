@@ -50,10 +50,16 @@ def buildOutputFile(nameOutputFile, pathDir, processusMissing):
         "date": datetime.datetime.now().isoformat(),
         "numProcessusMissing": processusMissing
     }
-    jsonString = json.dumps(jsonData)
+    
+    jsonString = json.dumps(
+            jsonData, 
+            indent = 4, 
+            ensure_ascii = False, 
+            sort_keys = True)
+            
     jsonFile = open(nameOutputFile, "a")
     jsonFile.write(jsonString)
-    jsonFile.write("\n\n")
+    jsonFile.write("\n")
     jsonFile.close()
 
 if __name__ == "__main__":
