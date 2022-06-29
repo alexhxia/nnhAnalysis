@@ -13,6 +13,8 @@
 \usepackage{xspace}
 \usepackage{tikz}
 \usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
 %\usepackage{feynmp}
 %\usepackage{tikz-feynman}
 
@@ -166,10 +168,14 @@ Ce programme doit être robuste et donc à partir des mêmes fichiers toujours g
 
 \subsection{Analyses des collisions}
 
+\subsubsection{Étape 1}
+
 Avant de commencer l'analyse des fichiers \ROOT générés précédemment, on va terminer ce que le programme \processor avait commencé, et fusionner l'intégralité de ces fichiers en un seul gros fichier \texttt{DATA.root}, grâce à la commande \texttt{hadd}. 
 Cette commande a été développé par le CERN et elle fusionne tous les histogrammes de différents fichiers en un seul. 
 
-Donc là aussi tous les fichiers \texttt{DATA.root} doivent être strictement identique. \\
+Donc là aussi tous les fichiers \texttt{DATA.root} doivent être strictement identique.
+
+\subsubsection{Étape 2}
 
 Pour la deuxième étape de ce programme \analysis on va de nouveau séparer nos données en 4 fichiers distincts. 
 Mais au lieu de les séparer par leur numéro de processus, qui est un critère numérique, on va les diviser par le type de particules produit par le boson de Higgs, soit $b\bbar$, soit $W\Wstar$, et par la polarisation de particules incidentes, \cad l'électron et le positron avec une polarisation de -0,8 et 0,3 soit nulles.
@@ -187,21 +193,88 @@ Ce qui va nous créer les 4 fichiers suivants :
 	\caption{Fichiers où les évènements sont séparés en fonction des caractéristiques des polarisations des particules incidentes et des types de particules résultantes.}
 \end{figure}
 
-Pour trier les données du fichier \texttt{DATA.root}, on va utiliser des arbres de décision, BDT pour Boosted Decision Tree. 
+Dans chacun de ces fichiers les arbres \ROOT, \texttt{TTree}, auront les variables suivantes :
+
+\begin{description}
+
+	\item[\texttt{isSignal}] variable booléen qui indique si on considère l'évènement comme du signal ou du bruit de fond.
+	
+	\item[\texttt{channelType}] c'est un entier qui représente le type de canaux de l'évènement :
+	\begin{itemize}
+		\item 2 fermions leptoniques ou hadronique 
+		\item 4 fermions leptoniques ou semi-leptonique ou hadroniques 
+		\item une autre type de résultat avec un boson de Higgs
+	\end{itemize}
+	
+	\item[\texttt{isTrain}] booléen qui confirme si l'évènement a été entrainé ou testé par la BDT.
+	
+	\item[\texttt{preSelected}] booléen, si l'évènement a été pré-sélectionné par la BDT.
+	
+	\item[\texttt{weight}] nombre flottant qui est le poids de l'évènement en $fb^{-1}$ de la luminosité intégrée.
+	
+\end{description}
+
+Pour trier les données du fichier \texttt{DATA.root}, on va utiliser des arbres de décision, BDT pour \textit{Boosted Decision Tree}. 
+
+Il s'agit d'une structure de donnée numérique binaire, qui permet de déterminer la nature des particules en répondant à des questions booléennes (\textsc{Figure}~\ref{ExampleBDT}).
+
+\begin{figure}[h!]
+	\center
+	\includegraphics[width=\textwidth]{../img/ExampleBDT.png}
+	\caption{Exemple de BDT \cite{liu:tel-03405418}. Ici, elle permet de déterminer de le type d'une particule}
+	\label{ExampleBDT}
+\end{figure}
+
+Une fois encore l'API du CERN, nous aura été très utile. En effet, il existe déjà des méthodes (expliquées avec des tutoriels). 
+
+Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Car les BDT utilisent la génération de nombre aléatoire, ce qui engendre des variations dans les entraînements.\\
+
+\subsubsection{Étape 3}
+
+Et pour terminer, on peut effectuer l'analyse à proprement parlé de nos données à partir des fichiers \texttt{split\_XX.root} (\textsc{Figure}~\ref{files:split}).
+
+\begin{figure}[h!]
+	\centering
+	\begin{lstlisting}
+			model_bb_e-0.8_p+0.3.joblib
+			model_ww_e-0.8_p+0.3.joblib
+	\end{lstlisting}
+	\caption{Fichiers du model de la BDT}
+	\label{files:model}
+\end{figure}
+	
+\begin{figure}[h!]
+	\centering
+	\begin{lstlisting}
+			scores_bb_e-0.8_p+0.3.root
+			scores_ww_e-0.8_p+0.3.root
+	\end{lstlisting}
+	\caption{Les fichiers scores ont la réponse de la BDT : 2 variables pour chaque évènement, un booléen pour savoir s'il est sélectionné et la valeur retournée par la BDT}
+	\label{files:scores}
+\end{figure}
+	
+\begin{figure}[h!]
+	\centering
+	\begin{lstlisting}
+			bestSelection_bb_e-0.8_p+0.3.root
+			bestSelection_ww_e-0.8_p+0.3.root
+	\end{lstlisting}
+	\caption{Ce fichier \ROOT contient tous les arbres \texttt{TTree} sélectionnés par la BDT comme un évènement \nnh donne b\bbar ou W\Wstar}
+	\label{files:bestSelection}
+\end{figure}
+	
+\begin{figure}[h!]
+	\centering
+	\begin{lstlisting}
+			stats_bb_e-0.8_p+0.3.joblib
+			stats_ww_e-0.8_p+0.3.joblib
+	\end{lstlisting}
+	\caption{Statistiques.}
+	\label{files:stats}
+\end{figure}
 
 
-HERE !!!!!!!!!!!!!!!
-
-
-Une fois encore l'API du CERN, nous aura été très utile. Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Car les BDT utilisent la génération aléatoire, ce qui engendre des variations dans les entraînements.\\
-
-Pour terminer, on peut effectuer l'analyse à proprement parlé de nos données.
-
-
-HERE !!!!!!!!!!!!!!!
-
-
-Et même si cette analyse sera toujours la même \qqs les fichiers \texttt{split\_XX.root}, c'est dernier étant légèrement différent d'un entraînement à l'autre les résultats statistiques seront, là encore, légèrement différent mais équivalent.
+Et même si cette analyse sera toujours la même \qqs les fichiers \texttt{split\_XX.root}, ces derniers étant légèrement différent d'un entraînement à l'autre les résultats statistiques seront, là encore, légèrement différent mais doivent rester équivalent.
 
 \section{Projet numérique \ilcsoft}
 
