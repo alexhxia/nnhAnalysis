@@ -49,11 +49,11 @@ def buildOutputFile(nameOutputFile, pathDir, fileMissing):
     """Write result on output file"""
         
     jsonData = {
-        "pathDirectory": pathDir + "\n",
-        "date": datetime.datetime.now().isoformat() + "\n",
-        "fileMissing": fileMissing + "\n"
+        "pathDirectory": pathDir,
+        "date": datetime.datetime.now().isoformat(),
+        "fileMissing": fileMissing
     }
-    jsonString = json.dumps(jsonData)#, indent=4, ensure_ascii=False, sort_keys=True)
+    jsonString = json.dumps(jsonData, indent=4, ensure_ascii=False, sort_keys=True)
     jsonFile = open(nameOutputFile, "a")
     jsonFile.write(jsonString)
     jsonFile.write("\n\n")
