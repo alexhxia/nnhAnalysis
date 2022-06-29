@@ -62,6 +62,7 @@ def buildOutputFile(nameOutputFile, pathDir, fileMissing):
     
     jsonFile = open(nameOutputFile, "a")
     jsonFile.write(jsonString)
+    jsonFile.write("\n")
     jsonFile.close()
     
     
