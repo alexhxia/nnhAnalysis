@@ -14,11 +14,13 @@ import json
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
+
 def error(msg):
     """Print error messenger and Stop programme with error"""
     
     print(msg)
     sys.exit(1)
+
 
 def testInputDirectory(directory):
     """Test if input directory exist."""
@@ -28,6 +30,7 @@ def testInputDirectory(directory):
         
     if not os.path.isdir(directory):
         error('ERROR : directory is not ' + directory)
+
 
 def outputStream(processusMissing):
     """Print result on output stream"""
@@ -61,6 +64,7 @@ def buildOutputFile(nameOutputFile, pathDir, processusMissing):
     jsonFile.write(jsonString)
     jsonFile.write("\n")
     jsonFile.close()
+
 
 if __name__ == "__main__":
     

@@ -15,6 +15,7 @@ import json
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
+
 def error(msg):
     """Print error messenger and Stop programme with error"""
     
@@ -93,10 +94,16 @@ def buildOutputFile(outputFile, pathDir1, pathDir2, processusDistinct):
         "date": datetime.datetime.now().isoformat(),
         "processusDistinct": processusDistinct
     }
-    jsonString = json.dumps(jsonData)
+    
+    jsonString = json.dumps(
+            jsonData, 
+            indent = 4, 
+            ensure_ascii = False, 
+            sort_keys = True)
+            
     jsonFile = open(outputFile, "a")
     jsonFile.write(jsonString)
-    jsonFile.write("\n\n")
+    jsonFile.write("\n")
     jsonFile.close()
     
 

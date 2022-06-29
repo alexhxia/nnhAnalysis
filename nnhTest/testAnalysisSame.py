@@ -15,11 +15,13 @@ import json
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
+
 def error(msg):
     """Print error messenger and Stop programme with error"""
     
     print(msg)
     sys.exit(1)
+
 
 def testDirectory(directory):
     """Test if input directory exist."""
@@ -29,6 +31,7 @@ def testDirectory(directory):
         
     if not os.path.isdir(directory):
         error('ERROR : directory is not ' + directory)
+
 
 def distinctBranchTree(tree1, tree2):
     """
@@ -82,7 +85,6 @@ def distinctBranchTree(tree1, tree2):
     return nameBranchDistinct
 
 
-
 def outputStream(analysisDistinct):
     """Print stream output"""
     
@@ -96,8 +98,7 @@ def outputStream(analysisDistinct):
         keys = analysisDistinct.keys()
         for key in analysisDistinct:
             print("\t" + key + ": " + str(analysisDistinct[key]))
-            
-            
+
     
 def buildOutputFile(outputFile, pathDir1, pathDir2, analysisDistinct):
     """Write result on output file"""
@@ -108,11 +109,18 @@ def buildOutputFile(outputFile, pathDir1, pathDir2, analysisDistinct):
         "date": datetime.datetime.now().isoformat(),
         "analysisDistinct": analysisDistinct
     }
-    jsonString = json.dumps(jsonData)
+    
+    jsonString = json.dumps(
+            jsonData, 
+            indent = 4, 
+            ensure_ascii = False, 
+            sort_keys = True)
+    
     jsonFile = open(outputFile, "a")
     jsonFile.write(jsonString)
-    jsonFile.write("\n\n")
+    jsonFile.write("\n")
     jsonFile.close()
+
 
 def sortNameFileByTypeFile(nameFileList):
     """ Sort the name files by type file (root, json, ...)"""
