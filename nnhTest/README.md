@@ -87,7 +87,7 @@ Ce test peut prendre 4 paramètres:
 - `-a2`, `--analysis2` : idem
 - `-o`, `--output` : option facultative, le fichier de sortie 
 
-Les résultats peuvent être légèrement différents mais doivent rester équivalent.
+Les résultats peuvent être légèrement différents pour certains fichiers mais doivent rester équivalent.
 
 
 
