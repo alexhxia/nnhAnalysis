@@ -13,6 +13,8 @@
 \usepackage{url}
 \usepackage{tikz}
 \usepackage{tabularx}
+\usepackage{listings}
+
 
 \author[Hocine]{Alexia HOCINE\\Étudiante en Master 2 en Physique SUBAtomique}
 
@@ -430,8 +432,45 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Conclusion}
+
+\begin{frame}{Premiers résultats}{\texttt{analysis}}
+
+	\begin{columns}
+    
+        \begin{column}{0.3\textwidth}
+				\includegraphics[height=0.25\textheight]{../img/bb_original_run_1.png}
+				\includegraphics[height=0.25\textheight]{../img/bb_original_run_2.png}
+				\includegraphics[height=0.25\textheight]{../img/bb_original_run_3.png}
+        \end{column}
+        
+		\begin{column}{0.65\textwidth}
+			\begin{description}
+				\item[\texttt{name}] nom du type d'évènement
+				\item[\texttt{stat}] nombre total d'évènement mesuré
+				\item[\texttt{sum}] somme des poids de chaque évènement (signal sur bruit)
+				\item[\texttt{statPreSel}] nombre d'évènement pré-sélectionné
+				\item[\texttt{sumPreSel}] somme des poids des évènements pré-sélectionnés
+				\item[\texttt{effPreSel}] taux de pré-sélection
+				
+				\item[\texttt{statSel}] nombre d'évènement sélectionné
+				\item[\texttt{effSel}] taux de sélection
+			\end{description}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+			
+        \end{column}
+        
+    \end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \begin{frame}{Conclusion}
 
