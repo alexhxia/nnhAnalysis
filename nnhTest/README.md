@@ -66,16 +66,30 @@ Là aussi, il retourne les noms des dossiers manquants sur le terminal.
 Regarde, suivant la définition de Kolmogorov, si tous les fichiers de résultats sont identiques (néglige s'il manque des fichiers).
 
 ### For `Processor`
-Tous les processors doivent être identiques.
+Tous les fichiers ROOTs doivent être identiques.
 ```
-python testProcessorSame.py -d1 path/to/directory1 -d2 path/to/directory2
+python testProcessorSame.py -p1 path/to/directory1 -p2 path/to/directory2 -s /path/to/inputProcessorDirectory -o /path/to/outputFile.json
 ```
+Ce test peut prendre 4 paramètres:
+- `-p1`, `--processor1` : option obligatoire, qui a besoin du dossier qui contient les fichiers ROOTs générer par un programme processor.
+- `-p2`, `--processor2` : idem
+- `-s`, `--server` : option facultative, qui prend le chemin vers le répertoire d'entrer du programme processor afin de tester ces fichiers ROOTs
+- `-o`, `--output` : option facultative, le fichier de sortie 
+
+Le programme retourne sur la sortie standard les numéros des processus, la branch et le résultat de la fonction de Kolmogorov si c'est différent.
 
 ### For `Analysis`
+```
+python testAnalysisSame.py -a1 path/to/directory1 -a2 path/to/directory2 -o /path/to/outputFile.json
+```
+Ce test peut prendre 4 paramètres:
+- `-a1`, `--analysis1` : option obligatoire, qui a besoin du dossier qui contient les fichiers générer par un programme analysis.
+- `-a2`, `--analysis2` : idem
+- `-o`, `--output` : option facultative, le fichier de sortie 
+
 Les résultats peuvent être légèrement différents mais doivent rester équivalent.
-```
-python testAnalysisSame.py -d1 path/to/directory1 -d2 path/to/directory2
-```
+
+
 
 | Programme | Temps d'exécution sur server | 
 | :---: | :---: |
