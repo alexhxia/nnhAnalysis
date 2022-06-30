@@ -1,7 +1,6 @@
 # `nnhTest` directory
 
-Ce dossier regroupe toutes les fonctions qui vont permettent de tester les résultats de programme de [`nnhHome`](../nnhHome) 
-(cad les programmes `processor` et `analysis`).
+Ce dossier regroupe toutes les fonctions qui vont permettent de tester les résultats d'un programme de [`nnhHome`](../nnhHome).
 
 ## `testXXCompleted.py` programs, `XX` (soit `Processus`, soit `Analysis`)
 Permet de vérifier qu'un dossier possède tous les fichiers qu'il devrait, càd que le programme à bien généner tous les fichiers qu'il aurait du.
@@ -9,10 +8,14 @@ Permet de vérifier qu'un dossier possède tous les fichiers qu'il devrait, càd
 ### For `Processor`
 
 ```
-python testProcessorCompleted.py -d path/to/directory
+python testProcessorCompleted.py -p /path/to/directory -s /path/to/directory -o /path/to/outpoutFile.json
 ```
-Prend en entré, un dossier (de résultat du programme `Processor`) est vérifie qu'il contient un fichier ROOT par numéro de processus (liste récupérer à partir du dossier `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`).
+Prend en entré, un dossier (de résultat d'un programme `processor`) est vérifie qu'il contient un fichier ROOT par numéro de processus.
 
+Ce programme peut prendre 3 paramètres :
+- `-p` ou `--processor`  suivi du chemin qui mène au dossier que l'on souhaite tester, le paramètre est obligatoire.
+- `-o` ou `--output` suivie d'un chemin avec le nom d'un fichier JSON qui contiendra le résultat du test. Le paramètre étant facultatif, si l'option n'est pas utilisée alors il n'y aura pas de stockage fichier.
+- `-s` ou `--server` suivi du chemin vers le dossier qui contient les dossiers initaux du processus. Le paramètre est aussi facultatif, sinon il récupére la liste à partir du dossier `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`. Mais si le dossier n'est pas trouvé alors il utlise la liste des processus suivants (qui peut ne pas être adapter à votre processus) :
 ```
 # processus number list
 402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
@@ -24,42 +27,69 @@ Prend en entré, un dossier (de résultat du programme `Processor`) est vérifie
 500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
 500126, 500127, 500128
 ```
-Il va retourner les processus manquant sur le terminal et dans un fichier `testProcessorCompleted.txt`.
+Dans tous les cas, il retournera le résultat sur la sortie standard.
 
 ### For `Analysis`
 
-De manière similiare,le programme `testAnalysisCompleted.py` prend le chemin d'un dossier et 
+```
+python testAnalysisCompleted.py -a /path/to/directory -o /path/to/outpoutFile.json
+```
+
+De manière similiare, le programme `testAnalysisCompleted.py` prend le chemin d'un dossier et 
 test si ce dossier contient tous les fichiers générés par le programme `analysis`.
+
+Ce programme peut prendre 2 paramètres :
+- `-a` ou `--analysis`  suivi du chemin qui mène au dossier que l'on souhaite tester, le paramètre est obligatoire.
+- `-o` ou `--output` suivie d'un chemin avec le nom d'un fichier JSON qui contiendra le résultat du test. Le paramètre étant facultatif, si l'option n'est pas utilisée alors il n'y aura pas de stockage fichier.
+
+Plus précisemment il vérifie que le dossier a bien les fichiers suivants :
+- générer par la commande `hadd` : 
 ```
-python testAnalysisCompleted.py -d path/to/directory
+"DATA.root"
 ```
-Vérifie donc que le dossier `directory` a bien les fichiers suivants :
+- par le programme `prepareBDT` (with XX for ww or bb):
 ```
-# files created by XX (here for ww or bb)
-"bestSelection_XX_e-0.8_p+0.3.root", 
 "split_XX_e+0_p+0.root",
 "split_XX_e-0.8_p+0.3.root",
+```
+- et par `launchBDT` (with XX for ww or bb):
+```
+# files created 
+"bestSelection_XX_e-0.8_p+0.3.root", 
 "scores_XX_e-0.8_p+0.3.root",
 "stats_XX_e-0.8_p+0.3.json",
 "model_XX_e-0.8_p+0.3.joblib"
-"DATA.root"
 ```
-Là aussi, il retourne les noms des dossiers manquants sur le terminal et dans un fichier `testAnalysisCompleted.txt`.
+Là aussi, il retourne les noms des dossiers manquants sur le terminal.
 
 ## `testXXSame2.py` programs
 Regarde, suivant la définition de Kolmogorov, si tous les fichiers de résultats sont identiques (néglige s'il manque des fichiers).
 
 ### For `Processor`
-Tous les processors doivent être identiques.
+Tous les fichiers ROOTs doivent être identiques.
 ```
-python testProcessorSame.py -d1 path/to/directory1 -d2 path/to/directory2
+python testProcessorSame.py -p1 path/to/directory1 -p2 path/to/directory2 -s /path/to/inputProcessorDirectory -o /path/to/outputFile.json
 ```
+Ce test peut prendre 4 paramètres:
+- `-p1`, `--processor1` : option obligatoire, qui a besoin du dossier qui contient les fichiers ROOTs générer par un programme processor.
+- `-p2`, `--processor2` : idem
+- `-s`, `--server` : option facultative, qui prend le chemin vers le répertoire d'entrer du programme processor afin de tester ces fichiers ROOTs
+- `-o`, `--output` : option facultative, le fichier de sortie 
+
+Le programme retourne sur la sortie standard les numéros des processus, la branch et le résultat de la fonction de Kolmogorov si c'est différent.
 
 ### For `Analysis`
-Les résultats peuvent être légèrement différents mais doivent rester équivalent.
 ```
-python testAnalysisSame.py -d1 path/to/directory1 -d2 path/to/directory2
+python testAnalysisSame.py -a1 path/to/directory1 -a2 path/to/directory2 -o /path/to/outputFile.json
 ```
+Ce test peut prendre 4 paramètres:
+- `-a1`, `--analysis1` : option obligatoire, qui a besoin du dossier qui contient les fichiers générer par un programme analysis.
+- `-a2`, `--analysis2` : idem
+- `-o`, `--output` : option facultative, le fichier de sortie 
+
+Les résultats peuvent être légèrement différents pour certains fichiers mais doivent rester équivalent.
+
+
 
 | Programme | Temps d'exécution sur server | 
 | :---: | :---: |
