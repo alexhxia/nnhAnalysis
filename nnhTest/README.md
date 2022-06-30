@@ -87,9 +87,14 @@ Ce test peut prendre 4 paramètres:
 - `-a2`, `--analysis2` : idem
 - `-o`, `--output` : option facultative, le fichier de sortie 
 
-Les résultats peuvent être légèrement différents pour certains fichiers mais doivent rester équivalent.
+Les résultats sont légèrement différents d'un dossier à l'autre, car l'entrainement de la BDT (Boosted Decision Tree) apporte de légère variation d'une exécution à l'autre, mais doivent rester équivalent.
 
+Plus précisément :
+- la commande `hadd` contruira toujours les mêmes fichiers si les processus sont identiques
+- mais à partir de `prepareBDT` certaines valeures vont variées.
+- et donc `launchBDT` va hériter des variations précédentes.
 
+# Temps approximatif d'exécution des différents tests
 
 | Programme | Temps d'exécution sur server | 
 | :---: | :---: |
