@@ -1,7 +1,6 @@
 # `nnhTest` directory
 
-Ce dossier regroupe toutes les fonctions qui vont permettent de tester les résultats de programme de [`nnhHome`](../nnhHome) 
-(cad les programmes `processor` et `analysis`).
+Ce dossier regroupe toutes les fonctions qui vont permettent de tester les résultats d'un programme de [`nnhHome`](../nnhHome).
 
 ## `testXXCompleted.py` programs, `XX` (soit `Processus`, soit `Analysis`)
 Permet de vérifier qu'un dossier possède tous les fichiers qu'il devrait, càd que le programme à bien généner tous les fichiers qu'il aurait du.
@@ -9,10 +8,14 @@ Permet de vérifier qu'un dossier possède tous les fichiers qu'il devrait, càd
 ### For `Processor`
 
 ```
-python testProcessorCompleted.py -d path/to/directory
+python testProcessorCompleted.py -d /path/to/directory -s /path/to/directory -o /path/to/outpoutFile.json
 ```
-Prend en entré, un dossier (de résultat du programme `Processor`) est vérifie qu'il contient un fichier ROOT par numéro de processus (liste récupérer à partir du dossier `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`).
+Prend en entré, un dossier (de résultat d'un programme `processor`) est vérifie qu'il contient un fichier ROOT par numéro de processus.
 
+Ce programme peut prendre 3 paramètres :
+- `-p` ou `--processor`  suivi du chemin qui mène au dossier que l'on souhaite tester, le paramètre est obligatoire.
+- `-o` ou `--output` suivie d'un chemin avec le nom d'un fichier JSON qui contiendra le résultat du test. Le paramètre étant facultatif, si l'option n'est pas utilisée alors il n'y aura pas de stockage fichier.
+- `-s` ou `--server` suivi du chemin vers le dossier qui contient les dossiers initaux du processus. Le paramètre est aussi facultatif, sinon il récupére la liste à partir du dossier `/gridgroup/ilc/nnhAnalysisFiles/AHCAL`. Mais si le dossier n'est pas trouvé alors il utlise la liste des processus suivants (qui peut ne pas être adapter à votre processus) :
 ```
 # processus number list
 402173, 402182, 402007, 402008, 402176, 402185, 402009, 402010, 402011, 
@@ -24,7 +27,6 @@ Prend en entré, un dossier (de résultat du programme `Processor`) est vérifie
 500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
 500126, 500127, 500128
 ```
-Il va retourner les processus manquant sur le terminal et dans un fichier `testProcessorCompleted.txt`.
 
 ### For `Analysis`
 
