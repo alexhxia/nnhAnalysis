@@ -8,7 +8,7 @@ Permet de vérifier qu'un dossier possède tous les fichiers qu'il devrait, càd
 ### For `Processor`
 
 ```
-python testProcessorCompleted.py -d /path/to/directory -s /path/to/directory -o /path/to/outpoutFile.json
+python testProcessorCompleted.py -p /path/to/directory -s /path/to/directory -o /path/to/outpoutFile.json
 ```
 Prend en entré, un dossier (de résultat d'un programme `processor`) est vérifie qu'il contient un fichier ROOT par numéro de processus.
 
@@ -27,26 +27,40 @@ Ce programme peut prendre 3 paramètres :
 500115, 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 
 500126, 500127, 500128
 ```
+Dans tous les cas, il retournera le résultat sur la sortie standard.
 
 ### For `Analysis`
 
-De manière similiare,le programme `testAnalysisCompleted.py` prend le chemin d'un dossier et 
+```
+python testAnalysisCompleted.py -a /path/to/directory -o /path/to/outpoutFile.json
+```
+
+De manière similiare, le programme `testAnalysisCompleted.py` prend le chemin d'un dossier et 
 test si ce dossier contient tous les fichiers générés par le programme `analysis`.
+
+Ce programme peut prendre 2 paramètres :
+- `-a` ou `--analysis`  suivi du chemin qui mène au dossier que l'on souhaite tester, le paramètre est obligatoire.
+- `-o` ou `--output` suivie d'un chemin avec le nom d'un fichier JSON qui contiendra le résultat du test. Le paramètre étant facultatif, si l'option n'est pas utilisée alors il n'y aura pas de stockage fichier.
+
+Plus précisemment il vérifie que le dossier a bien les fichiers suivants :
+- générer par la commande `hadd` : 
 ```
-python testAnalysisCompleted.py -d path/to/directory
+"DATA.root"
 ```
-Vérifie donc que le dossier `directory` a bien les fichiers suivants :
+- par le programme `prepareBDT` (with XX for ww or bb):
 ```
-# files created by XX (here for ww or bb)
-"bestSelection_XX_e-0.8_p+0.3.root", 
 "split_XX_e+0_p+0.root",
 "split_XX_e-0.8_p+0.3.root",
+```
+- et par `launchBDT` (with XX for ww or bb):
+```
+# files created 
+"bestSelection_XX_e-0.8_p+0.3.root", 
 "scores_XX_e-0.8_p+0.3.root",
 "stats_XX_e-0.8_p+0.3.json",
 "model_XX_e-0.8_p+0.3.joblib"
-"DATA.root"
 ```
-Là aussi, il retourne les noms des dossiers manquants sur le terminal et dans un fichier `testAnalysisCompleted.txt`.
+Là aussi, il retourne les noms des dossiers manquants sur le terminal.
 
 ## `testXXSame2.py` programs
 Regarde, suivant la définition de Kolmogorov, si tous les fichiers de résultats sont identiques (néglige s'il manque des fichiers).
