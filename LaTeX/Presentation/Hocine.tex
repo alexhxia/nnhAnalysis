@@ -14,13 +14,16 @@
 \usepackage{tikz}
 \usepackage{tabularx}
 
-\author[Hocine]{Alexia HOCINE}
+\author[Hocine]{Alexia HOCINE\\Étudiante en Master 2 en Physique SUBAtomique}
 
 \title{
-	Comparaison des prédictions des suites logicielles de ILC (iLCSoft) et de FCC (key4HEP) \\
-	sur un signal $ e^{+} e^{-} \longrightarrow Z H $ 
+	%Comparaison des prédictions des suites logicielles de ILC (iLCSoft) et de FCC (key4HEP) \\
+	%sur un signal $ e^{+} e^{-} \longrightarrow Z H $ 
+    Détecteur SDHCAL pour le signal $ e^{+} e^{-} \longrightarrow \nu \nu H $: \\
+    Optimisation et Adaptation de l'analyse de données \\
+    pour le Projet FCC
 }
-\subtitle{Gérald Grenier (IP2I équipe CMS, FCC, SDHCAL)}
+\subtitle{Superviseur : Gérald \textsc{Grenier} (IP2I équipe CMS, FCC, SDHCAL)}
 
 \titlegraphic{
 	\includegraphics[width=0.18\textwidth]{../img/UdL-logo.png}
@@ -32,7 +35,7 @@
 \setbeamertemplate{navigation symbols}{} 
 \logo{} 
 \institute[UCBL]{Université de Claude Bernard Lyon 1} 
-\date[2022]{Juin 2022} 
+\date[2022]{1\ier Juillet 2022} 
 \subject{nnhA} 
 
 % Décompte des pages sans les annexes
@@ -61,58 +64,174 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Physique analysée}
 
+\begin{frame}{Sommaire}
+    
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+        \tableofcontents
+        \end{column}
+        \begin{column}{0.6\textwidth}
+    \begin{figure}[h!]
+	\center
+    \resizebox{\textwidth}{!}{
+	\begin{tikzpicture}%[width=\textwidth]
+	
+		\tikzstyle{home}=[draw, rectangle, fill=red!50, text=black, rounded corners=3pt]		
+	
+		\tikzstyle{directory}=[draw, rectangle, fill=gray!30, text=black, rounded corners=3pt]
+
+		\node[directory] (A) at (0,0) {\texttt{nnhAnalysis}};
+		
+		\node[directory] (S) at (-4.5,-1.5) {\texttt{nnhScript}};
+		\node[directory] (P) at (-1.5,-1.5) {\texttt{nnhProgram}};
+		\node[directory] (R) at ( 1.5,-1.5) {\texttt{nnhResult}};
+		\node[directory] (T) at ( 4.5,-1.5) {\texttt{nnhTest}};
+		
+		\node[home] (O) at (-4,-3) {\texttt{original}};
+		\node[home] (I) at (-1.5,-3) {\texttt{ilcsoft}};
+		\node[home] (F) at ( 1,-3) {\texttt{fcc}};
+		
+		\tikzstyle{linkDir}=[->,dotted,very thick,>=latex]
+		
+		\draw[linkDir] (A)--(P);
+		\draw[linkDir] (A)--(R); 
+		\draw[linkDir] (A)--(S);
+		\draw[linkDir] (A)--(T); 
+		
+		\draw[linkDir] (P)--(O);
+		\draw[linkDir] (P)--(I); 
+		\draw[linkDir] (P)--(F);
+		
+	\end{tikzpicture}
+    }
+	\caption{
+		Organisation des dossiers de mon Projet - \url{https://github.com/alexhxia/nnhAnalysis}
+	}
+	\label{orga:end}
+\end{figure}
+
+    \end{column}
+    \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\subsection{Processus étudiés}
 \begin{frame}{Introduction}
 
 	$$ e^{+} e^{-} \longrightarrow \nu \nu h $$
 
 	\begin{columns}
 		
-		\begin{column}{0.55\textwidth}
+		\begin{column}{0.5\textwidth}
 			\begin{description}
 				\item[$e^{+} e^{-}$] collisionneur leptonique
-				\item[$\nu \nu h$] neutrinos-neutrinos-higgs
+				\item[$\nu \nu h$] 2 neutrinos-higgs
 			\end{description}
 		\end{column}
 		
-		\begin{column}{0.4\textwidth}
-			\begin{block}{Canaux à analyser}
+		\begin{column}{0.35\textwidth}
+			\begin{block}{Canaux analysés}
 				\begin{enumerate}
 					\item $h \longrightarrow WW \longrightarrow qqqq$
 					\item $h \longrightarrow b\bbar$
 				\end{enumerate}
 			\end{block}
+        \end{column}
+		
+		\begin{column}{0.15\textwidth}
+            \begin{block}{Mesures}
+                \begin{enumerate}
+                    \item 4 jets
+                    \item 2 jets
+                \end{enumerate}
+            \end{block}
 		\end{column}
 	\end{columns}
-
+    
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Projets iLC et FCC}
+\subsection{Projets de Détecteurs}
+\begin{frame}{Projets iLC et FCC}{Des frabriques à bosons de Higgs}
 
-	\begin{columns}
+    \begin{block}{ILC - Internationnal Linear Collider (Japon)}
+        \begin{columns}
 		
-		\begin{column}{0.45\textwidth}
-			\begin{block}{ILC}
-
-			\end{block}
-		\end{column}
-		
-		\begin{column}{0.45\textwidth}
-			\begin{block}{FCC}
-
-			\end{block}
-		\end{column}
-	\end{columns}
-
+            \begin{column}{0.45\textwidth}
+                    \begin{figure}
+                        \includegraphics[width=\textwidth]{../img/ilc.jpg}
+                    \end{figure}
+            \end{column}
+        
+            \begin{column}{0.45\textwidth}
+                    \begin{itemize}
+                    \item Collisionneur linéaire 
+                    \item 31 km (agrandissable)
+                    \item 500 GeV en centre de masse
+                \end{itemize}
+            \end{column}
+        
+        \end{columns}
+    \end{block}
+    
+    \begin{block}{FCC - Future Circular Collider (CERN)}
+        \begin{columns}
+        
+            \begin{column}{0.45\textwidth}
+                \begin{figure}
+                    \includegraphics[width=\textwidth]{../img/FCC.jpg}
+                \end{figure}
+            \end{column}
+            
+            \begin{column}{0.45\textwidth}
+                \begin{itemize}
+                    \item Collisionneur circulaire
+                    \item 100 km
+                    \item 100 TeV dans le centre de masse
+                \end{itemize}
+            \end{column}
+            
+        \end{columns}
+    \end{block}
+    
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Sommaire}
-	\tableofcontents
+\subsection{Détecteur SDHCAL}
+
+\begin{frame}{Détecteur SDHCAL}
+    \begin{block}{SDHCAL}
+
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{itemize}
+                    \item Collaboration internationale CALICE
+                    \item Semi-Digital Hadronic CALorimeter
+                    \item Calorimètres à grande granularité
+                    \begin{itemize}
+                        \item Mesure d'énergie
+                        \item Mesure de trajectoire
+                    \end{itemize}
+                    \item Très bonne performance des Algorithmes de Flux de Particules
+                    \item Candidat pour les futurs collisionneurs leptoniques
+                    \item Septembre nouvelle phase de tests en faisceaux
+                \end{itemize}
+            \end{column}
+	
+            \begin{column}{0.45\textwidth}
+                \begin{figure}
+                    \center
+                    \includegraphics[width=\textwidth]{../img/SDHCAL.png}
+                    \caption{Détecteur SDHCAL}
+                    \label{detector}
+                \end{figure}
+            \end{column}
+        \end{columns}
+    \end{block}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,6 +277,37 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Principe d'une BDT}
+
+    \begin{columns}
+    
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Boosted Decision Tree}
+                \begin{itemize}
+                    \item Arbres de décision boostés
+                    \item Machine Learning - apprentissage automatique
+                    \item Création d'un modèle, ici pour déterminer le type de processus 
+                    
+                \end{itemize}
+            \end{block}
+            \begin{alertblock}{Pour 2 exécutions à partir des mêmes données}
+                \begin{itemize}
+                    \item fichiers de sortie ne sont pas identiques 
+                    \item mais doivent être équivalent
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth]{../img/ExampleBDT.png}
+        \end{column}
+        
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{iLCSoft}
 
 \begin{frame}{iLCSoft}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram/ilcsoft}
@@ -169,7 +319,7 @@
 			\item Ajouts de commentaires (clarification des contrats)
 			\item Nouvelle classe pour simplifier l'utilisation des codes PDG : \texttt{PDGInfo.XX}\\
 					\texttt{XX = \{hh, cc\}}
-			\item Réorganisation de la gestion des fichiers des sortis pour permettre l'exécution en parallèle 
+			\item Réorganisation de la gestion des fichiers des sortis pour permettre l'exécution en parallèle (en cours)
 		\end{itemize}
 	\end{block}
 	
@@ -186,14 +336,14 @@
 
 \begin{frame}{FCC}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram}
 
-	\begin{block}{Ajout du programme en amont : \texttt{gaudi}}
+	\begin{block}{Ajout du programme \texttt{convert} (en cours)}
 		\begin{itemize}
-			\item Tranforme les fichiers \texttt{.lcio} en fichier exploitable par iLCSoft en fichier exploitable pour FCC.
-			\item De \texttt{EDM4HEP} vers \texttt{FCCEDM}
+			\item Tranforme les fichiers \texttt{.lcio}, exploitable par iLCSoft, en fichier exploitable par FCC.
+			\item De la suite logiciel \texttt{LCIO} vers \texttt{EDM4hep}
 		\end{itemize}
 	\end{block}
 
-	\begin{block}{\texttt{processor}}
+	\begin{block}{\texttt{processor} (en cours)}
 		\begin{itemize}
 			\item Change toutes les utilisations de la suite logicielle d'iLCSoft vers key4HEP
 		\end{itemize}
@@ -201,7 +351,7 @@
 
 	\begin{block}{\texttt{analysis}}
 		\begin{itemize}
-			\item Ne demande aucune modification
+			\item Ne demande aucune nouvelle modification
 		\end{itemize}
 	\end{block}
 
@@ -260,11 +410,16 @@
 		\hline
 	\end{tabular}
 	\begin{description}
-		\item[\texttt{Completed}] teste si tous les fichiers ont bien été générer
-		\item[\texttt{Same}]	teste les différences entre 2 fichiers
+		\item[\texttt{Completed}] teste si tous les fichiers ont bien été généré
+		\item[\texttt{Same}]	teste les différences entre 2 séries de fichiers
 		\begin{description}
 			\item[\texttt{processus}] tous les fichiers sont sensés être identiques
-			\item[\texttt{analysis}]	tous les fichiers sont sensés être équivalents
+			\item[\texttt{analysis}] certains les fichiers sont sensés :
+            \begin{itemize}
+                \item être identiques : \texttt{DATA.root}, données initiales 
+                \item d'autres différents : \texttt{model\_[...].root}
+                \item d'autres équivalents : \texttt{stats\_[...].root} 
+            \end{itemize}
 		\end{description}
 	\end{description}
 \end{block}
@@ -279,24 +434,49 @@
 \begin{columns}
 
 	\begin{column}{0.45\textwidth}
-		\begin{block}{Travails réalisés}
+		\begin{exampleblock}{Travails réalisés}
 			\begin{itemize}
-		 		\item Optimisation des codes pour iLCSoft
-		 		\item Adaptation au projet FCC
+		 		\item Optimisation des codes pour iLCSoft \texttt{processor}
 		 		\item Automatisation des programmes
 		 		\item Programmation de codes de test
 			\end{itemize}
-		\end{block}
+		\end{exampleblock}
+        \begin{alertblock}{Travails en cours}
+			\begin{itemize}
+		 		\item Optimisation des codes pour iLCSoft \texttt{analysis}
+		 		\item Adaptation au projet FCC
+			\end{itemize}
+		\end{alertblock}
 	\end{column}
 	
+    %\pause
 	\begin{column}{0.45\textwidth}
-		\begin{block}{Compétences}
+		\begin{block}{Compétences renforcées}
 			\begin{itemize}
-		 		\item Programmation C++, ROOT, Python, Script bash
-		 		\item Utilisation de BDT
-		 		\item Statistiques
+                \item Programmation
+                \begin{itemize}
+                    \item C++
+                    \item ROOT
+                    \item Python
+                    \item Script bash
+                \end{itemize}
+                
+                \item Physique
+                \begin{itemize}
+                    \item Physique des Particules
+                    \item Modèle Standard
+                    \item Statistiques
+                \end{itemize}
+            
 			\end{itemize}
 		\end{block}
+        
+        \begin{exampleblock}{Nouvelles compétences}
+			\begin{itemize}
+		 		\item Utilisation de BDT
+			\end{itemize}
+		\end{exampleblock}
+        
 	\end{column}
 
 \end{columns}
