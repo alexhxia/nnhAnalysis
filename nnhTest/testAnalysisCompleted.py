@@ -32,17 +32,17 @@ def testDirectory(directory):
         error('ERROR : directory is not ' + directory)
 
 
-def outputStream(fileMissing):
+def outputStream(pathDir, fileMissing):
     """Print result on output stream"""
 
-    print("RESULTS: ")
+    print("RESULTS for: " + pathDir)
     
     if len(fileMissing) == 0:
         print("\tAnalysis is completed.")
     else:
         print("\tAnalysis files Missing :")
         for nameFile in fileMissing:
-            print("\t" + nameFile + "")
+            print("\t\t" + nameFile + "")
 
 
 def buildOutputFile(nameOutputFile, pathDir, fileMissing):
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     # OUTPUT 
     
     ## Stream
-    outputStream(fileMissing)
+    outputStream(pathDir, fileMissing)
             
     ## Files
     if args['output']:

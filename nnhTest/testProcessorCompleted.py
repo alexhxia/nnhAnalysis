@@ -32,10 +32,10 @@ def testInputDirectory(directory):
         error('ERROR : directory is not ' + directory)
 
 
-def outputStream(processusMissing):
+def outputStream(pathDir, processusMissing):
     """Print result on output stream"""
     
-    print("RESULTS:")
+    print("RESULTS for: " + pathDir)
     
     if len(processusMissing) == 0:
         print("\tProcessus is completed.")
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     # OUTPUT
     
     ## Stream
-    outputStream(processusMissing)
+    outputStream(pathDir, processusMissing)
             
     ## Files
     if args['output']:

@@ -85,19 +85,21 @@ def distinctBranchTree(tree1, tree2):
     return nameBranchDistinct
 
 
-def outputStream(analysisDistinct):
+def outputStream(pathDir1, pathDir2, analysisDistinct):
     """Print stream output"""
     
     print("RESULTS: ")
+    print("\tDirectory 1: " + pathDir1)
+    print("\tDirectory 2: " + pathDir2)
     
     if len(analysisDistinct) == 0:
-        print("\tAnalysis1 and Analysis2 are same.")
+        print("\t\tSame.")
     else:
-        print("\tAnalysis1 and Analysis2 are distinct for:\n")
+        print("\t\tDifferent for:\n")
         
         keys = analysisDistinct.keys()
         for key in analysisDistinct:
-            print("\t" + key + ": " + str(analysisDistinct[key]))
+            print("\t\t\t" + key + ": " + str(analysisDistinct[key]))
 
     
 def buildOutputFile(outputFile, pathDir1, pathDir2, analysisDistinct):
@@ -151,12 +153,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument(
-            '-d1', '--directory1', 
+            '-a1', '--analysis1', 
             help='Path of analysis directory', 
             required=True)
     
     parser.add_argument(
-            '-d2', '--directory2',
+            '-a2', '--analysis2',
             help='Path of analysis directory', 
             required=True)
             
@@ -167,10 +169,10 @@ if __name__ == "__main__":
             
     args = vars(parser.parse_args())
     
-    pathDir1 = args['directory1']
+    pathDir1 = args['analysis1']
     testDirectory(pathDir1)
     
-    pathDir2 = args['directory2']
+    pathDir2 = args['analysis2']
     testDirectory(pathDir2)
         
     ## Get all name files in 2 analysis directories
@@ -218,7 +220,7 @@ if __name__ == "__main__":
     # OUTPUT
     
     ## Stream
-    outputStream(analysisDistinct)
+    outputStream(pathDir1, pathDir2, analysisDistinct)
             
     ## Files
     if args['output']:

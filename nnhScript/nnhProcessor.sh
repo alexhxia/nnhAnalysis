@@ -112,16 +112,17 @@ fi
 echo
 echo "--> RUN : processor ($branch) <--"
 
-if [ -d $NNH_PROCESSOR_OUTPUT ]; then 
-    rm -R $NNH_PROCESSOR_OUTPUT
-fi    
-mkdir $NNH_PROCESSOR_OUTPUT
+#if [ -d $NNH_PROCESSOR_OUTPUT ]; then 
+#    rm -R $NNH_PROCESSOR_OUTPUT
+#fi    
+#mkdir $NNH_PROCESSOR_OUTPUT
 
 python3 $NNH_HOME/processor/script/launchNNHProcessor.py \
         -i $NNH_PROCESSOR_INPUT \
         -o $NNH_PROCESSOR_OUTPUT \
-        1> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
-        2> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err 
+        -p 402001 \
+        1>> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.out \
+        2>> $NNH_PROCESSOR_OUTPUT/launchNNHProcessor.err 
         
 
 echo

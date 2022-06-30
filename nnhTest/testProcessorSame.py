@@ -72,17 +72,19 @@ def distinctBranchTree(tree1, tree2):
     return nameBranchDistinct
     
 
-def outputStream(processusDistinct):
+def outputStream(pathDir1, pathDir2, processusDistinct):
     """Print result on output stream"""
     
     print("RESULTS: ")
+    print("\tDirectory 1: " + pathDir1)
+    print("\tDirectory 2: " + pathDir2)
     
     if len(processusDistinct) == 0:
-        print("\nProcessus1 and Processus2 are same.")
+        print("\n\t\tSame.")
     else:
-        print("\nProcessus1 and Processus2 are distinct for:\n\t" + str(processusDistinct))
+        print("\n\t\tDifferent for:")
         for numP in numProcessus:
-            print(str(numP) + ": " + str(processusDistinct[numP]))
+            print("\t\t\t" + str(numP) + ": " + str(processusDistinct[numP]))
             
 
 def buildOutputFile(outputFile, pathDir1, pathDir2, processusDistinct):
@@ -212,7 +214,7 @@ if __name__ == "__main__":
     # OUTPUT
     
     ## Stream
-    outputStream(processusDistinct)
+    outputStream(pathDir1, pathDir2, processusDistinct)
             
     ## Files
     if args['output']:
