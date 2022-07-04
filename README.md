@@ -1,5 +1,7 @@
 # nnhAnalysis
 
+Ce programme permet l'analyse de fichiers LCIO dans le cadre des futures projets de collisionneur leptonique.
+
 L'objectif est de développer des programmes d'analyse des cannaux :
 
 - e+e- &rarr; &nu;&nu;h (h &rarr; WW &rarr; qqqq)
@@ -10,7 +12,7 @@ L'objectif est de développer des programmes d'analyse des cannaux :
 > git clone --branch refactor https://github.com/ggarillot/nnhAnalysis.git
 > ```
 
-Il s'agit d'un travail de stage M2 effectuer à l'IP2I, l'Institut de Physique des 2 Infinies (CNRS), dans groupe FCC (sous-groupe de CMS). Ici on cherche à rendre le travail de `ggarillot` compatible avec le projet FCC.
+Ma version se place dans le cadre de mon stage de stage M2 effectuer à l'IP2I, l'Institut de Physique des 2 Infinies (CNRS), dans groupe FCC (sous-groupe de CMS). Ici je cherche à rendre le travail de `ggarillot` compatible avec le projet FCC avec ses nouvelles suites logicielles.
 
 Pour l'importer :
 ```
