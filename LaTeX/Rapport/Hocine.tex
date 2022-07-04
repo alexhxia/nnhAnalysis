@@ -171,7 +171,14 @@ Ce dossier a été placé sur le serveur local de l'IP2I : \texttt{/gridgroup/il
     \label{data:def}
 \end{figure}
 
-
+if (isBB) 
+        CHANNELS_SIGNAL.insert(402173);
+        CHANNELS_OTHERHIGGS.insert(402176);
+else 
+        CHANNELS_SIGNAL.insert(402176);
+        CHANNELS_OTHERHIGGS.insert(402173);
+    
+    
 %\paragraph{Numéro des processus ???}
 
 \subsection{Conversion des fichiers initiaux en fichiers \ROOT}

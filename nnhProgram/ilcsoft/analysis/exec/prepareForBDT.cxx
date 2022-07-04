@@ -8,6 +8,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -141,10 +142,12 @@ Channel getChannelWW(int p, int hd, int hsd) {
  *  - float pPol --> polarisation
  */
 void createFriendTree(
-        string bigFileName, string friendFileName, 
+        const string dataPATH, string bigFileName, string friendFileName, 
         bool isBB, float trainProportion, float ePol, float pPol) {
             
-            
+         
+    cout    << "Working directory: " << friendFileName << endl << endl;
+    
     cout    << "Create Friend Tree with "
             << "ePol = " << ePol << ", "
             << "pPol = " << pPol << ", "
@@ -153,7 +156,7 @@ void createFriendTree(
 
     // depending on bb or ww case, add the corresponding signal and background 
     // channelIDs
-    if (isBB) {
+    if (isBB) { 
         CHANNELS_SIGNAL.insert(402173);
         CHANNELS_OTHERHIGGS.insert(402176);
     } else {
@@ -207,7 +210,7 @@ void createFriendTree(
         return isValid && eIsoLep <= 0 && higgs_m >= 70 && higgs_m <= 220;
     };
 
-     ROOT::RDF::RInterface df = dataFrame            
+    ROOT::RDF::RInterface df = dataFrame            
             .Define("isSignal", lambda_isSignal, 
                     {"processID", "mc_higgs_decay", "mc_higgs_subDecay"})
             .Define("channelType", lambda_getChannel, 
@@ -217,31 +220,40 @@ void createFriendTree(
 
     // Do a temporary save of the file to fix the RNG generation otherwise
     // it will change on each operation on the dataframe
-    //string tempNameFile = "temp.root";
-    
-    df.Snapshot("tempTree", "temp.root", //tempNameFile, 
+    string tempNameFile = (dataPATH + "/temp.root");
+    //cout << "1 : create " << tempNameFile << endl;
+    //return;
+    df.Snapshot("tempTree", tempNameFile.c_str(), 
             {"isSignal", "channelType", "isTrain", "preSelected"});
-
+    //cout << "2 : Snapshot" << endl;
     
-    TFile* tempFile = TFile::Open("temp.root"); //tempNameFile);
+    TFile* tempFile = TFile::Open(tempNameFile.c_str());
+    //cout << "3 : Open" << endl;
     if (!tempFile) {
        cerr << "Error opening file" << endl;
        exit(-1);
     }
+    //cout << "4 : Open success" << endl;
 
     TTree* tempTree = tempFile->Get<TTree>("tempTree");
+    //cout << "5 : getTree" << endl;
 
     bigTree->AddFriend(tempTree, "temp");
+    //cout << "6 : AddFriend" << endl;
 
     df = ROOT::RDataFrame(*bigTree);
+    //cout << "7 : RDataFrame" << endl;
 
     stringstream toto;
     toto << getenv("NNH_HOME") << "/analysis/channels.json";
-
+    //cout << "8 : toto" << endl;
+    
     const string JSON_FILE = toto.str();
-
+    //cout << "9 : toto str" << endl;
+    
     ifstream ifs(JSON_FILE);
     nlohmann::json json = nlohmann::json::parse(ifs);
+    //cout << "10 : nlohmann" << endl;
 
     const float eR = 0.5 * (ePol + 1.);
     const float eL = 0.5 * (1. - ePol);
@@ -463,7 +475,7 @@ void createFriendTree(
 
 int main(int argc, char **argv) {
 
-    // Initial condition : we must have 1 parameter : path to data work directory
+    // Initial condition: we must have 1 parameter, path to data work directory
     if (argc == 1) {
         cerr    << "ERROR: Path to directory missing.\n"
                 << "SYNTAX: prepareForBDT path/to/DATA_directory"
@@ -475,18 +487,19 @@ int main(int argc, char **argv) {
                 << endl;
         return 1;
     }
-
-    const string dataPATH = string(argv[1]);
-    cout << "Working directory " << dataPATH << endl;
     
+    // Path to working directory
+    const string dataPATH = string(argv[1]);
+    
+    // ROOT files witch contains all data
     const string bigFileName = dataPATH + "/DATA.root";
     
     const float trainProp = 0.2f;
-    createFriendTree(bigFileName, dataPATH + "/split_bb_e-0.8_p+0.3.root", true, trainProp, -0.8, 0.3);
-    createFriendTree(bigFileName, dataPATH + "/split_bb_e+0_p+0.root", true, trainProp, 0, 0);
+    createFriendTree(dataPATH, bigFileName, dataPATH + "/split_bb_e-0.8_p+0.3.root", true, trainProp, -0.8, 0.3);
+    createFriendTree(dataPATH, bigFileName, dataPATH + "/split_bb_e+0_p+0.root", true, trainProp, 0, 0);
 
-    createFriendTree(bigFileName, dataPATH + "/split_ww_e-0.8_p+0.3.root", false, trainProp, -0.8, 0.3);
-    createFriendTree(bigFileName, dataPATH + "/split_ww_e+0_p+0.root", false, trainProp, 0, 0);
+    createFriendTree(dataPATH, bigFileName, dataPATH + "/split_ww_e-0.8_p+0.3.root", false, trainProp, -0.8, 0.3);
+    createFriendTree(dataPATH, bigFileName, dataPATH + "/split_ww_e+0_p+0.root", false, trainProp, 0, 0);
 
     return 0;
 }

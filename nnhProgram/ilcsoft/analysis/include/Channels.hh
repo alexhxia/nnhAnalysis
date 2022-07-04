@@ -8,25 +8,25 @@
 
 #include <map>
 
-#include <TColor.h>
+#include <TColor.h> // https://root.cern.ch/doc/master/classTColor.html
 
 enum Channel {
-    SIGNAL,
-    OTHER_H_WW,
-    OTHER_H_NOT_WW,
-    OTHER_H_BB,
-    OTHER_H_NOT_BB,
-    F2_L,
-    F2_H,
-    F4_L,
-    F4_H,
-    F4_SL,
-    BKG
+    SIGNAL,             // signal
+    OTHER_H_WW,         // ?
+    OTHER_H_NOT_WW,     // ?
+    OTHER_H_BB,         // ?
+    OTHER_H_NOT_BB,     // ?
+    F2_L,               // 2 leptonic fermions  
+    F2_H,               // 2 hadronic fermions  
+    F4_L,               // 4 leptonic fermions  
+    F4_H,               // 4 hadronic fermions  
+    F4_SL,              // 4 semi-leptonic fermions  
+    BKG                 // background 
 };
 
 struct ChannelInfo {
     std::string displayName = "";
-    Color_t     color = 0;
+    Color_t color = 0;
 };
 
 const std::map<Channel, ChannelInfo> CHANNEL_PARAMS = 
