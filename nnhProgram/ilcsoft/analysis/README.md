@@ -21,13 +21,13 @@ export  NNH_ANALYSIS_INPUT=$NNH_PROCESSOR_OUTPUTFILES \
         NNH_ANALYSIS_OUTPUT=$NNH_HOME/analysis/RESULTS 
 ```
 ```
-mkdir -pv$NNH_ANALYSIS_OUTPUTFILES $NNH_HOME/analysis/BUILD
+mkdir -pv $NNH_ANALYSIS_OUTPUT $NNH_HOME/analysis/BUILD
 ```
 
 ## Préparation de données
 Dans un premier temps, on doit fusionner l'intégralité des fichiers ROOTs générer par la programme `processor` en un seul gros fichier nomé ``DATA.root`` que l'on rangera dans le dossier  ``RESULTS`` : 
 ```
-hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
+hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
 ```
 where ``/path/to/single/rootfiles`` is the folder containing all the single ROOT files outputed by the Marlin processor you previously had to run.
 
