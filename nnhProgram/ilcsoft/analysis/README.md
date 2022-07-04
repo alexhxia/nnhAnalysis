@@ -8,24 +8,24 @@ source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 Avant d'exécuter `analysis` il faut avoir générer les fichiers ROOTs (voir la partie `processor`).
 ```
-export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
-        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result \
-        NNH_HOME=~/nnhAnalysis/ilcsoft
+export  NNH_INPUT=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUT=/gridgroup/ilc/nnhAnalysisFiles/result/ilcsoft \
+        NNH_HOME=~/nnhAnalysis/nnhProgram/ilcsoft
 ```
 ```
-export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+export  NNH_PROCESSOR_INPUT=$NNH_INPUTFILES \
+        NNH_PROCESSOR_OUTPUT=$NNH_HOME/processor/RESULTS
 ```
 ```
-export  NNH_ANALYSIS_INPUTFILES=$NNH_PROCESSOR_OUTPUTFILES \
-        NNH_ANALYSIS_OUTPUTFILES=$NNH_HOME/analysis/DATA 
+export  NNH_ANALYSIS_INPUT=$NNH_PROCESSOR_OUTPUTFILES \
+        NNH_ANALYSIS_OUTPUT=$NNH_HOME/analysis/RESULTS 
 ```
 ```
-mkdir -p $NNH_ANALYSIS_OUTPUTFILES $NNH_HOME/analysis/BUILD
+mkdir -pv$NNH_ANALYSIS_OUTPUTFILES $NNH_HOME/analysis/BUILD
 ```
 
 ## Préparation de données
-First of all , what you need to do is merge all the ROOT files for each individual processID into a single big ROOT file named ``DATA.root`` and put into a ``DATA/`` folder : 
+Dans un premier temps, on doit fusionner l'intégralité des fichiers ROOTs générer par la programme `processor` en un seul gros fichier nomé ``DATA.root`` que l'on rangera dans le dossier  ``RESULTS`` : 
 ```
 hadd $NNH_ANALYSIS_OUTPUTFILES/DATA.root $NNH_ANALYSIS_INPUTFILES/*.root
 ```
