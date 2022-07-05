@@ -53,6 +53,23 @@ CHANNELS = {
 }
 
 
+def error(msg):
+    """Print error messenger and Stop programme with error"""
+    
+    print(msg)
+    sys.exit(1)
+
+
+def testDirectory(directory):
+    """Test if directory exist."""
+    
+    if not os.path.exists(directory):
+        error('ERROR : ' + directory + ' directory not found')
+        
+    if not os.path.isdir(directory):
+        error('ERROR : directory is not ' + directory)
+        
+        
 def getTrainTree(bigFileName, friendFileName):
 
     bigFile = r.TFile.Open(bigFileName)
@@ -90,13 +107,13 @@ def trainModel(trainData):
     print(trainData.info())
 
     bdt = HistGradientBoostingClassifier(
-            max_iter=300, 
-            max_depth=None, 
-            max_leaf_nodes=70, 
-            learning_rate=0.2, 
-            n_iter_no_change=10, 
-            validation_fraction=0.3, 
-            verbose=2)
+            max_iter = 300, 
+            max_depth = None, 
+            max_leaf_nodes = 70, 
+            learning_rate = 0.2, 
+            n_iter_no_change = 10, 
+            validation_fraction = 0.3, 
+            verbose = 2)
     
     bdt.fit(trainData[INPUT_NAMES], 
             trainData["isSignal"], 
@@ -124,11 +141,11 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
     # nEvents = BATCH_SIZE
 
     print(f'{nEvents = }')
-    BDT_scores = np.array([], dtype=np.float32)
-    weights = np.array([], dtype=np.float32)
-    isTrain = np.array([], dtype=np.bool)
-    isSignal = np.array([], dtype=np.bool)
-    isPreSelected = np.array([], dtype=np.bool)
+    BDT_scores = np.array([], dtype = np.float32)
+    weights = np.array([], dtype = np.float32)
+    isTrain = np.array([], dtype = np.bool)
+    isSignal = np.array([], dtype = np.bool)
+    isPreSelected = np.array([], dtype = np.bool)
 
     statsDict = {}
 
@@ -141,12 +158,16 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
 
         batchData = df.Range(batchBegin, batchEnd)
 
-        npData = batchData.AsNumpy(columns=INPUT_NAMES + ['weight', 'isTrain', 'isSignal', 'channelType', 'preSelected'])
+        npData = batchData.AsNumpy(columns = INPUT_NAMES + ['weight', 'isTrain', 'isSignal', 'channelType', 'preSelected'])
         npData['isSignal'] = npData['isSignal'].astype('bool')
         npData['isTrain'] = npData['isTrain'].astype('bool')
         npData['preSelected'] = npData['preSelected'].astype('bool')
 
-        pdData = pd.DataFrame(data=npData, copy=False, columns=INPUT_NAMES + ['weight', 'isTrain', 'isSignal', 'channelType', 'preSelected'])
+        pdData = pd.DataFrame(
+            data=npData, 
+            copy = False, 
+            columns = INPUT_NAMES + ['weight', 'isTrain', 'isSignal', 'channelType', 'preSelected'])
+        
         pdData.loc[pdData['minorThrust'] != pdData['minorThrust'], 'minorThrust'] = np.float32(0.0)
 
         groupBy = pdData.loc[~pdData['isTrain']].groupby(['channelType', 'preSelected'])['weight']
@@ -188,7 +209,7 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
         isSignal = np.append(isSignal, npData['isSignal'])
         isPreSelected = np.append(isPreSelected, npData['preSelected'])
 
-        print(f'{batchEnd} events processed : {100.*batchEnd/nEvents:.2f} %')
+        print(f'{batchEnd} events processed : {100. * batchEnd / nEvents:.2f} %')
         batchBegin = batchEnd
 
     b = {
@@ -198,7 +219,7 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
         'isTrain': isTrain, 
         'preSelected': isPreSelected
     }
-    temp = pd.DataFrame(data=b, copy=False)
+    temp = pd.DataFrame(data = b, copy = False)
 
     # search for the BDT cut that maximizes significance
 
@@ -252,8 +273,11 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
 
         batchData = df.Range(batchBegin, batchEnd)
 
-        npData = batchData.AsNumpy(columns=['weight', 'channelType'])
-        pdData = pd.DataFrame(data=npData, copy=False, columns=['weight', 'channelType'])
+        npData = batchData.AsNumpy(columns = ['weight', 'channelType'])
+        pdData = pd.DataFrame(
+                data = npData, 
+                copy = False, 
+                columns = ['weight', 'channelType'])
 
         groupBy = pdData.groupby('channelType')['weight']
 
@@ -266,7 +290,7 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
             statsDict[chan]['statSel'] += count
             statsDict[chan]['sumSel'] += sum
 
-        print(f'{batchEnd} events processed : {100.*batchEnd/nEvents:.2f} %')
+        print(f'{batchEnd} events processed : {100. * batchEnd / nEvents:.2f} %')
         batchBegin = batchEnd
 
     print(f"{'channel':>25s} {'stat':>10s} {'statPreSel':>10s} {'statSel':>10s} {'sum':>15s} {'sumPreSel':>15s} {'sumSel':>15s} {'selection':>15s}%")
@@ -278,11 +302,17 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
         t = statsDict[key]
         t['name'] = channelName
 
-        stat, statPreSel, statSel, sum, sumPreSel, sumSel = t['stat'], t['statPreSel'], t['statSel'], t['sum'], t['sumPreSel'], t['sumSel']
+        stat = t['stat']
+        statPreSel = t['statPreSel']
+        statSel = t['statSel']
+        sum = t['sum']
+        sumPreSel = t['sumPreSel']
+        sumSel = t['sumSel']
+        
         print(f"{channelName:>25s} {stat:>10} {statPreSel:>10} {statSel:>10} {sum:>15.3f} {sumPreSel:>15.3f} {sumSel:>15.3f} {100.0*sumSel/sum:>15.3f}%")
 
-        t['effPreSel'] = 1.0*sumPreSel/sum
-        t['effSel'] = 1.0*sumSel/sum
+        t['effPreSel'] = 1.0 * sumPreSel / sum
+        t['effSel'] = 1.0 * sumSel / sum
 
     df.Snapshot("tree", f'{dataPath}/bestSelection_bb_e{ePol:+}_p{pPol:+}.root')
 
@@ -297,30 +327,54 @@ def applyModel(bigFileName, friendFileName, model, scoresFileName):
             return super(NpEncoder, self).default(obj)
 
     with open(f'{dataPath}/stats_bb_e{ePol:+}_p{pPol:+}.json', "w") as jsonFile:
-        json.dump(statsDict, jsonFile, indent=2, cls=NpEncoder)
+        json.dump(statsDict, jsonFile, indent = 2, cls = NpEncoder)
 
 
 if __name__ == "__main__":
-
+    
+    # PARAMETERS
+    
+    ## NNH_HOME
     if 'NNH_HOME' not in os.environ:
         print('ERROR : env variable NNH_HOME is not set')
         sys.exit(1)
 
     NNH_HOME = os.environ['NNH_HOME']
 
+    ## ARGUMENTS 
     parser = argparse.ArgumentParser()
+    
+    parser.add_argument(
+            '-d', '--directory', 
+            help = 'Path to working directory', 
+            required = False)
+            
     args = vars(parser.parse_args())
+
+    if args['directory']:
+        dataPath  = args['directory']
+    else:
+        dataPath = f'{NNH_HOME}/analysis/DATA'
+        
+    testDirectory(dataPath)
+
+    # RUN
 
     ePol = -0.8
     pPol = 0.3
 
-    dataPath = f'{NNH_HOME}/analysis/DATA'
-
-    trainData = getTrainTree(f'{dataPath}/DATA.root', f'{dataPath}/split_bb_e{ePol:+}_p{pPol:+}.root')
+    trainData = getTrainTree(
+            f'{dataPath}/DATA.root', 
+            f'{dataPath}/split_bb_e{ePol:+}_p{pPol:+}.root')
+            
     model = trainModel(trainData)
 
     joblib.dump(model, f"{dataPath}/model_bb_e{ePol:+}_p{pPol:+}.joblib")
 
     model = joblib.load(f"{dataPath}/model_bb_e{ePol:+}_p{pPol:+}.joblib")
 
-    y = applyModel(f'{dataPath}/DATA.root', f'{dataPath}/split_bb_e{ePol:+}_p{pPol:+}.root', model, f'{dataPath}/scores_bb_e{ePol:+}_p{pPol:+}.root')
+    y = applyModel(
+            f'{dataPath}/DATA.root', 
+            f'{dataPath}/split_bb_e{ePol:+}_p{pPol:+}.root', 
+            model, 
+            f'{dataPath}/scores_bb_e{ePol:+}_p{pPol:+}.root')

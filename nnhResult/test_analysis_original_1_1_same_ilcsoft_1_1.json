@@ -1,0 +1,80 @@
+{
+    "analysisDistinct": {
+        "DATA.root": [],
+        "split_bb_e+0_p+0.root": [
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            },
+            {
+                "Komogorov": "0.984160186653563",
+                "branch": "isTrain"
+            },
+            {
+                "Komogorov": "0.984160186653563",
+                "branch": "isTrain"
+            },
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            }
+        ],
+        "split_bb_e-0.8_p+0.3.root": [
+            {
+                "Komogorov": "0.9982333974455251",
+                "branch": "isTrain"
+            },
+            {
+                "Komogorov": "0.9982333974455251",
+                "branch": "isTrain"
+            },
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            },
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            }
+        ],
+        "split_ww_e+0_p+0.root": [
+            {
+                "Komogorov": "0.9989043974180891",
+                "branch": "isTrain"
+            },
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            },
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            },
+            {
+                "Komogorov": "0.9989043974180891",
+                "branch": "isTrain"
+            }
+        ],
+        "split_ww_e-0.8_p+0.3.root": [
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            },
+            {
+                "Komogorov": "0.37986009906866824",
+                "branch": "isTrain"
+            },
+            {
+                "Komogorov": "0.37986009906866824",
+                "branch": "isTrain"
+            },
+            {
+                "Komogorov": "0.0",
+                "branch": "weight"
+            }
+        ]
+    },
+    "date": "2022-07-05T11:33:39.434612",
+    "directory1": "/gridgroup/ilc/nnhAnalysisFiles/result/original/run_1/analysis/run_1",
+    "directory2": "/home/ilc/ahocine/nnhAnalysis/nnhProgram/ilcsoft/analysis/RESULTS"
+}
