@@ -8,23 +8,23 @@ Les commandes pour avoir un environnement opérationnel, à refaire à chaque ou
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 ```
 ```
-export  NNH_INPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
-        NNH_OUTPUTFILES=/gridgroup/ilc/nnhAnalysisFiles/result \
-        NNH_HOME=~/nnhAnalysis/nnhHome/ilcsoft 
+export  NNH_INPUT=/gridgroup/ilc/nnhAnalysisFiles/AHCAL \
+        NNH_OUTPUT=/gridgroup/ilc/nnhAnalysisFiles/result \
+        NNH_HOME=~/nnhAnalysis/nnhHome/fcc 
 ```
 ```
-export  NNH_PROCESSOR_INPUTFILES=$NNH_INPUTFILES \
-        NNH_PROCESSOR_OUTPUTFILES=$NNH_HOME/processor/RESULTS
+export  NNH_PROCESSOR_INPUT=$NNH_INPUT/inputFiles \
+        NNH_PROCESSOR_OUTPUT=$NNH_HOME/processor/outputFiles
 ```
 ```
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 ```
 ## Compilation 
 ```
-mkdir $NNH_HOME/processor/BUILD 
+mkdir $NNH_HOME/processor/build 
 ```
 ```
-cd $NNH_HOME/processor/BUILD
+cd $NNH_HOME/processor/build
 ```
 ```
 cmake -C $ILCSOFT/ILCSoft.cmake .. 
@@ -38,7 +38,7 @@ make install
 ## Exécution
 Pour un seul fichier (modifier avant le nom des fichiers `input.lcio` et `output.root` dans `Marlin NNH_steer.xml`) :
 ```
-Marlin $NNH_HOME/processor/NNH_steer.xml 
+Marlin $NNH_HOME/processor/NNH_steer.py 
 ```
 Pour exécuter tous les processus :
 ```
