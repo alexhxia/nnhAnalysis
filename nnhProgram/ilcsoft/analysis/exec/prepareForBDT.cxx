@@ -468,9 +468,11 @@ void createFriendTree(
     tempFile->Close();
 
     // remove the now useless temp file
-    remove(tempNameFile);
+    remove(tempNameFile.c_str());
 
     bigFile->Close();
+    
+    cout << "End of createFriendTree: " << friendFileName << endl << endl;;
 }
 
 int main(int argc, char **argv) {

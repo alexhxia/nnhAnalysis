@@ -11,6 +11,10 @@
 #   * scrore_XX_eXX_pXX.root
 #   * bestSelection_XX_eXX_pXX.root
 
+echo
+echo "--> BEGIN - prepareBDT <--"
+echo
+
 # INCLUDE TOOL 
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
@@ -27,11 +31,11 @@ function syntax {
     echo "Run 'prepareBDT'."
     echo "Prepare for BDT program."
     echo 
-    echo "WARNING: input directory deleted"
-    echo
     echo "ENTRY: processor output root files"
     echo
-    echo "RETURN: DATA.root"
+    echo "RETURN: "
+    echo " - DATA.root"
+    echo " - 4 split_XX_eYY_pZZ.root files"
     echo
     echo 'SYNTAX:'
     echo '    ./prepareBDT.sh [options]'
@@ -82,27 +86,32 @@ done
 ## update env
 
 nnh_export
-print_export
+#print_export
 
-## test
-
-test_isValidHome
-testNeedBuild
-
-# BUILD 
-
-if [ $recompile -eq 0 ]; then
-
+## Output directory
+if [ ! -d $NNH_ANALYSIS_OUTPUT ]; then
+    mkdir -vp $NNH_ANALYSIS_OUTPUT
     echo
-    echo "--> BUILD : prepareBDT ($branch) <--"
+fi
+if [ $recompile -eq 0 ]; then 
+    rm -Rf $NNH_ANALYSIS_OUTPUT/*
+fi
+
+## Merge all processor files
+if [ ! -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
+    
+    echo "    Merge processor files in DATA.root..."
+    echo
+    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
+    echo
+fi
+
+# build 
+if [ $recompile -eq 0 ] || [ ! -f $NNH_HOME/analysis/bin/prepareForBDT ]; then
+
+    echo "    Build analysis program in $branch branch..."
     echo
     
-    if [ -d $NNH_ANALYSIS_OUTPUT ]; then
-        rm -R $NNH_ANALYSIS_OUTPUT
-    fi
-    mkdir -vp $NNH_ANALYSIS_OUTPUT
-    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
-
     if [ -d $NNH_HOME/analysis/BUILD ]; then
         rm -R $NNH_HOME/analysis/BUILD
     fi
@@ -112,28 +121,27 @@ if [ $recompile -eq 0 ]; then
     cmake -C $ILCSOFT/ILCSoft.cmake .. 
     make
     make install
+    echo
 fi
 
 # RUN 
 
+
+echo "    RUN prepareBDT for $branch branch..."
 echo
-echo "--> RUN : prepareBDT ($branch) <--"
-#echo
 
 cd $NNH_HOME/analysis/bin
-echo "$branch"
 if [ "$branch" == "original" ]; then 
-    echo "original"
     ./prepareForBDT #\
         # 1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
         # 2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 else 
-    echo "other"
-    ./prepareForBDT $NNH_ANALYSIS_OUTPUT #\
+    ./prepareForBDT \
+        $NNH_ANALYSIS_OUTPUT #\
         # 1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
         # 2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 fi
-
 echo
-echo "--> END : prepareBDT ($branch) <--"
+
+echo "--> END - prepareBDT <--"
 echo
