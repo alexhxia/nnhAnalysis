@@ -221,39 +221,28 @@ void createFriendTree(
     // Do a temporary save of the file to fix the RNG generation otherwise
     // it will change on each operation on the dataframe
     string tempNameFile = (dataPATH + "/temp.root");
-    //cout << "1 : create " << tempNameFile << endl;
-    //return;
     df.Snapshot("tempTree", tempNameFile.c_str(), 
             {"isSignal", "channelType", "isTrain", "preSelected"});
-    //cout << "2 : Snapshot" << endl;
     
     TFile* tempFile = TFile::Open(tempNameFile.c_str());
-    //cout << "3 : Open" << endl;
     if (!tempFile) {
        cerr << "Error opening file" << endl;
        exit(-1);
     }
-    //cout << "4 : Open success" << endl;
 
     TTree* tempTree = tempFile->Get<TTree>("tempTree");
-    //cout << "5 : getTree" << endl;
 
     bigTree->AddFriend(tempTree, "temp");
-    //cout << "6 : AddFriend" << endl;
 
     df = ROOT::RDataFrame(*bigTree);
-    //cout << "7 : RDataFrame" << endl;
 
     stringstream toto;
     toto << getenv("NNH_HOME") << "/analysis/channels.json";
-    //cout << "8 : toto" << endl;
     
     const string JSON_FILE = toto.str();
-    //cout << "9 : toto str" << endl;
     
     ifstream ifs(JSON_FILE);
     nlohmann::json json = nlohmann::json::parse(ifs);
-    //cout << "10 : nlohmann" << endl;
 
     const float eR = 0.5 * (ePol + 1.);
     const float eL = 0.5 * (1. - ePol);
@@ -347,7 +336,7 @@ void createFriendTree(
     };
 
     auto lambda_countEvents = [&](bool isTrain, int p, int hd) -> void {
-        const auto realProcess = getRealProcess(p, hd);
+        const auto realProcess = getRealProcess(p, hd); //int
         nEventsMap[{realProcess, isTrain}]++;
     };
 
@@ -472,7 +461,7 @@ void createFriendTree(
 
     bigFile->Close();
     
-    cout << "End of createFriendTree: " << friendFileName << endl << endl;;
+    //cout << "End of createFriendTree: " << friendFileName << endl << endl;;
 }
 
 int main(int argc, char **argv) {

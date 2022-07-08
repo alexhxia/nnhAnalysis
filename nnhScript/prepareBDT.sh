@@ -102,7 +102,9 @@ if [ ! -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
     
     echo "    Merge processor files in DATA.root..."
     echo
-    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
+    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root \
+            1> $NNH_ANALYSIS_OUTPUT\hadd.out \
+            2> $NNH_ANALYSIS_OUTPUT\hadd.err 
     echo
 fi
 
@@ -132,14 +134,14 @@ echo
 
 cd $NNH_HOME/analysis/bin
 if [ "$branch" == "original" ]; then 
-    ./prepareForBDT #\
-        # 1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
-        # 2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+    ./prepareForBDT \
+        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 else 
     ./prepareForBDT \
-        $NNH_ANALYSIS_OUTPUT #\
-        # 1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
-        # 2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+        $NNH_ANALYSIS_OUTPUT \
+        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
 fi
 echo
 
