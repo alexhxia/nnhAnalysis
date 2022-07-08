@@ -7,9 +7,7 @@
 # OUTPUT: 
 #   * DATA.root
 #   * split_XX_eXX_pXX.root
-#   * model_XX_eXX_pXX.root
-#   * scrore_XX_eXX_pXX.root
-#   * bestSelection_XX_eXX_pXX.root
+
 
 echo
 echo "--> BEGIN - prepareBDT <--"

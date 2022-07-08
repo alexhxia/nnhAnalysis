@@ -3,9 +3,14 @@
 # This program run BDT.
 #
 # BEFORE : run processor and prepareForBDT part
-# INPUT: directory with once root file by processus 
+# INPUT: 
+#   * 1 DATA.root file
+#   * 4 split_XX_eXX_pXX.root files
 # OUTPUT: 
-#   * stats_XX_eXX_pXX.json
+#   * 2 model_XX_eXX_pXX.joblib files
+#   * 2 score_XX_eXX_pXX.root files
+#   * 2 bestSelection_XX_eXX_pXX.root files
+#   * 2 stats_XX_eXX_pXX.json files
 
 # INCLUDE TOOL 
 
@@ -19,20 +24,22 @@ source tools/functions.sh
 function syntax {
     echo
     echo "Run 'launchBDT', ie '$NNH_HOME/analysis/bin/prepareBDT'."
-    echo 
-    echo "NB: input and output directories are same."
-    echo
-    echo "WARNING: delete last analysis output directory"
     echo
     echo "ENTRY: DATA.root files"
+    echo " - 1 DATA.root file"
+    echo " - 4 split_XX_eXX_pXX.root files"
     echo
     echo "RETURN: analysis stat files"
+    echo " - 2 model_XX_eXX_pXX.joblib files"
+    echo " - 2 score_XX_eXX_pXX.root files"
+    echo " - 2 bestSelection_XX_eXX_pXX.root files"
+    echo " - 2 stats_XX_eXX_pXX.json"
     echo
     echo 'SYNTAX:'
     echo '    ./launchBDT.sh [options]'
     echo
     
-    syntaxOption h d b n i #help.sh
+    syntaxOption h b n i #help.sh
 }
 
 # ENVIRONMENT + in export.sh ###
@@ -45,9 +52,7 @@ while getopts hdn:b:i: flag ; do
     
         h)  syntax 
             exit 0;;
-        
-        d)  conda=1;;
-            
+                    
         n)  setPath ${OPTARG};;
             
         b)  setBranch ${OPTARG};;
@@ -72,12 +77,6 @@ echo
 
 cd $NNH_HOME/analysis/python
 
-if [ $conda -eq 0 ]; then
-    source ~/miniconda3/etc/profile.d/conda.sh
-    conda activate env_root_python
-    echo "    conda activate"
-fi
-
 particles=("bb" "WW")
 for p in ${particles[@]}; do
     echo "    launch launchBDT_$p"
@@ -85,11 +84,6 @@ for p in ${particles[@]}; do
             # 1> $NNH_ANALYSIS_INPUT/launchBDT_$p.out \
             # 2> $NNH_ANALYSIS_INPUT/launchBDT_$p.err 
 done 
-
-if [ $conda -eq 0 ]; then
-    conda deactivate
-    echo "    conda deactivate"
-fi
 
 echo
 echo "--> END : launchBDT ($branch) <--"
