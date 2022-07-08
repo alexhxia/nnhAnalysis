@@ -25,17 +25,22 @@
 ## nnhScript 
 *.err
 *.out
+*.txt
 
-## nnhHome
+## nnhProgram
 
 ### Directory
 
 lib
 build
 BUILD
+result
 results
+RESULT
 RESULTS
 DATA
+inputFiles
+outputFiles
 bin
 
 logs
@@ -46,3 +51,4 @@ __pycache__
 *.log
 *.root
 *.lcio
+*.slcio
