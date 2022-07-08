@@ -11,3 +11,10 @@ The script `convertMarlinSteeringToGaudi.py`
 python3 k4MarlinWrapper/k4MarlinWrapper/scripts/convertMarlinSteeringToGaudi.py /path/to/MarlinInputFile.xml /path/to/GaudiOutputFile.py
 ```
 > Warning: you don't have a comment in Marlin file.
+
+So I launch :
+```
+python3 k4MarlinWrapper/k4MarlinWrapper/scripts/convertMarlinSteeringToGaudi.py \
+    /path/to/processor/script/NNH_steer.xml \
+    /path/to/processor/script/NNH_steer.py
+```
