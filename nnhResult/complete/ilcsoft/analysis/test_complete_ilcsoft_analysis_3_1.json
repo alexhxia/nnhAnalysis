@@ -1,0 +1,18 @@
+{
+    "date": "2022-07-11T12:43:26.990507",
+    "fileMissing": [
+        "bestSelection_ww_e-0.8_p+0.3.root",
+        "split_ww_e+0_p+0.root",
+        "split_ww_e-0.8_p+0.3.root",
+        "scores_ww_e-0.8_p+0.3.root",
+        "stats_ww_e-0.8_p+0.3.json",
+        "model_ww_e-0.8_p+0.3.joblib",
+        "bestSelection_bb_e-0.8_p+0.3.root",
+        "split_bb_e+0_p+0.root",
+        "split_bb_e-0.8_p+0.3.root",
+        "scores_bb_e-0.8_p+0.3.root",
+        "stats_bb_e-0.8_p+0.3.json",
+        "model_bb_e-0.8_p+0.3.joblib"
+    ],
+    "pathDirectory": "/gridgroup/ilc/nnhAnalysisFiles/result/ilcsoft/run_3/analysis/run_1"
+}
