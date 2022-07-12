@@ -15,74 +15,8 @@ import json
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
-
-def error(msg):
-    """Print error messenger and Stop programme with error"""
-    
-    print(msg)
-    sys.exit(1)
-
-
-def testDirectory(directory):
-    """Test if input directory exist."""
-    
-    if not os.path.exists(directory):
-        error('ERROR : ' + directory + ' directory not found')
-        
-    if not os.path.isdir(directory):
-        error('ERROR : directory is not ' + directory)
-
-
-def distinctBranchTree(tree1, tree2):
-    """
-    Return branch name list what are different with Kolmogorov definition.
-    
-    Parameters:
-    -------------------
-    tree1 : TTree
-    tree2 : TTree
-    
-    Return :
-    -------------------
-    nameBranchDistinct : list of dictionary {"branch", "Kolmogorov"}
-        
-    """
-    
-    nameBranchDistinct = list()
-    
-    branchs1 = tree1.GetListOfBranches()
-    branchs2 = tree2.GetListOfBranches()
-    branchs = set(branchs1 + branchs2)
-    
-    for branch in branchs:
-    
-        nameBranch = branch.GetName()
-        
-        tree1.Draw(nameBranch)
-        
-        htemp=ROOT.gPad.GetPrimitive("htemp")
-        xAxis=htemp.GetXaxis()
-        xmin=xAxis.GetXmin()
-        xmax=xAxis.GetXmax()
-    
-        hist1 = TH1F("hist1", nameBranch, 200, xmin, xmax)
-        hist2 = TH1F("hist2", nameBranch, 200, xmin, xmax)
-    
-        tree1.Draw(nameBranch + ">>hist1")
-        tree2.Draw(nameBranch + ">>hist2")
-    
-        k = hist1.KolmogorovTest(hist2, "UON")
-        print("\t" + nameBranch + ": " + str(k))
-        if not k == 1.:
-            nameBranchDistinct.append({
-                    "branch" : nameBranch,
-                    "Komogorov" : str(k)
-            })
-
-        del hist1
-        del hist2
-            
-    return nameBranchDistinct
+from tools.compareFile import *
+from tools.tools import *
 
 
 def outputStream(pathDir1, pathDir2, analysisDistinct):
@@ -122,25 +56,6 @@ def buildOutputFile(outputFile, pathDir1, pathDir2, analysisDistinct):
     jsonFile.write(jsonString)
     jsonFile.write("\n")
     jsonFile.close()
-
-
-def sortNameFileByTypeFile(nameFileList):
-    """ Sort the name files by type file (root, json, ...)"""
-    
-    nameFileByType = {} # dictionary {key = extension, value = name file list}
-    for nameFile in nameFileList:
-        
-        nameFileSplit = os.path.splitext(nameFile) # split name and extension
-        typeFile = nameFileSplit[1] # file extension
-        
-        if typeFile in nameFileByType: # if typeFile exist then append name file
-            t = nameFileByType[typeFile]
-            t.append(nameFile)
-            nameFileByType.update({typeFile: t})
-        else: # create new "key" and add name file in list
-            nameFileByType[typeFile] = [nameFile]
-            
-    return nameFileByType
 
 
 if __name__ == "__main__":

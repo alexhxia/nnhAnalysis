@@ -15,62 +15,9 @@ import json
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
+from tools.compareFile import *
+from tools.tools import *
 
-def error(msg):
-    """Print error messenger and Stop programme with error"""
-    
-    print(msg)
-    sys.exit(1)
-
-
-def testDirectory(directory):
-    """Test if directory exist."""
-    
-    if not os.path.exists(directory):
-        error('ERROR : ' + directory + ' directory not found')
-        
-    if not os.path.isdir(directory):
-        error('ERROR : directory is not ' + directory)
-
-
-def distinctBranchTree(tree1, tree2):
-    """Return branch name dictionary what are different with Kolmogorov definition."""
-    
-    nameBranchDistinct = list()
-    
-    branchs1 = tree1.GetListOfBranches()
-    branchs2 = tree2.GetListOfBranches()
-    branchs = set(branchs1 + branchs2)
-    
-    for branch in branchs:
-    
-        nameBranch = branch.GetName()
-        
-        tree1.Draw(nameBranch)
-        
-        htemp = ROOT.gPad.GetPrimitive("htemp")
-        xAxis = htemp.GetXaxis()
-        xmin = xAxis.GetXmin()
-        xmax = xAxis.GetXmax()
-    
-        hist1 = TH1F("hist1", nameBranch, 200, xmin, xmax)
-        hist2 = TH1F("hist2", nameBranch, 200, xmin, xmax)
-    
-        tree1.Draw(nameBranch + ">>hist1")
-        tree2.Draw(nameBranch + ">>hist2")
-    
-        k = hist1.KolmogorovTest(hist2, "UON")
-        if not k == 1.:
-            nameBranchDistinct.append({
-                    "branch" : nameBranch,
-                    "Komogorov" : str(k)
-            })
-
-        del hist1
-        del hist2
-            
-    return nameBranchDistinct
-    
 
 def outputStream(pathDir1, pathDir2, processusDistinct):
     """Print result on output stream"""

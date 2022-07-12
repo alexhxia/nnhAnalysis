@@ -11,26 +11,11 @@ import sys
 import ROOT 
 import datetime
 import json 
+import enum
 
 from ROOT import TCanvas, TFile, TH1F, TTree
 
-
-def error(msg):
-    """Print error messenger and Stop programme with error"""
-    
-    print(msg)
-    sys.exit(1)
-
-
-def testDirectory(directory):
-    """Test if input directory exist."""
-    
-    if not os.path.exists(directory):
-        error('ERROR : ' + directory + ' directory not found')
-        
-    if not os.path.isdir(directory):
-        error('ERROR : directory is not ' + directory)
-
+from tools.tools import *
 
 def outputStream(pathDir, fileMissing):
     """Print result on output stream"""
@@ -64,33 +49,7 @@ def buildOutputFile(nameOutputFile, pathDir, fileMissing):
     jsonFile.write(jsonString)
     jsonFile.write("\n")
     jsonFile.close()
-    
-    
-def getAnalysisNameFiles():
-    """
-    Get name files created by analysis program.
-    
-    Return:
-    ------------------
-    nameFileList : set
-    """
-    
-    nameFileList = ["DATA.root"]
-    
-    particleTypeList = ["ww", "bb"]
-    
-    for particleType in particleTypeList:
-        nameFileList_p = [
-            "bestSelection_" + particleType + "_e-0.8_p+0.3.root", 
-            "split_" + particleType + "_e+0_p+0.root",
-            "split_" + particleType + "_e-0.8_p+0.3.root",
-            "scores_" + particleType + "_e-0.8_p+0.3.root",
-            "stats_" + particleType + "_e-0.8_p+0.3.json",
-            "model_" + particleType + "_e-0.8_p+0.3.joblib"
-        ]
-        nameFileList = nameFileList + nameFileList_p
-    
-    return nameFileList
+
 
 
 if __name__ == "__main__":
