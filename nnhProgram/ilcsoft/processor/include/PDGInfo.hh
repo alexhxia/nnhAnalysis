@@ -35,7 +35,7 @@ enum PGDCode {
 // REQUESTS
 
 /**
-* Return if particle is a neutrinoo (or anti-neutrino).
+* Return if particle is a neutrino (or anti-neutrino).
 * \return pdg == X_NEUTRINO
 */
 bool isNeutrino(int pdg);
