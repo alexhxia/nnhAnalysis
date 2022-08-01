@@ -80,9 +80,18 @@ cd $NNH_HOME/analysis/python
 particles=("bb" "WW")
 for p in ${particles[@]}; do
     echo "    launch launchBDT_$p"
-    python3 launchBDT_$p.py #-i $NNH_ANALYSIS_INPUT #\
-            # 1> $NNH_ANALYSIS_INPUT/launchBDT_$p.out \
-            # 2> $NNH_ANALYSIS_INPUT/launchBDT_$p.err 
+    
+    if [ "$branch" == "original" ]; then 
+        # can't change NNH_ANALYSIS_INPUT for original branch
+        python3 launchBDT_$p.py \
+                1> $NNH_ANALYSIS_INPUT/launchBDT_$p.out \
+                2> $NNH_ANALYSIS_INPUT/launchBDT_$p.err 
+    else 
+        python3 launchBDT_$p.py \
+                -i $NNH_ANALYSIS_INPUT \
+                1> $NNH_ANALYSIS_INPUT/launchBDT_$p.out \
+                 > $NNH_ANALYSIS_INPUT/launchBDT_$p.err 
+    fi
 done 
 
 echo

@@ -83,8 +83,7 @@ test_isValidHome
 
 echo
 echo "Start nnhAnalysis on the $branch branch..."
-echo "here $NNH_ANALYSIS_OUTPUT"
-if ! [ -d $NNH_ANALYSIS_OUTPUT ]; then
+if [ -d $NNH_ANALYSIS_OUTPUT ]; then
     rm -R $NNH_ANALYSIS_OUTPUT/*
 else 
     mkdir $NNH_ANALYSIS_OUTPUT
@@ -93,7 +92,6 @@ fi
 ## prepareBDT
 
 echo "  -> Prepare BDT ..."
-if [ 1 == 0 ]; then 
 if [ $recompile -eq 0 ]; then
     ./prepareBDT.sh -c \
             -n $path \
@@ -106,7 +104,6 @@ else
             -b $branch \
             -i $NNH_ANALYSIS_INPUT \
             -o $NNH_ANALYSIS_OUTPUT
-fi 
 fi 
 
 ## launchBDT
