@@ -8,9 +8,9 @@
 #   * DATA.root
 #   * split_XX_eXX_pXX.root
 
-
+tab="        "
 echo
-echo "--> BEGIN - prepareBDT <--"
+echo "$tab""Start prepareBDT..."
 echo
 
 # INCLUDE TOOL 
@@ -27,11 +27,11 @@ source tools/help.sh
 function syntax {
     echo
     echo "Run 'prepareBDT'."
-    echo "Prepare for BDT program."
+    echo "Merge all root files and Prepare for BDT program."
     echo 
-    echo "ENTRY: processor output root files"
+    echo "INPUT: processor output root files"
     echo
-    echo "RETURN: "
+    echo "OUTPUT: "
     echo " - DATA.root"
     echo " - 4 split_XX_eYY_pZZ.root files"
     echo
@@ -39,7 +39,7 @@ function syntax {
     echo '    ./prepareBDT.sh [options]'
     echo
     
-    syntaxOption h c b n i o #help.sh
+    syntaxOption h c v b n k q #help.sh
 }
 
 ## Test if it need build
@@ -59,6 +59,7 @@ function testNeedBuild {
 # ENVIRONMENT + in export.sh 
 
 recompile=1
+verbose=1 # no verbose
 
 ## option choice by user
 while getopts hcn:b:i:o: flag ; do
@@ -69,22 +70,31 @@ while getopts hcn:b:i:o: flag ; do
         
         c)  recompile=0;;
         
+        v)  verbose=0;;
+
         n)  setPath ${OPTARG};;
             
         b)  setBranch ${OPTARG};;
             
-        i)  setAnalysisInput ${OPTARG};;
+        k)  setAnalysisInput ${OPTARG};;
             
-        o)  setAnalysisOutput ${OPTARG};;
+        q)  setAnalysisOutput ${OPTARG};;
         
-        *) error 'option no exist';;
+        *) error '      Option no exist';;
     esac
 done 
 
-## update env
+## update environment
 
-nnh_export
-#print_export
+nnh_export # export.sh
+if [ $verbose -eq 0 ]; then
+    print_export # export.sh
+fi
+
+## test environment
+
+test_isValidHome
+testNeedBuild
 
 ## Output directory
 if [ ! -d $NNH_ANALYSIS_OUTPUT ]; then
@@ -98,25 +108,30 @@ fi
 ## Merge all processor files
 if [ ! -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
     
-    echo "    Merge processor files in DATA.root..."
+    echo "$tab""--> Merge processor files in DATA.root..."
     echo
-    hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root \
+    if [ $verbose -eq 0 ]; then
+        hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root
+        echo
+    else
+        hadd $NNH_ANALYSIS_OUTPUT/DATA.root $NNH_ANALYSIS_INPUT/*.root \
             1> $NNH_ANALYSIS_OUTPUT\hadd.out \
             2> $NNH_ANALYSIS_OUTPUT\hadd.err 
-    echo
+    fi
 fi
 
 # build 
 if [ $recompile -eq 0 ] || [ ! -f $NNH_HOME/analysis/bin/prepareForBDT ]; then
 
-    echo "    Build analysis program in $branch branch..."
+    echo "$tab""--> Build analysis program in $branch branch..."
     echo
     
     if [ -d $NNH_HOME/analysis/BUILD ]; then
-        rm -R $NNH_HOME/analysis/BUILD
+        rm -R $NNH_HOME/analysis/BUILD/*
+    else 
+        mkdir -pv $NNH_HOME/analysis/BUILD
     fi
     
-    mkdir $NNH_HOME/analysis/BUILD
     cd $NNH_HOME/analysis/BUILD
     cmake -C $ILCSOFT/ILCSoft.cmake .. 
     make
@@ -127,21 +142,28 @@ fi
 # RUN 
 
 
-echo "    RUN prepareBDT for $branch branch..."
+echo "$tab""--> Run: prepareBDT for $branch branch..."
 echo
 
 cd $NNH_HOME/analysis/bin
-if [ "$branch" == "original" ]; then 
-    ./prepareForBDT \
-        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
-        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+if [ $verbose -eq 0 ]; then
+    if [ "$branch" == "original" ]; then 
+        ./prepareForBDT
+    else 
+        ./prepareForBDT $NNH_ANALYSIS_OUTPUT
+    fi
 else 
-    ./prepareForBDT \
-        $NNH_ANALYSIS_OUTPUT \
-        1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
-        2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+    if [ "$branch" == "original" ]; then 
+        ./prepareForBDT \
+            1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+            2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+    else 
+        ./prepareForBDT $NNH_ANALYSIS_OUTPUT \
+            1> $NNH_ANALYSIS_OUTPUT/prepareBDT.out \
+            2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
+    fi
 fi
 echo
 
-echo "--> END - prepareBDT <--"
+echo "$tab""... End: prepareBDT"
 echo

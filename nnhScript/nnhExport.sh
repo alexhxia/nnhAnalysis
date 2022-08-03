@@ -17,7 +17,7 @@ result=$path/nnhResult # path to results
 script=$path/nnhScript # path to script for run program easier
 test=$path/nnhTest # path to result file tests
 
-### HOMES
+### HOME
 original=$program/original
 ilcsoft=$program/ilcsoft
 fcc=$program/fcc

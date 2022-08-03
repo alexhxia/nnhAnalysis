@@ -17,10 +17,10 @@
 #       -> prepareForBDT
 #           * DATA.root
 #           * split_XX_eXX_pXX.root
-#           * model_XX_eXX_pXX.root
-#           * scrore_XX_eXX_pXX.root
-#           * bestSelection_XX_eXX_pXX.root
 #       -> launchBDT_XX.py with XX = {WW ou bb}
+#           * model_XX_eXX_pXX.root
+#           * score_XX_eXX_pXX.root
+#           * bestSelection_XX_eXX_pXX.root
 #           * stats_XX_eXX_pXX.json
 
 # INCLUDE TOOL 
@@ -46,7 +46,7 @@ function syntax {
     echo '    ./nnh.sh [options]'
     echo
     
-    syntaxOption h b p a n i o # help.sh
+    syntaxOption h v b p a n i o # help.sh
 }
 
 # ENVIRONMENT + in export.sh 
@@ -54,14 +54,18 @@ function syntax {
 nb_processor=1
 nb_BDT=1
 
+verbose=1 # no verbose
+
 ## option choice by user
-while  getopts ":b:p:a:n:i:o:h" option ; do
+while  getopts ":b:p:a:n:i:o:hv" option ; do
     case "${option}" in 
     
         h)  syntax
             exit 0;;
             
         b)  setBranch ${OPTARG};;
+        
+        v)  verbose=0;;
         
         p)  nb_processor=${OPTARG};;
         
@@ -77,13 +81,17 @@ while  getopts ":b:p:a:n:i:o:h" option ; do
     esac
 done 
 
-## Update env
+## update environment
 
-## Test env
+nnh_export # export.sh
+if [ $verbose -eq 0 ]; then
+    print_export # export.sh
+fi
 
-nnh_export && print_export
+## test environment
 
-test_isValidHome
+test_isValidHome # export.sh
+#testNeedBuild
 
 if [[ $nb_processor -lt 0 ]] ; then
     error "-p: $nb_processor < 0"
@@ -120,10 +128,18 @@ for ((p = 1; p <= $nb_processor; p++)); do
     nnh_export # export.sh: export update
     
     ### RUN PROCESSOR
-    if [ $p = 1 ]; then # build
-        ./nnhProcessor.sh -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT -c
+    if [ $verbose -eq 0 ]; then
+        if [ $p = 1 ]; then # build
+            ./nnhProcessor.sh -v -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT -c
+        else
+            ./nnhProcessor.sh -v -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT
+        fi 
     else
-        ./nnhProcessor.sh -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT
+        if [ $p = 1 ]; then # build
+            ./nnhProcessor.sh -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT -c
+        else
+            ./nnhProcessor.sh -n $path -b $branch -i $NNH_PROCESSOR_INPUT -o $NNH_PROCESSOR_OUTPUT
+        fi 
     fi 
     
     ### analysis 
@@ -131,7 +147,11 @@ for ((p = 1; p <= $nb_processor; p++)); do
         setAnalysisOutput $serverOutputDir/analysis/run_$a # export.sh
         nnh_export # export.sh : export update
         mkdir -v $NNH_ANALYSIS_OUTPUT
-        ./nnhAnalysis -c -n $path -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT
+        if [ $verbose -eq 0 ]; then
+            ./nnhAnalysis -v -c -n $path -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT
+        else
+            ./nnhAnalysis -c -n $path -b $branch -i $NNH_ANALYSIS_INPUT -o $NNH_ANALYSIS_OUTPUT
+        fi
     done
 done
 

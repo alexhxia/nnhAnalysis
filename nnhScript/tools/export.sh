@@ -1,12 +1,35 @@
 #!/bin/bash
 
 # SERVER
+
 server=/gridgroup/ilc/nnhAnalysisFiles
 
 input=$server/AHCAL
 output=$server/result
 
-# HOME
+## Set commands
+
+function setServer {
+    server=$1
+
+    setServerInput $server/AHCAL
+    setServerOutput $server/result
+}
+
+function setServerInput {
+    input=$1
+    
+    setProcessorInput $input
+}
+
+function setServerOutput { 
+    output=$1
+}
+
+# LOCAL
+
+## PROJET
+
 path=~/nnhAnalysis
 
 program=$path/nnhProgram
@@ -14,43 +37,7 @@ result=$path/nnhResult
 script=$path/nnhScript
 test=$path/nnhTest
 
-branch=ilcsoft
-home=$program/$branch
-
-# PROCESSOR
-p_input=$input
-p_output=$home/processor/RESULTS
-
-# ANALYSIS
-a_input=$p_output
-a_output=$home/analysis/DATA
-
 # Set commands
-function setPath {
-    path=$1
-    
-    setProgram $path/nnhProgram
-    result=$path/nnhResult
-    script=$path/nnhScript
-    test=$path/nnhTest
-}
-
-function setServer {
-    server=$1
-
-    input=$server/AHCAL
-    output=$server/result
-}
-
-function setServerInput {
-    input=$1
-    
-    p_input=$input
-}
-
-function setServerOutput { 
-    p_output=$1
-}
 
 function setProgram {
     program=$1
@@ -70,6 +57,31 @@ function setTest {
     test=$1
 }
 
+function setPath {
+    path=$1
+    
+    setProgram $path/nnhProgram
+    setResult $path/nnhResult
+    setScript $path/nnhScript
+    setTest $path/nnhTest
+}
+
+## PROGRAM
+
+#branch=original
+branch=ilcsoft # default
+#branch=fcc
+
+home=$program/$branch
+
+### Set commands
+
+function setBranch {
+    branch=$1
+    
+    setHome $program/$branch
+}
+
 function setHome {
     home=$1
     
@@ -77,11 +89,12 @@ function setHome {
     setAnalysisOutput $home/analysis/DATA
 }
 
-function setBranch {
-    branch=$1
-    
-    setHome $program/$branch
-}
+### PROCESSOR
+
+p_input=$input
+p_output=$home/processor/RESULTS # default, local
+
+#### Set commands
 
 function setProcessorInput {
     p_input=$1
@@ -90,8 +103,15 @@ function setProcessorInput {
 function setProcessorOutput {
     p_output=$1
 
-    a_input=$p_output
+    setAnalysisInput $p_output
 }
+
+### ANALYSIS
+
+a_input=$p_output
+a_output=$home/analysis/DATA # default, local
+
+#### Set commands
 
 function setAnalysisInput {
     a_input=$1
@@ -101,7 +121,9 @@ function setAnalysisOutput {
     a_output=$1
 }
 
-# Print environment variables
+# Other commands
+
+## Print environment variables
 function print_export {
     echo
     echo "path:             $path"
@@ -126,7 +148,7 @@ function print_export {
     echo
 }
 
-# Add or Update environment variables
+## Add or Update environment variables
 function nnh_export {
     
     # PROJECT
@@ -150,8 +172,8 @@ function nnh_export {
     # SERVER
     export NNH_SERVER=/gridgroup/ilc/nnhAnalysisFiles
     
-    export NNH_INPUT=$NNH_SERVER/AHCAL
-    export NNH_OUTPUT=$NNH_SERVER/result
+    export NNH_INPUT=$input
+    export NNH_OUTPUT=$output
     
     # FOR RUN PROCESSOR
     export NNH_PROCESSOR_INPUT=$p_input
@@ -163,7 +185,7 @@ function nnh_export {
 }
 
 
-# Test if the directory home is valid
+## Test if the directory home is valid
 function test_isValidHome {
     if ! [ -d $path ]; then 
         error '-p: path is not find'
@@ -176,8 +198,8 @@ function test_isValidHome {
     fi
 }
 
-# Test if name project exist (no use now)
-# Entry : $1, a name branch 
+## Test if name project exist (no use now)
+## Entry : $1, a name branch 
 branchsValid=(original ilcsoft fcc)
 function test_isValidBranch {
     valid=false

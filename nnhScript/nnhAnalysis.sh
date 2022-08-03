@@ -9,15 +9,22 @@
 #   * 402002.root
 #   * 402003.root
 #   * ...
+#
 # OUTPUT:
 #   * prepareForBDT
 #       -> DATA.root
 #       -> split_XX_eXX_pXX.root
-#   * launchBDT_XX.py with XX = {WW ou bb}
-#       -> stats_XX_eXX_pXX.json
-#       -> model_XX_eXX_pXX.root
-#       -> scrore_XX_eXX_pXX.root
-#       -> bestSelection_XX_eXX_pXX.root
+#   * launchBDT_XX.py with XX = {WW or bb}
+#       -> model_XX_eYY_pYY.root
+#       -> score_XX_eYY_pYY.root
+#       -> bestSelection_XX_eYY_pYY.root
+#       -> stats_XX_eYY_pYY.json
+
+tab="    "
+
+echo
+echo "$tab""Start nnhAnalysis..."
+echo
 
 # INCLUDE TOOL 
 
@@ -30,41 +37,42 @@ source tools/help.sh
 ## Display Help
 function syntax {
     echo
-    echo "Run 'nnhAnalysis': ie 'prepareBDT' and 'launchBDT'."
+    echo "Run 'nnhAnalysis.sh': ie 'prepareBDT' and 'launchBDT'."
     echo
-    echo "WARNING: delete analysis output last directory"
+    echo "INPUT: root files create by processor"
     echo
-    echo "ENTRY: root files create by processor"
-    echo
-    echo "RETURN: statistic analysis files"
+    echo "OUTPUT: statistic analysis files"
     echo
     echo 'SYNTAX:'
     echo '    ./nnhAnalysis.sh [options]'
     echo
     
-    syntaxOption h c b n i o #help.sh
+    syntaxOption h c v b n k q #help.sh
 }
 
 # ENVIRONMENT + in export.sh 
 
 recompile=1 # no build
+verbose=1 # no verbose
 
 ## option choice by user
-while getopts hcn:b:i:o: flag ; do
+while getopts hcvb:n:k:q: flag ; do
     case "${flag}" in 
     
         h)  syntax
             exit 0;;
             
         c)  recompile=0;;
+        
+        v)  verbose=0;;
             
         b)  setBranch ${OPTARG};;
                                 
         n)  setPath ${OPTARG};;
                 
-        i)  setAnalysisInput ${OPTARG};;
+        k)  setAnalysisInput ${OPTARG};;
         
-        o)  setAnalysisOutput ${OPTARG};;
+        q)  setAnalysisOutput ${OPTARG};;
         
         *) error '    Option no exist';;
     esac
@@ -72,8 +80,10 @@ done
 
 ## update environment
 
-nnh_export
-print_export
+nnh_export # export.sh
+if [ $verbose -eq 0 ]; then
+    print_export # export.sh
+fi
 
 ## test environment
 
@@ -81,36 +91,61 @@ test_isValidHome
 
 # RUN
 
-echo
-echo "Start nnhAnalysis on the $branch branch..."
 if [ -d $NNH_ANALYSIS_OUTPUT ]; then
     rm -R $NNH_ANALYSIS_OUTPUT/*
 else 
-    mkdir $NNH_ANALYSIS_OUTPUT
+    mkdir -pv $NNH_ANALYSIS_OUTPUT
+    echo
 fi
 
 ## prepareBDT
 
-echo "  -> Prepare BDT ..."
-if [ $recompile -eq 0 ]; then
-    ./prepareBDT.sh -c \
-            -n $path \
-            -b $branch \
-            -i $NNH_ANALYSIS_INPUT \
-            -o $NNH_ANALYSIS_OUTPUT
-else 
-    ./prepareBDT.sh \
-            -n $path \
-            -b $branch \
-            -i $NNH_ANALYSIS_INPUT \
-            -o $NNH_ANALYSIS_OUTPUT
+echo "$tab""--> Run: prepareBDT.sh ..."
+if [ $verbose -eq 0 ]; then
+    if [ $recompile -eq 0 ]; then
+        ./prepareBDT.sh -c -v \
+                -n $path \
+                -b $branch \
+                -i $NNH_ANALYSIS_INPUT \
+                -o $NNH_ANALYSIS_OUTPUT
+    else 
+        ./prepareBDT.sh -v \
+                -n $path \
+                -b $branch \
+                -i $NNH_ANALYSIS_INPUT \
+                -o $NNH_ANALYSIS_OUTPUT
+    fi 
+else
+    if [ $recompile -eq 0 ]; then
+        ./prepareBDT.sh -c \
+                -n $path \
+                -b $branch \
+                -i $NNH_ANALYSIS_INPUT \
+                -o $NNH_ANALYSIS_OUTPUT
+    else 
+        ./prepareBDT.sh \
+                -n $path \
+                -b $branch \
+                -i $NNH_ANALYSIS_INPUT \
+                -o $NNH_ANALYSIS_OUTPUT
+    fi 
 fi 
 
 ## launchBDT
 
-echo "  -> Launch  BDT..."
-./launchBDT.sh -n $path -b $branch -i $NNH_ANALYSIS_INPUT
+echo "$tab""--> Run: launchBDT.sh..."
+if [ $verbose -eq 0 ]; then
+    ./launchBDT.sh -v \
+            -n $path \
+            -b $branch \
+            -i $NNH_ANALYSIS_INPUT
+else
+    ./launchBDT.sh \
+            -n $path \
+            -b $branch \
+            -i $NNH_ANALYSIS_INPUT
+fi
 
 echo
-echo "...Terminate nnhAnalysis"
+echo "$tab""...End nnhAnalysis"
 echo
