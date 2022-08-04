@@ -98,7 +98,6 @@ else
 fi
 
 echo
-exit 0
 
 ## prepareBDT
 
