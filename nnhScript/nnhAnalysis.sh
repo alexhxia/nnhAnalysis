@@ -92,7 +92,7 @@ test_isValidHome
 # RUN
 
 if [ -d $NNH_ANALYSIS_OUTPUT ]; then
-    rm -R $NNH_ANALYSIS_OUTPUT/*
+    rm -Rv $NNH_ANALYSIS_OUTPUT/*
 else 
     mkdir -pv $NNH_ANALYSIS_OUTPUT
     echo
