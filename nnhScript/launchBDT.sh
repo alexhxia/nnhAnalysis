@@ -97,8 +97,7 @@ for p in ${particles[@]}; do
             # can't change NNH_ANALYSIS_INPUT for original branch
             python3 launchBDT_$p.py 
         else 
-            python3 launchBDT_$p.py \
-                    -i $NNH_ANALYSIS_OUTPUT
+            python3 launchBDT_$p.py $NNH_ANALYSIS_OUTPUT
         fi
     else
         if [ "$branch" == "original" ]; then 
@@ -107,8 +106,7 @@ for p in ${particles[@]}; do
                     1> $NNH_ANALYSIS_OUTPUT/launchBDT_$p.out \
                     2> $NNH_ANALYSIS_OUTPUT/launchBDT_$p.err 
         else 
-            python3 launchBDT_$p.py \
-                    -i $NNH_ANALYSIS_OUTPUT \
+            python3 launchBDT_$p.py $NNH_ANALYSIS_OUTPUT \
                     1> $NNH_ANALYSIS_OUTPUT/launchBDT_$p.out \
                     2> $NNH_ANALYSIS_OUTPUT/launchBDT_$p.err 
         fi
