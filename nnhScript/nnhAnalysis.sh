@@ -95,8 +95,9 @@ if [ -d $NNH_ANALYSIS_OUTPUT ]; then
     rm -Rv $NNH_ANALYSIS_OUTPUT/*
 else 
     mkdir -pv $NNH_ANALYSIS_OUTPUT
-    echo
 fi
+
+echo
 exit 0
 
 ## prepareBDT
