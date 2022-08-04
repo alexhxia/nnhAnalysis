@@ -2,13 +2,14 @@
 
 # This program build and run prepare for BDT.
 #
-# BEFORE : run processor part
+# BEFORE: run processor part
 # INPUT: directory with once root file by processus 
 # OUTPUT: 
 #   * DATA.root
-#   * split_XX_eXX_pXX.root
+#   * 4 files: split_XX_eYY_pYY.root
 
 tab="        "
+
 echo
 echo "$tab""Start prepareBDT..."
 echo
@@ -39,7 +40,7 @@ function syntax {
     echo '    ./prepareBDT.sh [options]'
     echo
     
-    syntaxOption h c v b n k q #help.sh
+    syntaxOption h c v b n k q # help.sh
 }
 
 ## Test if it need build
@@ -47,10 +48,10 @@ function testNeedBuild {
     
     if [ $recompile -eq 1 ]; then
         if ! [ -f $NNH_HOME/analysis/bin/prepareForBDT ]; then 
-            echo "prepareForBDT no exist"
+            echo "$NNH_HOME/analysis/bin/prepareForBDT no exist"
             recompile=0
         elif ! [ -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then 
-            echo "DATA.root no exist"
+            echo "$NNH_ANALYSIS_OUTPUT/DATA.root no exist"
             recompile=0
         fi
     fi
@@ -85,18 +86,16 @@ while getopts hcvn:b:k:q: flag ; do
 done 
 
 ## update environment
-
 nnh_export # export.sh
 if [ $verbose -eq 0 ]; then
     print_export # export.sh
 fi
 
 ## test environment
-
-test_isValidHome
+test_isValidHome # export.sh
 testNeedBuild
 
-## Output directory
+# Output directory
 if [ ! -d $NNH_ANALYSIS_OUTPUT ]; then
     mkdir -vp $NNH_ANALYSIS_OUTPUT
     echo
@@ -105,9 +104,8 @@ if [ $recompile -eq 0 ]; then
     rm -Rf $NNH_ANALYSIS_OUTPUT/*
 fi
 
-## Merge all processor files
+# merge: all processor files
 if [ ! -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
-    
     echo "$tab""--> Merge processor files in DATA.root..."
     echo
     if [ $verbose -eq 0 ]; then
@@ -120,14 +118,14 @@ if [ ! -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
     fi
 fi
 
-# build 
+# build: analysis program
 if [ $recompile -eq 0 ] || [ ! -f $NNH_HOME/analysis/bin/prepareForBDT ]; then
-
     echo "$tab""--> Build analysis program in $branch branch..."
     echo
     
     if [ -d $NNH_HOME/analysis/BUILD ]; then
         rm -R $NNH_HOME/analysis/BUILD/*
+        rm -R $NNH_HOME/analysis/bin
     else 
         mkdir -pv $NNH_HOME/analysis/BUILD
     fi
@@ -136,12 +134,11 @@ if [ $recompile -eq 0 ] || [ ! -f $NNH_HOME/analysis/bin/prepareForBDT ]; then
     cmake -C $ILCSOFT/ILCSoft.cmake .. 
     make
     make install
+    
     echo
 fi
 
-# RUN 
-
-
+# run: prepare BDT
 echo "$tab""--> Run: prepareBDT for $branch branch..."
 echo
 
@@ -152,6 +149,7 @@ if [ $verbose -eq 0 ]; then
     else 
         ./prepareForBDT $NNH_ANALYSIS_OUTPUT
     fi
+    echo
 else 
     if [ "$branch" == "original" ]; then 
         ./prepareForBDT \
@@ -163,7 +161,6 @@ else
             2> $NNH_ANALYSIS_OUTPUT/prepareBDT.err
     fi
 fi
-echo
 
 echo "$tab""... End: prepareBDT"
 echo

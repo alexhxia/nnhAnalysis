@@ -90,7 +90,7 @@ cd $NNH_HOME/analysis/python
 
 particles=("bb" "WW")
 for p in ${particles[@]}; do
-    echo "        Run: launchBDT_$p"
+    echo "$tab""--> Run: launchBDT_$p"
     
     if [ $verbose -eq 0 ]; then
         if [ "$branch" == "original" ]; then 
