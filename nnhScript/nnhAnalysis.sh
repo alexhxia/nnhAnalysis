@@ -88,7 +88,7 @@ fi
 ## test environment
 
 test_isValidHome
-exit 0
+
 # RUN
 
 if [ -d $NNH_ANALYSIS_OUTPUT ]; then
@@ -97,6 +97,7 @@ else
     mkdir -pv $NNH_ANALYSIS_OUTPUT
     echo
 fi
+exit 0
 
 ## prepareBDT
 
