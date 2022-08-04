@@ -62,7 +62,7 @@ recompile=1
 verbose=1 # no verbose
 
 ## option choice by user
-while getopts hcn:b:i:o: flag ; do
+while getopts hcvn:b:k:q: flag ; do
     case "${flag}" in 
     
         h)  syntax
