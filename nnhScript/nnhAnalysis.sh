@@ -107,44 +107,45 @@ if [ $verbose -eq 0 ]; then
         ./prepareBDT.sh -c -v \
                 -n $path \
                 -b $branch \
-                -i $NNH_ANALYSIS_INPUT \
-                -o $NNH_ANALYSIS_OUTPUT
+                -k $NNH_ANALYSIS_INPUT \
+                -q $NNH_ANALYSIS_OUTPUT
     else 
         ./prepareBDT.sh -v \
                 -n $path \
                 -b $branch \
-                -i $NNH_ANALYSIS_INPUT \
-                -o $NNH_ANALYSIS_OUTPUT
+                -k $NNH_ANALYSIS_INPUT \
+                -q $NNH_ANALYSIS_OUTPUT
     fi 
 else
     if [ $recompile -eq 0 ]; then
         ./prepareBDT.sh -c \
                 -n $path \
                 -b $branch \
-                -i $NNH_ANALYSIS_INPUT \
-                -o $NNH_ANALYSIS_OUTPUT
+                -k $NNH_ANALYSIS_INPUT \
+                -q $NNH_ANALYSIS_OUTPUT
     else 
         ./prepareBDT.sh \
                 -n $path \
                 -b $branch \
-                -i $NNH_ANALYSIS_INPUT \
-                -o $NNH_ANALYSIS_OUTPUT
+                -k $NNH_ANALYSIS_INPUT \
+                -q $NNH_ANALYSIS_OUTPUT
     fi 
 fi 
 
 ## launchBDT
 
+echo
 echo "$tab""--> Run: launchBDT.sh..."
 if [ $verbose -eq 0 ]; then
     ./launchBDT.sh -v \
             -n $path \
             -b $branch \
-            -i $NNH_ANALYSIS_INPUT
+            -q $NNH_ANALYSIS_INPUT
 else
     ./launchBDT.sh \
             -n $path \
             -b $branch \
-            -i $NNH_ANALYSIS_INPUT
+            -q $NNH_ANALYSIS_INPUT
 fi
 
 echo
