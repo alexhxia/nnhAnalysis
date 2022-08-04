@@ -47,7 +47,7 @@ function syntax {
     echo '    ./nnhAnalysis.sh [options]'
     echo
     
-    syntaxOption h c v b n k q #help.sh
+    syntaxOption h c v b n k q # help.sh
 }
 
 # ENVIRONMENT + in export.sh 
@@ -89,18 +89,15 @@ fi
 
 test_isValidHome
 
-# RUN
+# RUN: prepareBDT + launchBDT
 
-if [ -d $NNH_ANALYSIS_OUTPUT ]; then
-    rm -Rv $NNH_ANALYSIS_OUTPUT/*
-else 
+if [ ! -d $NNH_ANALYSIS_OUTPUT ]; then
     mkdir -pv $NNH_ANALYSIS_OUTPUT
 fi
 
-echo
-
 ## prepareBDT
 
+echo
 echo "$tab""--> Run: prepareBDT.sh ..."
 if [ $verbose -eq 0 ]; then
     if [ $recompile -eq 0 ]; then
@@ -140,12 +137,12 @@ if [ $verbose -eq 0 ]; then
     ./launchBDT.sh -v \
             -n $path \
             -b $branch \
-            -q $NNH_ANALYSIS_INPUT
+            -q $NNH_ANALYSIS_OUTPUT
 else
     ./launchBDT.sh \
             -n $path \
             -b $branch \
-            -q $NNH_ANALYSIS_INPUT
+            -q $NNH_ANALYSIS_OUTPUT
 fi
 
 echo

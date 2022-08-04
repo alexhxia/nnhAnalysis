@@ -98,11 +98,11 @@ testNeedBuild
 # Output directory
 if [ ! -d $NNH_ANALYSIS_OUTPUT ]; then
     mkdir -vp $NNH_ANALYSIS_OUTPUT
-    echo
 fi
 if [ $recompile -eq 0 ]; then 
     rm -Rf $NNH_ANALYSIS_OUTPUT/*
 fi
+echo
 
 # merge: all processor files
 if [ ! -f $NNH_ANALYSIS_OUTPUT/DATA.root ]; then
