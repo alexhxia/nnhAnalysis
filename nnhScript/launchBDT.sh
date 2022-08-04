@@ -49,7 +49,6 @@ function syntax {
 
 # ENVIRONMENT + in export.sh ###
 
-
 ## option choice by user
 while getopts hvb:n:q: flag ; do
     case "${flag}" in 

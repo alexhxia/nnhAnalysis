@@ -45,7 +45,7 @@ function syntaxOption {
             m)  echo '   -m [directory]    output processor directory'
                 echo "                     DEFAULT VALUE: $p_output";;
             
-            q)  echo '   -n [directory]    output analysis directory'
+            q)  echo '   -q [directory]    output analysis directory'
                 echo "                     DEFAULT VALUE: $a_output";;
 
             ## multi-program
