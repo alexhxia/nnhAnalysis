@@ -113,7 +113,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{\texttt{ILC}}
+\chapter{Programme \texttt{ILC}}
 
 \section{Présentation du Projet ILC}
 
@@ -157,8 +157,8 @@ Chaque fichier est rangés dans un des 66 dossiers (Figure~\ref{data:list}), qui
 Ce dossier a été placé sur le serveur local de l'IP2I : \texttt{/gridgroup/ilc/nnhAnalysisFiles/AHCAL}.
 
 \begin{figure}[h!]
-    \center
-    \begin{array}[ | c | c | c | c | c | c | c | c | c | c | c | ]
+    \centering
+    \begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | c | }
         \hline
         2 leptoniques & 2 hadroniques & 4 hadroniques & 4 semi-leptoniques & 4 leptoniques & signal & autres higgs \\
         \hline
@@ -166,17 +166,17 @@ Ce dossier a été placé sur le serveur local de l'IP2I : \texttt{/gridgroup/il
         500113, 500114, 500115, 500116, 500117, 500118, 500119, 500120,
         500122, 500124, 500125, 500126, 500127, 500128 & 402007 & 402001, 402002, 402003, 402004, 402005, 402006, 402008, 402009, 402010, 402011, 402012, 402013, 402014, 402182, 402185 \\
         \hline
-    \end{array}
+    \end{tabular}
     \caption{Signification des codes des processus}
     \label{data:def}
 \end{figure}
 
-if (isBB) 
-        CHANNELS_SIGNAL.insert(402173);
-        CHANNELS_OTHERHIGGS.insert(402176);
-else 
-        CHANNELS_SIGNAL.insert(402176);
-        CHANNELS_OTHERHIGGS.insert(402173);
+%if (isBB) 
+%        CHANNELS_SIGNAL.insert(402173);
+%        CHANNELS_OTHERHIGGS.insert(402176);
+%else 
+%        CHANNELS_SIGNAL.insert(402176);
+%        CHANNELS_OTHERHIGGS.insert(402173);
     
     
 %\paragraph{Numéro des processus ???}
@@ -282,7 +282,11 @@ Et pour terminer, on peut effectuer l'analyse à proprement parlé de nos donné
 			bestSelection_bb_e-0.8_p+0.3.root
 			bestSelection_ww_e-0.8_p+0.3.root
 	\end{lstlisting}
-	\caption{Ce fichier \ROOT contient tous les arbres \texttt{TTree} sélectionnés par la BDT comme un évènement \nnh donne b\bbar ou W\Wstar}
+	\caption{
+		%Ce fichier \ROOT contient tous les arbres \texttt{TTree} 
+		%sélectionnés par la BDT comme un évènement \nnh donne 
+		%$b \bbar$ ou $W \Wstar$
+	}
 	\label{files:bestSelection}
 \end{figure}
 	
@@ -353,7 +357,7 @@ Comparaison entre les différents séries d'analyse, basée sur les même fichie
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{\texttt{FCC}}
+\chapter{Programme \texttt{FCC}}
 
 \section{Projet FCC}
 
@@ -441,11 +445,22 @@ Le processus est complet si tous les dossiers de
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Exemples de Résultats Physiques}
+\chapter{Résultats Physiques}
+
+\section{Physique du Higgs}
+
+\subsection{Nombre de Higgs attendu}
+
+\subsection{Propriétés à Préciser}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion}
 
+\section{Travail effectué}
+
+\section{Résultats attendus}
+
+\section{Au delà}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
