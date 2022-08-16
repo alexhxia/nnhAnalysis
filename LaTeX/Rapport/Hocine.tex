@@ -15,6 +15,7 @@
 \usepackage{listings}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{enumitem}
 %\usepackage{feynmp}
 %\usepackage{tikz-feynman}
 
@@ -122,21 +123,32 @@ Le projet ILC (International Linear Collider) est un collisionneur linéaire, é
 	\label{ilc:schema}
 \end{figure}
 
-L'objectif de l'ILC est de produire beaucoup de boson de Higgs notamment pour découvrir s'il y en a d'autre génération du boson de Higgs. Et plus globalement pour rechercher de la nouvelle physique, par de nouveaux écarts avec le \MS.\\
+L'objectif de l'ILC est de produire beaucoup de boson de Higgs, notamment pour découvrir s'il y en a d'autre génération du boson de Higgs. Et plus globalement pour rechercher de la nouvelle physique, par de nouveaux écarts avec le \MS.\\
 
-Ce projet est toujours en attente pour commencer sa construction, probablement dans les montagne du Nord du Japon. Et le détecteur SDHCAL est en course pour y être installer. C'est pourquoi, l'IP2I développe des programme d'analyse en parallèle de ce détecteur.
+Ce projet est toujours en attente pour commencer sa construction, probablement dans les montagne du Nord du Japon. Et le détecteur SDHCAL de l'IP2I est en course pour y être installer. C'est pourquoi, l'IP2I développe des programmes d'analyse en parallèle de ce détecteur.
 
 \section{Projet numérique : \original}
 
 % Contexte
-Pour ce stage j'ai récupéré les codes de Guillaume Garillot, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
+Pour ce stage j'ai récupéré les codes de Guillaume \textsc{Garillot}, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
 
-Son programme permet l'identification et l'analyse statistique de collision du détecteur SDHCAL.
+Son projet se divise en 3 programmes indépendants :
+
+\begin{description}
+	
+	\item[\texttt{miniDSTMarker}] qui permet de récupérer les données (aujourd'hui simulées, plus tard obtenues dans le détecteur) sur le serveur distant où elles sont stockées.
+	
+	\item[\texttt{processor}]
+	
+	\item[\texttt{analysis}]
+	
+\end{description} 
+
+permet l'identification et l'analyse statistique de collision pour ce détecteur.
 
 \subsection{Données initiales}
 
-% données distantes : miniDSTMarker
-La première étape est de récupérer les données (aujourd'hui simulées, plus tard obtenues dans le détecteur) sur le serveur distant où elles sont stockées, grâce au programme \minidstmarker. 
+% données distantes : 
 
 Mais pour le temps du stage je n'ai pas obtenu l'accès à ce serveur donc je n'ai pas pu utilisé cette partie de code. Je l'ai donc pas réutilisé dans ma propre version.\\
 
@@ -444,6 +456,33 @@ Le processus est complet si tous les dossiers de
 \chapter{Résultats Physiques}
 
 \section{Physique du Higgs}
+
+\subsection{Section efficace}
+
+\paragraph{Fusion $W\Wstar$ \cite{desy}}
+
+Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 $
+
+\begin{equation}
+	\sigma_{WW\ fusion} \longrightarrow 
+		\frac{g_{HWW}^2 \, G_F^2}{32 \, \pi^3}
+		\left[
+			\left(1 + \frac{m_H^2}{s}\right) \log\left(\frac{s}{m_H^2}\right)
+			- 2 \left(1 - \frac{m_H^2}{s}\right)
+		\right]
+\end{equation}
+
+\begin{description}
+
+	\item[$g_{HWW}$] : couplage du boson de Higgs et du boson W
+
+	\item[$G_F$] : constante de couplage de Fermi
+	
+	\item[$m_H$] : masse du boson de Higgs
+	
+	\item[$s$]
+		
+\end{description}
 
 \subsection{Nombre de Higgs attendu}
 
