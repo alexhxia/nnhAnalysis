@@ -1,0 +1,29 @@
+% Organisation du projet initial : https://github.com/ggarillot/nnhAnalysis/tree/refactor
+
+\begin{figure}[h!]
+	\centering
+	\begin{tikzpicture}
+
+		\tikzstyle{home}=[draw, rectangle, fill=red!50, text=black, rounded corners=3pt]		
+		
+		\tikzstyle{directory}=[draw, rectangle, fill=gray!30, text=black, rounded corners=3pt]
+
+		\node[home] (A) at (0,0) {\texttt{nnhAnalysis}};
+		
+		\node[directory] (AM) at (-4,-2.5){\minidstmarker};
+		\node[directory] (AP) at (0,-2.5) {\processor};
+		\node[directory] (AA) at (4,-2.5) {\analysis};
+		
+		
+		\tikzstyle{linkDir}=[->,dotted,very thick,>=latex]
+		
+		\draw[linkDir] (A)--(AM);
+		\draw[linkDir] (A)--(AP); 
+		\draw[linkDir] (A)--(AA);
+		
+	\end{tikzpicture}
+	\caption{
+		Organisation des dossiers de mon Projet - \url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}
+	}
+	\label{orga:init}
+\end{figure}

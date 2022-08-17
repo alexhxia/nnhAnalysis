@@ -76,6 +76,8 @@
 
 % LaTeX
 
+\newcommand{\Figure}[1]{[\textsc{Figure~#1}]}
+
 \newcommand{\be}{\begin{enumerate}}
 \newcommand{\ee}{\end{enumerate}}
 
@@ -123,46 +125,50 @@ Le projet ILC (International Linear Collider) est un collisionneur linéaire, é
 	\label{ilc:schema}
 \end{figure}
 
-L'objectif de l'ILC est de produire beaucoup de boson de Higgs, notamment pour découvrir s'il y en a d'autre génération du boson de Higgs. Et plus globalement pour rechercher de la nouvelle physique, par de nouveaux écarts avec le \MS.\\
+L'objectif de l'ILC est de produire beaucoup de boson de Higgs, notamment pour découvrir s'il y en a d'autres générations du boson de Higgs. Et plus globalement pour rechercher de la nouvelle physique, par de nouveaux écarts avec le \MS.\\
 
-Ce projet est toujours en attente pour commencer sa construction, probablement dans les montagne du Nord du Japon. Et le détecteur SDHCAL de l'IP2I est en course pour y être installer. C'est pourquoi, l'IP2I développe des programmes d'analyse en parallèle de ce détecteur.
+À l'heure actuelle, ce projet attend les autorisations pour lancer sa construction, probablement dans les montagnes au nord du Japon. 
+Et le détecteur SDHCAL correspond parfaitement aux spécifications nécessaires pour un accélérateur linéaire de ce type.
+C'est pourquoi, afin de consolider sa candidature pour l'appel d'offre, l'IP2I développe aussi des programmes d'analyse de ce détecteur.
 
 \section{Projet numérique : \original}
 
 % Contexte
-Pour ce stage j'ai récupéré les codes de Guillaume \textsc{Garillot}, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
+Au début de mon stage, j'ai récupéré les codes de Guillaume \textsc{Garillot}, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
 
-Son projet se divise en 3 programmes indépendants :
+Son projet se divise en 3 programmes indépendants \Figure{\ref{orga:init}} :
 
 \begin{description}
 	
-	\item[\texttt{miniDSTMarker}] qui permet de récupérer les données (aujourd'hui simulées, plus tard obtenues dans le détecteur) sur le serveur distant où elles sont stockées.
+	\item[\texttt{miniDSTMarker}] qui permet de récupérer les données\footnote{aujourd'hui simulées mais plus tard obtenues dans le détecteur} sur le serveur distant où elles sont stockées.
 	
-	\item[\texttt{processor}]
+	\item[\texttt{processor}] permet de tirer, des données brutes précédentes, des arbres \ROOT s.
 	
-	\item[\texttt{analysis}]
+	\item[\texttt{analysis}] utilise les méthodes des arbres binaires boostés pour effectuer une analyse statistique des arbres \ROOT issus du programme \texttt{processor}.
 	
 \end{description} 
 
-permet l'identification et l'analyse statistique de collision pour ce détecteur.
+\input{tikz/orgaInit.tex}
+
+En résumer, ce projet permet l'analyse des collisions survenues dans ce détecteur pour le projet ILC.
+
 
 \subsection{Données initiales}
 
 % données distantes : 
 
-Mais pour le temps du stage je n'ai pas obtenu l'accès à ce serveur donc je n'ai pas pu utilisé cette partie de code. Je l'ai donc pas réutilisé dans ma propre version.\\
+Malheureusement, pour le temps du stage, je n'ai pas obtenu l'accès au serveur, donc je n'ai pas pu utilisé cette partie de code. Je l'ai donc pas utilisé, ni pu développer ma propre version. C'est pourquoi, j'ai décidé de ne pas l'inclure dans mon propre code.\\
 
 % données locales
-Initialement, on m'a mis à disposition certains de ces fichiers \SLCIO, ceux des collisions de 250 \GeV. 
-Chaque fichier est rangés dans un des 66 dossiers (Figure~\ref{data:list}), qui correspond au code du type de processus.
+Donc pour que je puisse travailler, on a mis à ma disposition certains de ces fichiers, ceux des collisions à 250 \GeV. Soient 66 dossiers \Figure{\ref{data:list}} de fichiers \LCIO, où chacun correspond au code du type de processus \Figure{\ref{data:def}}.
 
 \begin{figure}[h!]
 	\includegraphics[width=\textwidth]{../img/listeProcessus.png} 
-	\caption{Les noms des dossiers qui correspondent aux numéros de processus}
+	\caption{Les noms des dossiers correspondent aux numéros de processus}
 	\label{data:list}
 \end{figure}
 
-Ce dossier a été placé sur le serveur local de l'IP2I : \texttt{/gridgroup/ilc/nnhAnalysisFiles/AHCAL}.
+
 
 \begin{figure}[h!]
     \centering
@@ -546,33 +552,7 @@ Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 $
 
 \section{Organisation initiale}
 
-\begin{figure}[h!]
-	\center
-	\begin{tikzpicture}
 
-		\tikzstyle{home}=[draw, rectangle, fill=red!50, text=black, rounded corners=3pt]		
-		
-		\tikzstyle{directory}=[draw, rectangle, fill=gray!30, text=black, rounded corners=3pt]
-
-		\node[home] (A) at (0,0) {\texttt{nnhAnalysis}};
-		
-		\node[directory] (AM) at (-4,-2.5){\minidstmarker};
-		\node[directory] (AP) at (0,-2.5) {\processor};
-		\node[directory] (AA) at (4,-2.5) {\analysis};
-		
-		
-		\tikzstyle{linkDir}=[->,dotted,very thick,>=latex]
-		
-		\draw[linkDir] (A)--(AM);
-		\draw[linkDir] (A)--(AP); 
-		\draw[linkDir] (A)--(AA);
-		
-	\end{tikzpicture}
-	\caption{
-		Organisation des dossiers de mon Projet - \url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}
-	}
-	\label{orga:begin}
-\end{figure}
 
 \section{Organisation finale}
 
