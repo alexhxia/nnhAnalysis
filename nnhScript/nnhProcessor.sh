@@ -16,8 +16,9 @@ echo
 
 source /cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/init_ilcsoft.sh
 
+source nnhExport.sh 
+
 source tools/functions.sh
-source tools/export.sh 
 source tools/help.sh
 
 # FUNCTION TOOLS

@@ -19,9 +19,10 @@ echo
 
 # INCLUDE TOOL 
 
-source tools/export.sh
-source tools/help.sh
+source nnhExport.sh 
+
 source tools/functions.sh
+source tools/help.sh
 
 # FUNCTION TOOL 
 
