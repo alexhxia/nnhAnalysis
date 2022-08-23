@@ -106,14 +106,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{Introduction.tex}
 
-%\feynmandiagram [horizontal=a to b] {
-%  i1 -- [fermion] a -- [fermion] i2,
-%  a -- [photon] b,
-%  f1 -- [fermion] b -- [fermion] f2,
-%};
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Programme \texttt{ILC}}
@@ -152,7 +144,7 @@ Son projet se divise en 3 programmes indépendants \Figure{\ref{orga:init}} :
 	
 \end{description} 
 
-\input{tikz/orgaInit.tex}
+\input{figure/tikz/orgaInit.tex}
 
 En résumer, ce projet permet l'analyse des collisions survenues dans ce détecteur pour le projet ILC.
 
@@ -172,7 +164,7 @@ Pour que je puisse travailler, on a mis à ma disposition certains de quelqu'un 
 	\label{data:list}
 \end{figure}
 
-\input{tabular/codeProcessus.tex}
+\input{figure/tabular/codeProcessus.tex}
 
 \subsection{Conversion des fichiers initiaux en fichiers \ROOT}
 
@@ -197,7 +189,7 @@ Pour la deuxième étape de ce programme \analysis, on va trier nos données en 
 Mais au lieu de les séparer par leur numéro de processus, qui est un critère numérique donc éloigné de la réalité des résultats d'une véritable expérience, on va les diviser par le type de particules produit par le boson de Higgs, soit \bb, soit \WW, et par la polarisation de particules incidentes, \cad l'électron et le positron avec une polarisation de -0,8 et 0,3 soit nulles.
 Ce qui va nous créer les 4 fichiers suivants :
 
-\input{figure/splitFiles.tex}
+\input{figure/tabular/splitFiles.tex}
 
 Dans chacun de ces fichiers les arbres \ROOT, \texttt{TTree}, auront les variables suivantes :
 
@@ -233,7 +225,7 @@ Ici les arbres sont utilisés pour déterminer la nature des particules en répo
 	\label{ExampleBDT}
 \end{figure}
 
-Une fois encore, nous allons utilisé l'API du CERN. En effet, il existe déjà des méthodes (expliquées avec des tutoriels) \cite{•}. \textbf{Ces méthodes utilisent des paramètres générées aléatoirement afin d'augmenter la rapidité des calculs. C'est pourquoi on parle d'arbre boosté}
+Une fois encore, nous allons utilisé l'API du CERN. En effet, il existe déjà des méthodes (expliquées avec des tutoriels) \cite{root:treeFriend}. \textbf{Ces méthodes utilisent des paramètres générées aléatoirement afin d'augmenter la rapidité des calculs. C'est pourquoi on parle d'arbre boosté}
 
 Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Car les BDT utilisent la génération de nombre aléatoire, ce qui engendre des variations dans les entraînements.\\
 
@@ -241,50 +233,13 @@ Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Ca
 
 Et pour terminer, on peut effectuer l'analyse à proprement parlé de nos données à partir des fichiers \texttt{split\_XX.root} (\textsc{Figure}~\ref{files:split}).
 
-\begin{figure}[h!]
-	\centering
-	\begin{lstlisting}
-			model_bb_e-0.8_p+0.3.joblib
-			model_ww_e-0.8_p+0.3.joblib
-	\end{lstlisting}
-	\caption{Fichiers du model de la BDT}
-	\label{files:model}
-\end{figure}
+\input{figure/tabular/modelFiles.tex}
 	
-\begin{figure}[h!]
-	\centering
-	\begin{lstlisting}
-			scores_bb_e-0.8_p+0.3.root
-			scores_ww_e-0.8_p+0.3.root
-	\end{lstlisting}
-	\caption{Les fichiers scores ont la réponse de la BDT : 2 variables pour chaque évènement, un booléen pour savoir s'il est sélectionné et la valeur retournée par la BDT}
-	\label{files:scores}
-\end{figure}
-	
-\begin{figure}[h!]
-	\centering
-	\begin{lstlisting}
-			bestSelection_bb_e-0.8_p+0.3.root
-			bestSelection_ww_e-0.8_p+0.3.root
-	\end{lstlisting}
-	\caption{
-		%Ce fichier \ROOT contient tous les arbres \texttt{TTree} 
-		%sélectionnés par la BDT comme un évènement \nnh donne 
-		%$b \bbar$ ou $W \Wstar$
-	}
-	\label{files:bestSelection}
-\end{figure}
-	
-\begin{figure}[h!]
-	\centering
-	\begin{lstlisting}
-			stats_bb_e-0.8_p+0.3.joblib
-			stats_ww_e-0.8_p+0.3.joblib
-	\end{lstlisting}
-	\caption{Statistiques.}
-	\label{files:stats}
-\end{figure}
+\input{figure/tabular/scoresFiles.tex}
 
+\input{figure/tabular/bestSelectionFiles.tex}
+
+\input{figure/tabular/statsFiles.tex}
 
 Et même si cette analyse sera toujours la même \qqs les fichiers \texttt{split\_XX.root}, ces derniers étant légèrement différent d'un entraînement à l'autre les résultats statistiques seront, là encore, légèrement différent mais doivent rester équivalent.
 
@@ -316,7 +271,7 @@ Chaque dossier de fichier de donnée \SLCIO produira un fichier \ROOT en sortie,
 
 \subsubsection{Interprétation}
 
-\subsection{Programme \analysis}
+\subsection{Programme : \analysis}
 
 \subsubsection{Données}
 

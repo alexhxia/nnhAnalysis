@@ -1,0 +1,32 @@
+% Fichiers "bestSelection"
+
+%\begin{figure}[h!]
+%	\centering
+%	\begin{lstlisting}
+%			bestSelection_bb_e-0.8_p+0.3.root
+%			bestSelection_ww_e-0.8_p+0.3.root
+%	\end{lstlisting}
+%	\caption{
+		%Ce fichier \ROOT contient tous les arbres \texttt{TTree} 
+		%sélectionnés par la BDT comme un évènement \nnh donne 
+		%$b \bbar$ ou $W \Wstar$
+%	}
+%	\label{files:bestSelection}
+%\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ | c | c | c | c | }
+		\hline
+		Polarisation & \multicolumn{2}{c|}{Canal} \\
+		\hline
+		$(e,p)$ & \bb &  \WW \\
+		\hline
+		\hline \cline{2-3}
+		$(-0.8, +0.3)$ & \verb|bestSelection_bb_e-0.8_p+0.3.root| & \verb|bestSelection_ww_e-0.8_p+0.3.root| \\
+		\hline
+	\end{tabular}
+	\label{files:bestSelection}
+	\caption{Ce fichier \ROOT contient tous les arbres \texttt{TTree} 
+		sélectionnés par la BDT comme un évènement de \texttt{nnh}}
+\end{figure}
