@@ -1,0 +1,36 @@
+% Tableau des codes associés aux résultats des processus
+
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ | l | l | l | }
+    		\hline
+    		Type de processus & Code des processus \\
+        \hline
+        2 leptoniques & 500006, 500008 \\
+        \hline
+        2 hadroniques & 500010, 500012 \\
+        \hline
+        4 hadroniques & 500062, 500064, 500066, 500068, 500070, 500072 \\
+        \hline
+        4 semi-leptoniques & 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 500103, 500104, \\ 
+        & 500105, 500106, 500107, 500108, 500110, 500112 \\
+        \hline
+        4 leptoniques & 500086, 500088, 500090, 500092, 500094, 500096, 500098, 500100, 500113, 500114, 500115, \\
+        & 500116, 500117, 500118, 500119, 500120, 500122, 500124, 500125, 500126,500127, 500128  \\
+        	\hline
+        signal & 402007, \color{red}{402173}, \color{blue}{402176}\\
+        \hline
+        autres higgs & 402001, 402002, 402003, 402004, 402005, 402006, 402008, 402009, 402010, 402011, 402012, \\ 
+        & 402013, 402014, 402182, 402185, \color{blue}{402173}, \color{red}{402176}\\
+        \hline
+    \end{tabular}
+    \caption{Signification des codes des processus, \color{red}{si le signal recherché est de type \bb}, \color{blue}{si le signal est \WW}}
+    \label{data:code}
+\end{figure}
+
+%if (isBB) 
+%        CHANNELS_SIGNAL.insert(402173);
+%        CHANNELS_OTHERHIGGS.insert(402176);
+%else 
+%        CHANNELS_SIGNAL.insert(402176);
+%        CHANNELS_OTHERHIGGS.insert(402173);

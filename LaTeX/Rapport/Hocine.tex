@@ -70,6 +70,10 @@
 
 \newcommand{\nnh}{\nu \nu h}
 
+% processus courants
+\newcommand{\bb}{$\mathrm{b\bbar}$}
+\newcommand{\WW}{$\mathrm{W\Wstar}$}
+
 % physique
 \newcommand{\GeV}{\texttt{GeV}}
 \newcommand{\TeV}{\texttt{TeV}}
@@ -157,10 +161,10 @@ En résumer, ce projet permet l'analyse des collisions survenues dans ce détect
 
 % données distantes : 
 
-Malheureusement, pour le temps du stage, je n'ai pas obtenu l'accès au serveur, donc je n'ai pas pu utilisé cette partie de code. Je l'ai donc pas utilisé, ni pu développer ma propre version. C'est pourquoi, j'ai décidé de ne pas l'inclure dans mon propre code.\\
+Malheureusement, pour le temps de ce stage, je n'ai pas obtenu l'accès au serveur, donc je n'ai pas pu utilisé \texttt{miniDSTMarker}. Je l'ai donc pas testé, ni pu développer ma propre version. C'est pourquoi, j'ai décidé de ne pas l'inclure dans mon propre code.\\
 
 % données locales
-Donc pour que je puisse travailler, on a mis à ma disposition certains de ces fichiers, ceux des collisions à 250 \GeV. Soient 66 dossiers \Figure{\ref{data:list}} de fichiers \LCIO, où chacun correspond au code du type de processus \Figure{\ref{data:def}}.
+Pour que je puisse travailler, on a mis à ma disposition certains de quelqu'un de ces fichiers, ceux des collisions à 250 \GeV. Soient 66 dossiers \Figure{\ref{data:list}} de fichiers \LCIO, où chaque nom correspond au code du type de processus \Figure{\ref{data:def}}.
 
 \begin{figure}[h!]
 	\includegraphics[width=\textwidth]{../img/listeProcessus.png} 
@@ -168,40 +172,15 @@ Donc pour que je puisse travailler, on a mis à ma disposition certains de ces f
 	\label{data:list}
 \end{figure}
 
-
-
-\begin{figure}[h!]
-    \centering
-    \begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | c | }
-        \hline
-        2 leptoniques & 2 hadroniques & 4 hadroniques & 4 semi-leptoniques & 4 leptoniques & signal & autres higgs \\
-        \hline
-        500006, 500008 & 500010, 500012 & 500062, 500064, 500066, 500068, 500070, 500072 & 500074, 500076, 500078, 500080, 500082, 500084, 500101, 500102, 500103, 500104, 500105, 500106, 500107, 500108, 500110, 500112 & 500086, 500088, 500090, 500092, 500094, 500096, 500098, 500100,
-        500113, 500114, 500115, 500116, 500117, 500118, 500119, 500120,
-        500122, 500124, 500125, 500126, 500127, 500128 & 402007 & 402001, 402002, 402003, 402004, 402005, 402006, 402008, 402009, 402010, 402011, 402012, 402013, 402014, 402182, 402185 \\
-        \hline
-    \end{tabular}
-    \caption{Signification des codes des processus}
-    \label{data:def}
-\end{figure}
-
-%if (isBB) 
-%        CHANNELS_SIGNAL.insert(402173);
-%        CHANNELS_OTHERHIGGS.insert(402176);
-%else 
-%        CHANNELS_SIGNAL.insert(402176);
-%        CHANNELS_OTHERHIGGS.insert(402173);
-    
-    
-%\paragraph{Numéro des processus ???}
+\input{tabular/codeProcessus.tex}
 
 \subsection{Conversion des fichiers initiaux en fichiers \ROOT}
 
 Grâce au programme \processor on va pouvoir convertir les fichiers initiaux \SLCIO en fichiers \ROOT standards, afin de pouvoir les analyser.\\
 
-On obtient ainsi pour chaque dossier de fichier de donnée \SLCIO un fichier \ROOT en sortie, \cad que l'on obtiendra un arbre \ROOT par type de processus.\\
+On obtient ainsi pour chaque dossier de fichier de données \SLCIO un fichier \ROOT en sortie, \cad que l'on obtiendra un arbre \ROOT par type de processus.\\
 
-Ce programme doit être robuste et donc à partir des mêmes fichiers toujours générer les fichiers \ROOT strictement identiques.
+Ce programme doit être robuste et donc à partir des mêmes fichiers d'entrées toujours générer des fichiers \ROOT strictement identiques.
 
 \subsection{Analyses des collisions}
 
@@ -210,33 +189,23 @@ Ce programme doit être robuste et donc à partir des mêmes fichiers toujours g
 Avant de commencer l'analyse des fichiers \ROOT générés précédemment, on va terminer ce que le programme \processor avait commencé, et fusionner l'intégralité de ces fichiers en un seul gros fichier \texttt{DATA.root}, grâce à la commande \texttt{hadd}. 
 Cette commande a été développé par le CERN et elle fusionne tous les histogrammes de différents fichiers en un seul. 
 
-Donc là aussi tous les fichiers \texttt{DATA.root} doivent être strictement identique.
+Donc là encore, la répétition de ce programme doit toujours générer des fichiers \texttt{DATA.root} strictement identique.
 
 \subsubsection{Étape 2}
 
-Pour la deuxième étape de ce programme \analysis on va de nouveau séparer nos données en 4 fichiers distincts. 
-Mais au lieu de les séparer par leur numéro de processus, qui est un critère numérique, on va les diviser par le type de particules produit par le boson de Higgs, soit $b\bbar$, soit $W\Wstar$, et par la polarisation de particules incidentes, \cad l'électron et le positron avec une polarisation de -0,8 et 0,3 soit nulles.
+Pour la deuxième étape de ce programme \analysis, on va trier nos données en 4 fichiers distincts. 
+Mais au lieu de les séparer par leur numéro de processus, qui est un critère numérique donc éloigné de la réalité des résultats d'une véritable expérience, on va les diviser par le type de particules produit par le boson de Higgs, soit \bb, soit \WW, et par la polarisation de particules incidentes, \cad l'électron et le positron avec une polarisation de -0,8 et 0,3 soit nulles.
 Ce qui va nous créer les 4 fichiers suivants :
 
-\begin{figure}[h!]
-	\centering
-	\begin{lstlisting}
-			split_bb_e-0.8_p+0.3.root
-			split_bb_e+0_p+0.root
-			split_ww_e-0.8_p+0.3.root
-			split_ww_e+0_p+0.root
-	\end{lstlisting}
-	\label{files:split}
-	\caption{Fichiers où les évènements sont séparés en fonction des caractéristiques des polarisations des particules incidentes et des types de particules résultantes.}
-\end{figure}
+\input{figure/splitFiles.tex}
 
 Dans chacun de ces fichiers les arbres \ROOT, \texttt{TTree}, auront les variables suivantes :
 
 \begin{description}
 
-	\item[\texttt{isSignal}] variable booléen qui indique si on considère l'évènement comme du signal ou du bruit de fond.
+	\item[\texttt{isSignal} :] booléen qui indique si on considère l'évènement comme du signal ou du bruit de fond.
 	
-	\item[\texttt{channelType}] c'est un entier qui représente le type de canaux de l'évènement :
+	\item[\texttt{channelType} :] entier qui représente le type de canaux de l'évènement \Figure{\ref{data:code}}:
 	\begin{itemize}
 		\item 2 fermions leptoniques ou hadronique 
 		\item 4 fermions leptoniques ou semi-leptonique ou hadroniques 
@@ -247,13 +216,15 @@ Dans chacun de ces fichiers les arbres \ROOT, \texttt{TTree}, auront les variabl
 	
 	\item[\texttt{preSelected}] booléen, si l'évènement a été pré-sélectionné par la BDT.
 	
-	\item[\texttt{weight}] nombre flottant qui est le poids de l'évènement en $fb^{-1}$ de la luminosité intégrée.
+	\item[\texttt{weight}] flottant qui est le poids de l'évènement en $fb^{-1}$ de la luminosité intégrée.
 	
 \end{description}
 
-Pour trier les données du fichier \texttt{DATA.root}, on va utiliser des arbres de décision, BDT pour \textit{Boosted Decision Tree}. 
 
-Il s'agit d'une structure de donnée numérique binaire, qui permet de déterminer la nature des particules en répondant à des questions booléennes (\textsc{Figure}~\ref{ExampleBDT}).
+Pour trier les données du fichier \texttt{DATA.root}, on va utiliser des BDT pour \textit{Boosted Decision Tree}, en français, des arbres de décision boostés. 
+Les arbres sont une structure de données courante en informatique, ils sont couramment utilisées pour trier les données car ils ont une rapidité optimale en temps. 
+
+Ici les arbres sont utilisés pour déterminer la nature des particules en répondant à des questions booléennes (\textsc{Figure}~\ref{ExampleBDT}). Comme il n'y a que 2 réponses pour chaque nœud, on parle d'arbre binaire. 
 
 \begin{figure}[h!]
 	\center
@@ -262,7 +233,7 @@ Il s'agit d'une structure de donnée numérique binaire, qui permet de détermin
 	\label{ExampleBDT}
 \end{figure}
 
-Une fois encore l'API du CERN, nous aura été très utile. En effet, il existe déjà des méthodes (expliquées avec des tutoriels). 
+Une fois encore, nous allons utilisé l'API du CERN. En effet, il existe déjà des méthodes (expliquées avec des tutoriels) \cite{•}. \textbf{Ces méthodes utilisent des paramètres générées aléatoirement afin d'augmenter la rapidité des calculs. C'est pourquoi on parle d'arbre boosté}
 
 Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Car les BDT utilisent la génération de nombre aléatoire, ce qui engendre des variations dans les entraînements.\\
 
@@ -317,7 +288,7 @@ Et pour terminer, on peut effectuer l'analyse à proprement parlé de nos donné
 
 Et même si cette analyse sera toujours la même \qqs les fichiers \texttt{split\_XX.root}, ces derniers étant légèrement différent d'un entraînement à l'autre les résultats statistiques seront, là encore, légèrement différent mais doivent rester équivalent.
 
-\section{Projet numérique \ilcsoft}
+\section{Projet numérique : \ilcsoft}
 
 \subsection{Données}
 Initialement, on m'a mis à disposition des fichiers \SLCIO, qui sera le format de fichier du détecteur.
