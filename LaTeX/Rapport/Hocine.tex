@@ -70,8 +70,8 @@
 \newcommand{\nnh}{\nu \nu h}
 
 % processus courants
-\newcommand{\bb}{$\mathrm{b\bbar}$}
-\newcommand{\WW}{$\mathrm{W\Wstar}$}
+\newcommand{\bb}{$\mathrm{b\bbar}$\xspace}
+\newcommand{\WW}{$\mathrm{W\Wstar}$\xspace}
 
 % physique
 \newcommand{\GeV}{\texttt{GeV}}
@@ -80,6 +80,7 @@
 
 % LaTeX
 
+\newcommand{\doToList}[1]{{\color{red}#1}}
 \newcommand{\Figure}[1]{[\textsc{Figure~#1}]}
 
 
@@ -102,7 +103,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Programme \texttt{ILC}}
+\chapter{Projet \texttt{ILC}}
 
 \section{Présentation du Projet ILC}
 
@@ -121,7 +122,7 @@ L'objectif de l'ILC est de produire beaucoup de boson de Higgs, notamment pour d
 Et le détecteur SDHCAL correspond parfaitement aux spécifications nécessaires pour un accélérateur linéaire de ce type.
 C'est pourquoi, afin de consolider sa candidature pour l'appel d'offre, l'IP2I développe aussi des programmes d'analyse de ce détecteur.
 
-\section{Projet numérique : \original}
+\section{Programme : \original}
 
 % Contexte
 Au début de mon stage, j'ai récupéré les codes de Guillaume \textsc{Garillot}, qui les a développé en 2021 au cours de son post-doctorat à l'IP2I. 
@@ -173,15 +174,26 @@ Ce programme doit être robuste et donc à partir des mêmes fichiers d'entrées
 \subsubsection{Étape 1}
 
 Avant de commencer l'analyse des fichiers \ROOT générés précédemment, on va terminer ce que le programme \processor avait commencé, et fusionner l'intégralité de ces fichiers en un seul gros fichier \texttt{DATA.root}, grâce à la commande \texttt{hadd}. 
-Cette commande a été développé par le CERN et elle fusionne tous les histogrammes de différents fichiers en un seul. 
+Cette commande a été développé par le CERN et elle fusionne tous les histogrammes de différents fichiers en un seul\cite{root:hadd}. 
 
 Donc là encore, la répétition de ce programme doit toujours générer des fichiers \texttt{DATA.root} strictement identique.
 
 \subsubsection{Étape 2}
 
 Pour la deuxième étape de ce programme \analysis, on va trier nos données en 4 fichiers distincts. 
-Mais au lieu de les séparer par leur numéro de processus, qui est un critère numérique donc éloigné de la réalité des résultats d'une véritable expérience, on va les diviser par le type de particules produit par le boson de Higgs, soit \bb, soit \WW, et par la polarisation de particules incidentes, \cad l'électron et le positron avec une polarisation de -0,8 et 0,3 soit nulles.
-Ce qui va nous créer les 4 fichiers suivants :
+Mais au lieu de les séparer par leur numéro de processus, qui est un critère numérique donc éloigné de la réalité des résultats d'une véritable expérience, on va les diviser suivant la polarisation initiale des particules incidentes, \cad l'électron et le positron à -0,8 et 0,3 ou les 2 nulles. 
+Et par le type de particules produites par un boson de Higgs, \cad les canaux \bb et \WW, puisque ce sont les plus probables\footnote{Rien n'empêchera d'ajouter d'autres canaux même si le code manque encore de un peu de modularité.}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{../img/Higgs_decay_125GeV.png} 
+	\caption{
+		Les modes de désintégrations du boson de Higgs à 125 \GeV 
+		\cite{liu:tel-03405418}
+	}
+\end{figure}
+
+Donc on obtient ces 4 fichiers suivants :
 
 \input{figure/tabular/splitFiles.tex}
 
@@ -193,8 +205,8 @@ Dans chacun de ces fichiers les arbres \ROOT, \texttt{TTree}, auront les variabl
 	
 	\item[\texttt{channelType} :] entier qui représente le type de canaux de l'évènement \Figure{\ref{data:code}}:
 	\begin{itemize}
-		\item 2 fermions leptoniques ou hadronique 
-		\item 4 fermions leptoniques ou semi-leptonique ou hadroniques 
+		\item 2 fermions leptoniques ou hadroniques
+		\item 4 fermions leptoniques ou semi-leptoniques ou hadroniques 
 		\item une autre type de résultat avec un boson de Higgs
 	\end{itemize}
 	
@@ -208,9 +220,9 @@ Dans chacun de ces fichiers les arbres \ROOT, \texttt{TTree}, auront les variabl
 
 
 Pour trier les données du fichier \texttt{DATA.root}, on va utiliser des BDT pour \textit{Boosted Decision Tree}, en français, des arbres de décision boostés. 
-Les arbres sont une structure de données courante en informatique, ils sont couramment utilisées pour trier les données car ils ont une rapidité optimale en temps. 
 
-Ici les arbres sont utilisés pour déterminer la nature des particules en répondant à des questions booléennes (\textsc{Figure}~\ref{ExampleBDT}). Comme il n'y a que 2 réponses pour chaque nœud, on parle d'arbre binaire. 
+Les arbres sont des structures de données courantes en informatique, ils sont utilisées notamment pour trier les données car ils ont une rapidité optimale en temps. 
+Ici on utilise les arbres pour déterminer la nature des particules en répondant à des questions booléennes (Similaire à l'exemple \Figure{\ref{ExampleBDT}}. Et comme il n'y a que 2 issus à chaque nœud, on parle d'arbre binaire. 
 
 \begin{figure}[h!]
 	\center
@@ -219,13 +231,16 @@ Ici les arbres sont utilisés pour déterminer la nature des particules en répo
 	\label{ExampleBDT}
 \end{figure}
 
-Une fois encore, nous allons utilisé l'API du CERN. En effet, il existe déjà des méthodes (expliquées avec des tutoriels) \cite{root:treeFriend}. \textbf{Ces méthodes utilisent des paramètres générées aléatoirement afin d'augmenter la rapidité des calculs. C'est pourquoi on parle d'arbre boosté}
+Une fois encore, des méthodes ont déjà été développé dans l'API du CERN\cite{root:treeFriend}. Ces méthodes utilisent des paramètres générées aléatoirement afin d'augmenter la rapidité des calculs. C'est pourquoi on parle d'arbre boosté.
 
-Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Car les BDT utilisent la génération de nombre aléatoire, ce qui engendre des variations dans les entraînements.\\
+Mais cette fois-ci les fichiers créés sont équivalents mais pas identique. Car les BDT utilisent la génération de nombre aléatoire, ce qui engendre des variations dans les entraînements.
 
 \subsubsection{Étape 3}
 
-Et pour terminer, on peut effectuer l'analyse à proprement parlé de nos données à partir des fichiers \texttt{split\_XX.root} (\textsc{Figure}~\ref{files:split}).
+Et pour terminer, on peut enfin effectuer l'analyse à proprement parlé de nos données à partir des fichiers \texttt{split\_XX.root} précédents \Figure{\ref{files:split}}.
+
+Cette étude se fait sur les fichiers avec une polarisation non nulle pour les particules incidentes. Car \doToList{????}
+
 
 \input{figure/tabular/modelFiles.tex}
 	
@@ -235,59 +250,30 @@ Et pour terminer, on peut effectuer l'analyse à proprement parlé de nos donné
 
 \input{figure/tabular/statsFiles.tex}
 
-Et même si cette analyse sera toujours la même \qqs les fichiers \texttt{split\_XX.root}, ces derniers étant légèrement différent d'un entraînement à l'autre les résultats statistiques seront, là encore, légèrement différent mais doivent rester équivalent.
+Et même si cette analyse sera toujours la même \qqs les fichiers \texttt{split\_XX.root}, ces derniers étant légèrement différent d'un entraînement à l'autre les résultats statistiques \Figure{\ref{files:stats}} seront, là encore, légèrement différent mais doivent rester équivalent.
 
-\section{Projet numérique : \ilcsoft}
+\section{Programme : \ilcsoft}
+
+À présent, je vais vous présenter les modifications que j'ai apporté au programme \original.
+
+Dans un premier temps, j'ai fais de la cosmétique : j'ai typé les variables, appliqué les bonnes règles de typographie et commenté les différents fichiers, classes, interfaces, fonctions, et variables globales. Ce qui m'a permis de bien comprendre les programmes et de le rendre plus lisible pour les futurs développeurs de ce code.
+
+Ensuite je les ai modifié pour qu'il puisse s'exécuter en parallèle. En effet, \processor et \analysis mettent quelques heures à s'exécuter. Et pour tester leurs robustesses et pouvoir faire des statistiques, il est nécessaire de le faire de très nombreuses fois. Donc cette nouvelle fonctionnalité la version \ilcsoft permet un gain de temps considérable. Et plus tard, cela permettra aussi d'exécuter avec différents jeux de données (niveaux d'énergies, canaux...).
 
 \subsection{Données}
-Initialement, on m'a mis à disposition des fichiers \SLCIO, qui sera le format de fichier du détecteur.
-Chaque fichier est rangés dans un des 66 dossiers (Figure~\ref{listeProcessus}), qui correspond au code du type de processus.
 
-\begin{figure}[h!]
-	\includegraphics[width=\textwidth]{../img/listeProcessus.png} 
-	\caption{Les noms des dossiers qui correspondent aux numéros de processus}
-	\label{listeProcessus}
-\end{figure}
-
-%\paragraph{Numéro des processus ???}
+Donc bien sûr, il s'agit des mêmes fichiers \SLCIO que pour le programme \original \Figure{\ref{data:list}}
 
 \subsection{Programme : \processor}
 
-\subsubsection{Méthodes}
+Le but est toujours la conversion de chaque dossier de fichiers \SLCIO en un seul fichier \ROOT.
 
-On cherche à convertir ces fichiers \SLCIO en arbre \ROOT par processus.
-
-\subsubsection{Résultats}
-
-%\paragraph{Des fichiers \ROOT :}
-Chaque dossier de fichier de donnée \SLCIO produira un fichier \ROOT en sortie, \cad que l'on obtiendra un arbre \ROOT par processus.
-
-
-\subsubsection{Interprétation}
+Pour aider à la lisibilité du programme, j'ai aussi développé une nouvelle classe qui permet de simplifier sa lecture.
+Ma classe \texttt{PDGInfo} permet de manipuler plus facilement les outils du PDG, grâce à une correspondance entre les codes entiers des particules et leurs noms, ainsi que quelques méthodes et tests booléennes\footnote{\url{https://github.com/alexhxia/nnhAnalysis/blob/main/nnhProgram/ilcsoft/processor/include/PDGInfo.hh}}.
 
 \subsection{Programme : \analysis}
 
-\subsubsection{Données}
-
-On récupère les fichiers \ROOT du programme \processor précédent. 
-
-$ hadd $ qui va créer le fichier DATA.root
-
-\subsubsection{Méthodes}
-
-\paragraph{\texttt{BDT}}
-
-Entrainement
-
-\paragraph{L'analyse}
-
-
-\subsubsection{Résultats}
-
-\paragraph{Vérification des résultats}
-Comparaison entre les différents séries d'analyse, basée sur les même fichiers \ROOT, mais un autre entraînement de BDT.
-
-\subsubsection{Interprétation}
+La encore le fonctionnement global reste inchangé, par rapport à \original
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -373,7 +359,8 @@ Le processus est complet si tous les dossiers de
 
 \subsubsection{Programmes \texttt{testAnalysisSame.py}}
 
-
+\paragraph{Vérification des résultats}
+Comparaison entre les différents séries d'analyse, basée sur les même fichiers \ROOT, mais un autre entraînement de BDT.
 
 \url{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhTest}
 
@@ -472,86 +459,11 @@ Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 $
 
 \section{Organisation initiale}
 
-
+\input{figure/tikz/orgaInit.tex}
 
 \section{Organisation finale}
 
-\begin{figure}[h!]
-	\center
-	\begin{tikzpicture}
-	
-		\tikzstyle{home}=[draw, rectangle, fill=red!50, text=black, rounded corners=3pt]		
-	
-		\tikzstyle{directory}=[draw, rectangle, fill=gray!30, text=black, rounded corners=3pt]
-
-		\node[directory] (A) at (0,0) {\texttt{nnhAnalysis}};
-		
-		\node[directory] (S) at (-4.5,-1.5) {\texttt{nnhScript}};
-		\node[directory] (P) at (-1.5,-1.5) {\texttt{nnhProgram}};
-		\node[directory] (R) at ( 1.5,-1.5) {\texttt{nnhResult}};
-		\node[directory] (T) at ( 4.5,-1.5) {\texttt{nnhTest}};
-		
-		\node[home] (O) at (-5.5,-3) {\texttt{original}};
-		\node[home] (I) at (-1.5,-3) {\texttt{ilcsoft}};
-		\node[home] (F) at ( 3.5,-3) {\texttt{fcc}};
-		
-		\node[directory] (OP) at (-7,-4.5) {\texttt{processor}};
-		\node[directory] (OA) at (-5,-4.5) {\texttt{analysis}};
-		
-		\node[directory] (IP) at (-2.5,-4.5) {\texttt{processor}};
-		\node[directory] (IA) at (-0.5,-4.5) {\texttt{analysis}};
-		
-		\node[directory] (FC) at (1.5,-4.5) {\texttt{convert}};
-		\node[directory] (FP) at (3.5,-4.5) {\texttt{processor}};
-		\node[directory] (FA) at (5.5,-4.5) {\texttt{analysis}};
-		
-		
-%		\tikzstyle{files}=[rectangle, draw, fill=red!40, text=black, below right]		
-%		
-%		\node[files] (r) at (-2.2,-2) {
-%				\texttt{...}
-%		};
-%		\node[files, text width=3cm] (s) at (0.7,-2) {
-%				\texttt{nnh.sh}
-%				\texttt{nnhProcessor.sh}
-%				\texttt{nnhAnalysis.sh}
-%				\texttt{prepaeBDT.sh}
-%				\texttt{launchBDT.sh}
-%				\texttt{nnhExport.sh}
-%		};
-%		\node[files, text width=5cm] (t) at (4.3,-2) {
-%				\texttt{testProcessorCompleted.py}
-%				\texttt{testProcessorSame.py}
-%				\texttt{testAnalysisCompleted.py}
-%				\texttt{testAnalysisSame.py}
-%		};
-		
-		
-		\tikzstyle{linkDir}=[->,dotted,very thick,>=latex]
-		
-		\draw[linkDir] (A)--(P);
-		\draw[linkDir] (A)--(R); 
-		\draw[linkDir] (A)--(S);
-		\draw[linkDir] (A)--(T); 
-		
-		\draw[linkDir] (P)--(O);
-		\draw[linkDir] (P)--(I); 
-		\draw[linkDir] (P)--(F);
-		
-		\draw[linkDir] (O)--(OP);
-		\draw[linkDir] (O)--(OA); 
-		\draw[linkDir] (I)--(IP);
-		\draw[linkDir] (I)--(IA); 
-		\draw[linkDir] (F)--(FP);
-		\draw[linkDir] (F)--(FA); 
-		\draw[linkDir] (F)--(FC);
-		
-	\end{tikzpicture}
-	\caption{
-		Organisation des dossiers de mon Projet - \url{https://github.com/alexhxia/nnhAnalysis}
-	}
-	\label{orga:end}
-\end{figure}
+\input{figure/tikz/orgaFinal.tex}
 
 \section{Le dossier \texttt{NNH\_HOME}}
 

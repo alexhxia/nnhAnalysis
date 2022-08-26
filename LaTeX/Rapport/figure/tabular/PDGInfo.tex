@@ -1,0 +1,58 @@
+\begin{figure}[h!]
+
+	\begin{description}
+		\item[Constantes] :\\
+		\begin{flushleft}
+		\begin{description}
+			\item[Leptons]
+    				\verb|ELECTRON = 11|,
+    				\verb|ELECTRON_NEUTRINO = 12|,
+    				\verb|MUON = 13|,
+    				\verb|MUON_NEUTRINO = 14|,
+    				\verb|TAU = 15|,
+    				\verb|TAU_NEUTRINO = 16|
+
+    			\item[Bosons]
+    				\verb|GLUON = 21|,
+    				\verb|PHOTON = 22|,
+    				\verb|Z0 = 23|,
+    				\verb|W = 24|,
+    				\verb|HIGGS = 25|
+		\end{description}
+		\end{flushleft}
+		
+		\item[Requêtes]
+		
+		\item[Tests] :\newline
+		\begin{itemize}
+	
+			\item Test si un entier correspond au PDG d'un neutrino :\\
+\verb|bool isNeutrino(int pdg);|
+
+			\item Test si un entier correspond au PDG d'un lepton chargé :\\
+\verb|bool isChargedLepton(int pdg);|
+
+			\item Test si un entier correspond au PDG d'un quark :\\
+\verb|bool isQuark(int pdg);|
+
+			\item Test si un entier correspond au PDG d'une particule :\\
+\verb|bool isAbsPDG(const int pdg, const EVENT::MCParticle* particle);|
+
+			\item Test si 2 entiers correspondent aux mêmes particules au signe près :\\
+\verb|bool isSameParticleAbsPDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2);|
+
+			\item Test si 2 entiers correspondent à une paire particule-antiparticule :\\
+\verb|bool isTwinParticlePDG(const EVENT::MCParticle* p1, const EVENT::MCParticle* p2);|
+    
+			\item Retourne la génération d'un code PDG d'un lepton chargé :\\
+\verb|int getFlavorLeptonAbs(int pdg);|
+
+			\item Compte le nombre de neutrino :\\
+\verb|int getNeutrinoNb(const std::vector<int> vecPDG);|
+
+	\end{itemize}
+	\end{description}
+	
+	\caption{Classe \texttt{PDGInfo}}
+	\label{tab:PDGInfo}
+\end{figure}

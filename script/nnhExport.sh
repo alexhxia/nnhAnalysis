@@ -18,10 +18,10 @@ output=$server/result # path to result
 
 path=~/nnhAnalysis # path to projet
 
-program=$path/nnhProgram # path to programs 
-result=$path/nnhResult # path to results
-script=$path/nnhScript # path to script for run program easier
-test=$path/nnhTest # path to result file tests
+program=$path/program # path to programs 
+result=$path/result # path to results
+script=$path/script # path to script for run program easier
+test=$path/test # path to result file tests
 
 ### HOME
 
@@ -75,10 +75,10 @@ function setPath {
     test_isValidPath $1
     path=$1
     
-    setProgram $path/nnhProgram
-    setResult $path/nnhResult
-    setScript $path/nnhScript
-    setTest $path/nnhTest
+    setProgram $path/program
+    setResult $path/result
+    setScript $path/script
+    setTest $path/test
 }
 
 function setProgram {
