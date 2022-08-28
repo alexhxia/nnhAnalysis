@@ -24,7 +24,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Page de garde %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \author{Alexia \textsc{HOCINE}}
 
-\title{Détecteur SDHCAL pour le signal  $ e^{+} e^{-} \longrightarrow \nu \nu h $ :\\Optimisation et Adaptation de l'analyse de données\\pour le Projet FCC 
+\title{
+	Détecteur SDHCAL pour le signal  $ e^{+} e^{-} \longrightarrow \nu \nu h $ :\\
+	Optimisation et Adaptation de l'analyse de données\\pour le Projet FCC 
 }
 %Stage M2 Physique, parcours SUBA\\Université de Claude Bernard Lyon 1
 \date{Juillet 2022}
@@ -75,9 +77,9 @@
 \newcommand{\WW}{$\mathrm{W\Wstar}$\xspace}
 
 % physique
-\newcommand{\GeV}{\texttt{GeV}\xspace}
-\newcommand{\TeV}{\texttt{TeV}\xspace}
-\newcommand{\MeV}{\texttt{MeV}\xspace}
+\newcommand{\GeV}{\mathrm{GeV}\xspace}
+\newcommand{\TeV}{\mathrm{TeV}\xspace}
+\newcommand{\MeV}{\mathrm{MeV}\xspace}
 
 % LaTeX
 
@@ -100,159 +102,11 @@
 \tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \input{Introduction.tex}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \input{iLCSoft.tex}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Programme \texttt{FCC}}
-
-\section{Présentation du Projet FCC}
-
-Le FCC (Futur Collisionneur Circulaire) est le projet du CERN pour remplacer 
-leur collisionneur actuelle, le LHC (Large Hadronic Collider). 
-Dont la fin de l'exploitation est prévu en 2040 \cite{cern:fcc}.
-On prévoit un anneau de 100 km, contre 27 km pour le LEP et le LHC 
-(comme montrer Figure~\ref{fcc:img}).
-Ce qui devrait nous permettra d'atteindre une énergie de 100 \TeV contre 13 \TeV
-actuellement pour le LHC.
-
-L'objectif est la rechercher d'une nouvelle physique par la mise en évidence de déviation avec le modèle standard. Et plus particulièrement, en augmentant la statistique sur le boson de Higgs, découvert avec le collisionneur actuelle, afin de mieux comprendre sa physique.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{../img/FCC.jpg}
-    \caption{https://cds.cern.ch/images/OPEN-PHO-ACCEL-2019-001-2}
-    \label{fcc:img}
-\end{figure}
-
-Une fois encore, le détecteur SDHCAL candidate pour ce projet et pourrait être y être installer.
-
-\section{Développement Numérique}
-
-Mon objectif est d'adapter les codes développés précédemment par Guillaume 
-\textsc{Garillot} du projet ILC au projet FCC qui n'utilise pas les mêmes suites logiciels.\\
-
-
-\subsection{\convert}
-
-Dans un premier temps, je dois convertir les fichiers \SLCIO en fichiers \ROOT en utilisant le programme libre \texttt{k4MarlinWrapper} du projet de \texttt{key4hep}\footnote{\url{https://github.com/key4hep/k4MarlinWrapper}}. 
-Il s'agit d'une collaboration entre chercheurs du CERN dont l'objectif est de développer des outils pour le projet FCC, y compris des utils de conversion entre \LCIO (\iLCSoft) et \EDMhep (\FCC).%, en utilisant les algorithmes \texttt{Gaudi}
-\\
-
-Cette partie a été laborieux, car le programme \texttt{k4MarlinWrapper} est en cours de développement. 
-J'ai du faire remonter de très nombreux problèmes en parallèle de mon travail. 
-En effet, à chaque mise à jour, le programme ne fonctionnait plus, ce qui m'a fait perdre beaucoup de temps en essayant de comprendre le problème, le signaler et le corriger quand je le comprenais, ou patienter pour que quelqu'un d'autre le corrige. 
-
-\subsection{\processor}
-
-Comme les fichiers d'entrées sont à présent des fichiers \ROOT, il faut adapter cette partie pour que les fichiers de sortie soit les mêmes ou au moins équivalent.
-
-\subsection{\analysis}
-
-Cette partie reste inchangé par rapport à \ilcsoft.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Outils Numériques}
-
-Pour utiliser et comparer les résultats obtenus facilement, j'ai développé de très nombreux programmes supplémentaires afin de pouvoir automatiser leur utilisation, mais aussi de les exécuter sur un serveur distant. 
-
-\section{Répertoire \texttt{script}}
-
-Dans ce dossier\footnote{\url{https://github.com/alexhxia/nnhAnalysis/tree/main/script}}, j'ai développé des outils d'automatisation de l'exécution des programmes. En effet, avant pour lancer un \processor ou une \analysis il y avait de très nombreuses commandes à taper au terminal et parfois incompatible entre elles.
-J'ai donc développé 6 programmes principaux d'automatisation des programmes :
-
-\begin{description}
-	
-	\item[\texttt{nnh}]	programme générale qui permet l'exécution de tout le programme (\convert, \processor et \analysis) et plusieurs fois.
-	\begin{description}
-
-	\item[\texttt{nnhConvert}] permet de convertir les fichiers \SLCIO en fichiers \ROOT.
-	
-	\item[\texttt{nnhProcessor}] d'exécuter tout le programme \processor.
-	
-	\item[\texttt{nnhAnalysis}] exécute tout le programme \analysis.
-	
-	\begin{description}
-		
-		\item[\texttt{prepareBDT}] exécute la préparation de la BDT.
-		
-		\item[\texttt{launchBDT}] lance la BDT \footnote{Le programme \texttt{launchBDT} est incompatible avec les autres, ce qui nécessite de le lancer dans un terminal enfant.}.
-		
-	\end{description}
-	\end{description}
-	
-\end{description}
-
-Chacun de ces programmes peuvent être lancé ensemble mais aussi séparément. Ce qui permet de gagner énormément en temps d'utilisation mais aussi de pouvoir personnaliser selon les besoins de l'utilisateur.
-
-\section{Répertoire \texttt{test}}
-
-Pour tester les résultats obtenus, j'ai développé 4 programmes en \texttt{python}.  Et de tester s'ils sont compatibles entre eux.
-
-\begin{figure}[h!]
-	\center
-	\begin{tabular}{| c | c | c |}
-		\hline
-			\texttt{•} & \texttt{Processus} & \texttt{Analysis} \\
-		\hline
-			\texttt{Completed} & \texttt{testProcessorCompleted.py} & \texttt{testAnalysisCompleted.py} \\
-		\hline
-			\texttt{Same} & \texttt{testProcessorSame.py} & \texttt{testAnalysisSame.py} \\
-		\hline
-	\end{tabular}
-	\caption{Tableau récapitulatif des fonctions de tests}
-\end{figure}
-
-\subsection{Programmes \texttt{testXxCompleted.py}}
-
-L'objectif de ce type de programme est de tester si tous les fichiers qui aurait du être créer, l'ont bien été. Ces programmes sont très rapides, ne prennent que en quelques secondes.
-
-Ce qui permet, en cas de problèmes de relancer juste la partie qui n'est pas terminé et pas tout le programme.
-
-\subsubsection{Programmes \texttt{testProcessorCompleted.py}}
-
-Un \processor est complet si tous les dossiers du répertoire d'entré (\Figure{\ref{data:list}}) ont bien généré un fichier \ROOT.
-
-\subsubsection{Programmes \texttt{testAnalysisCompleted.py}}
-
-Une \analysis est complète si elle contient 13 fichiers, car :
-\begin{description}
-	\item[hadd :] 1 fichier \verb|data.root|
-	\item[prepareBDT :] 4 fichiers (2 polarisations $\times$ 2 canaux) \verb|split_XX.root| 
-	\item[launchBDT :] 2 fichiers (2 canaux) \verb|model_XX.joblib|, \verb|scores_XX.root|, \verb|bestSelection_XX.root|, \verb|stats_XX.json|
-\end{description}
-
-\subsection{Programmes \texttt{testXxSame.py}}
-
-Ce type de programme\footnote{\url{https://github.com/alexhxia/nnhAnalysis/tree/main/test}
-} va prendre quelques dizaines de minutes à une heure pour s'exécuter, car il va comparer tous les arbres \ROOT des différents fichiers pour s'assurer que 2 fichiers sont identiques ou au moins compatibles. Cette comparaison se ferait avec la fonction de Kolmogorov présente, là encore, dans l'API du CERN, qui compare 2 histogrammes et retourne un flottant sur leur compatibilité. Dans le chapitre \original, j'ai explicité que les programmes qui donnaient des résultats toujours identiques et ceux qui devaient avoir des résultats équivalents. 
-
-\subsubsection{Programmes \texttt{testProcessorSame.py}}
-
-Toutes les exécutions de \processor doivent donner des résultats identiques, surtout au sein du même projet. Et j'ai pu le confirmer en comparant plusieurs résultats obtenus de différentes exécutions. 
-
-Et lorsque j'ai apporté des corrections au programme, quand je suis passée de \original à \ilcsoft, cela m'a permis de vérifier que mon code obtenait bien le même résultat. De même, de \ilcsoft à \fcc.
-
-\subsubsection{Programmes \texttt{testAnalysisSame.py}}
-
-La comparaison entre 2 exécutions du programme \analysis est plus compliquée, puisque la BDT utilise des nombres aléatoires, ce qui ne permet pas d'obtenir des résultats identiques.
-
-Certains fichiers doivent rester identiques comme les fichiers \verb|data.root| ou \verb|split_XX.root|. Certains sont complètement différents comme les fichiers \verb|model_XX.joblib| ou \verb|bestSelection_XX.root|, car ils sont liés à l'entraînement de la BDT. Mais à la fin les fichiers \verb|stat_XX.json| doivent être statistiquement compatibles.
-
-\subsection{Répertoire \texttt{result}}
-
-Dans ce répertoire, je place les fichiers de sorti des programmes \texttt{test}. 
-En effet, quand on exécute un programme de test, l'utilisateur a la possibilité d'obtenir les résultats sous la forme d'un fichier \texttt{JSON}. 
-Ce qui permet d'en garder une trace et de ne pas refaire un test déjà effectué.\\
-
-\subsection{Mes résultats}
-
-Je peux donc confirmer que mes programmes s'exécutent complètement et correctement.
+\input{FCC.tex}
+\input{num.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -262,12 +116,12 @@ Je peux donc confirmer que mes programmes s'exécutent complètement et correcte
 
 \subsection{Section efficace}
 
-\paragraph{Fusion $W\Wstar$ \cite{desy}}
+\paragraph{Fusion $W\Wstar$ \cite{desy}} : \\
 
-Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 $
+Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 $ :
 
 \begin{equation}
-	\sigma_{WW\ fusion} \longrightarrow 
+	\sigma_{WW-fusion} \longrightarrow 
 		\frac{g_{HWW}^2 \, G_F^2}{32 \, \pi^3}
 		\left[
 			\left(1 + \frac{m_H^2}{s}\right) \log\left(\frac{s}{m_H^2}\right)
@@ -279,11 +133,36 @@ Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 $
 
 	\item[$g_{HWW}$] : couplage du boson de Higgs et du boson W
 
-	\item[$G_F$] : constante de couplage de Fermi
+	\item[$G_F$] : constante de couplage de Fermi\cite{Workman:2022ynf}
+	\footnote{\url{https://pdg.lbl.gov/2021/tables/contents_tables.html}}
+	$$ \frac{G_\mathrm{F}}{\left(\hbar c)\right)^3} = 1,166\,378\,7(6) \times 10^{-5}\, \GeV^{-2} $$
 	
-	\item[$m_H$] : masse du boson de Higgs
+	\item[$m_H$] : masse du boson de Higgs\cite{Workman:2022ynf}
+	\footnote{\url{https://pdglive.lbl.gov/Particle.action?node=S126&init=0}}
+	$$ m_\mathrm{H_0} = 125,25 \pm 0,17 \, \GeV $$
 	
-	\item[$s$]
+	\item[$s$] : variable de Mandelstam
+	$$ s = \left(p_1 + p_2\right)^2 = \left(p_3 + p_4\right)^2 $$
+		
+\end{description}
+
+%%%%%
+
+\paragraph{La largeur partielle pour $W\Wstar$ \cite{desy}} : \\
+
+\begin{equation}
+	\Gamma\left(H\longrightarrow WW\right) = 
+		\frac{g_{HWW}^2 \, m_H^3}{64 \, \pi \, m_W^2}
+		\left(1 - \frac{4 m_W^2}{m_H^2} + \frac{12 m_W^4}{m_H^4}\right)
+		\left(1 - \frac{4 m_W^2}{m_H^2}\right)^{1/2}
+\end{equation}
+
+\begin{description}
+	
+	\item[$m_W$] : masse du boson W\cite{Workman:2022ynf}
+	\footnote{\url{https://pdglive.lbl.gov/Particle.action?node=S043&init=0}}
+	$$ m_\mathrm{W} = 80,377 \pm 0,012 \, \GeV $$
+	
 		
 \end{description}
 
@@ -292,6 +171,7 @@ Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 $
 \subsection{Propriétés à Préciser}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{Conclusion}
 
 \section{Travail effectué}

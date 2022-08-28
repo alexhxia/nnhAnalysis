@@ -1,0 +1,99 @@
+% Outils Numériques
+
+
+\chapter{Outils Numériques}
+
+Pour utiliser et comparer les résultats obtenus facilement, j'ai développé de très nombreux programmes supplémentaires afin de pouvoir automatiser leur utilisation, mais aussi de les exécuter sur un serveur distant. 
+
+\section{Répertoire \texttt{script}}
+
+Dans ce dossier\footnote{\url{https://github.com/alexhxia/nnhAnalysis/tree/main/script}}, j'ai développé des outils d'automatisation de l'exécution des programmes. En effet, avant pour lancer un \processor ou une \analysis il y avait de très nombreuses commandes à taper au terminal et parfois incompatible entre elles.
+J'ai donc développé 6 programmes principaux d'automatisation des programmes :
+
+\begin{description}
+	
+	\item[\texttt{nnh}]	programme générale qui permet l'exécution de tout le programme (\convert, \processor et \analysis) et plusieurs fois.
+	\begin{description}
+
+	\item[\texttt{nnhConvert}] permet de convertir les fichiers \SLCIO en fichiers \ROOT.
+	
+	\item[\texttt{nnhProcessor}] d'exécuter tout le programme \processor.
+	
+	\item[\texttt{nnhAnalysis}] exécute tout le programme \analysis.
+	
+	\begin{description}
+		
+		\item[\texttt{prepareBDT}] exécute la préparation de la BDT.
+		
+		\item[\texttt{launchBDT}] lance la BDT \footnote{Le programme \texttt{launchBDT} est incompatible avec les autres, ce qui nécessite de le lancer dans un terminal enfant.}.
+		
+	\end{description}
+	\end{description}
+	
+\end{description}
+
+Chacun de ces programmes peuvent être lancé ensemble mais aussi séparément. Ce qui permet de gagner énormément en temps d'utilisation mais aussi de pouvoir personnaliser selon les besoins de l'utilisateur.
+
+\section{Répertoire \texttt{test}}
+
+Pour tester les résultats obtenus, j'ai développé 4 programmes en \texttt{python}.  Et de tester s'ils sont compatibles entre eux.
+
+\begin{figure}[h!]
+	\center
+	\begin{tabular}{| c | c | c |}
+		\hline
+			\texttt{•} & \texttt{Processus} & \texttt{Analysis} \\
+		\hline
+			\texttt{Completed} & \texttt{testProcessorCompleted.py} & \texttt{testAnalysisCompleted.py} \\
+		\hline
+			\texttt{Same} & \texttt{testProcessorSame.py} & \texttt{testAnalysisSame.py} \\
+		\hline
+	\end{tabular}
+	\caption{Tableau récapitulatif des fonctions de tests}
+\end{figure}
+
+\subsection{Programmes \texttt{testXxCompleted.py}}
+
+L'objectif de ce type de programme est de tester si tous les fichiers qui aurait du être créer, l'ont bien été. Ces programmes sont très rapides, ne prennent que en quelques secondes.
+
+Ce qui permet, en cas de problèmes de relancer juste la partie qui n'est pas terminé et pas tout le programme.
+
+\subsubsection{Programmes \texttt{testProcessorCompleted.py}}
+
+Un \processor est complet si tous les dossiers du répertoire d'entré (\Figure{\ref{data:list}}) ont bien généré un fichier \ROOT.
+
+\subsubsection{Programmes \texttt{testAnalysisCompleted.py}}
+
+Une \analysis est complète si elle contient 13 fichiers, car :
+\begin{description}
+	\item[hadd :] 1 fichier \verb|data.root|
+	\item[prepareBDT :] 4 fichiers (2 polarisations $\times$ 2 canaux) \verb|split_XX.root| 
+	\item[launchBDT :] 2 fichiers (2 canaux) \verb|model_XX.joblib|, \verb|scores_XX.root|, \verb|bestSelection_XX.root|, \verb|stats_XX.json|
+\end{description}
+
+\subsection{Programmes \texttt{testXxSame.py}}
+
+Ce type de programme\footnote{\url{https://github.com/alexhxia/nnhAnalysis/tree/main/test}
+} va prendre quelques dizaines de minutes à une heure pour s'exécuter, car il va comparer tous les arbres \ROOT des différents fichiers pour s'assurer que 2 fichiers sont identiques ou au moins compatibles. Cette comparaison se ferait avec la fonction de Kolmogorov présente, là encore, dans l'API du CERN, qui compare 2 histogrammes et retourne un flottant sur leur compatibilité. Dans le chapitre \original, j'ai explicité que les programmes qui donnaient des résultats toujours identiques et ceux qui devaient avoir des résultats équivalents. 
+
+\subsubsection{Programmes \texttt{testProcessorSame.py}}
+
+Toutes les exécutions de \processor doivent donner des résultats identiques, surtout au sein du même projet. Et j'ai pu le confirmer en comparant plusieurs résultats obtenus de différentes exécutions. 
+
+Et lorsque j'ai apporté des corrections au programme, quand je suis passée de \original à \ilcsoft, cela m'a permis de vérifier que mon code obtenait bien le même résultat. De même, de \ilcsoft à \fcc.
+
+\subsubsection{Programmes \texttt{testAnalysisSame.py}}
+
+La comparaison entre 2 exécutions du programme \analysis est plus compliquée, puisque la BDT utilise des nombres aléatoires, ce qui ne permet pas d'obtenir des résultats identiques.
+
+Certains fichiers doivent rester identiques comme les fichiers \verb|data.root| ou \verb|split_XX.root|. Certains sont complètement différents comme les fichiers \verb|model_XX.joblib| ou \verb|bestSelection_XX.root|, car ils sont liés à l'entraînement de la BDT. Mais à la fin les fichiers \verb|stat_XX.json| doivent être statistiquement compatibles.
+
+\subsection{Répertoire \texttt{result}}
+
+Dans ce répertoire, je place les fichiers de sorti des programmes \texttt{test}. 
+En effet, quand on exécute un programme de test, l'utilisateur a la possibilité d'obtenir les résultats sous la forme d'un fichier \texttt{JSON}. 
+Ce qui permet d'en garder une trace et de ne pas refaire un test déjà effectué.\\
+
+\subsection{Mes résultats}
+
+Je peux donc confirmer que mes programmes s'exécutent complètement et correctement.
