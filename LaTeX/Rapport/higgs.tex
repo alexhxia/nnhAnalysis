@@ -1,0 +1,154 @@
+
+\section{Physique du Higgs}
+
+\subsection{Section efficace}
+
+\subsubsection{Quelques constantes}
+Avant de commencer, je vais rappeler certaines constantes utiles pour la suite tirée du PDG, \textit{Particle Data Group} 2022\cite{Workman:2022ynf} :
+\begin{description}
+
+	\item[$\gHWW$] : couplage du boson de Higgs et du boson W
+
+	\item[$\GF$] : constante de couplage de Fermi
+	\footnote{\url{https://pdg.lbl.gov/2021/tables/contents_tables.html}}
+	$$ \frac{G_\mathrm{F}}{\left(\hbar c\right)^3} = 1,166\,378\,7(6) \times 10^{-5}\, \GeV^{-2} $$
+	$$ (\hbar c)^2 = \vhc \, \GeV^2 \, \mathrm{mbarn} = \vhc \times 10^{-31} \, \mathrm{m}.\GeV^2 $$
+	
+	\item[$\mH$] : masse du boson de Higgs
+	\footnote{\url{https://pdglive.lbl.gov/Particle.action?node=S126&init=0}}
+	$$ m_\mathrm{H_0} = 125,25 \pm 0,17 \, \GeV $$
+		
+	\item[$m_W$] : masse du boson W
+	\footnote{\url{https://pdglive.lbl.gov/Particle.action?node=S043&init=0}}
+	$$ m_\mathrm{W} = 80,377 \pm 0,012 \, \GeV $$
+	
+	\item[$s$] : variable de Mandelstam
+	$$ s = \left(p_1 + p_2\right)^2 = \left(p_{e} + p_{p}\right)^2 $$
+	Mes données correspondent aux simulations à : 
+	$$ \sqrt{s} = 250\, \GeV $$
+
+		
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Fusion $W\Wstar$ \cite{desy}}
+
+Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 \mW $ :
+
+\begin{equation}
+	\sigma_\mathrm{WW-fusion} \longrightarrow 
+		\frac{\gHWW^2 \, \GF^2}{32 \, \pi^3}
+		\left[
+			\left(1 + \frac{\mH^2}{s}\right) \log\left(\frac{s}{\mH^2}\right)
+			- 2 \left(1 - \frac{\mH^2}{s}\right)
+		\right]
+\end{equation}
+
+
+\begin{align*}
+	\sigma_\mathrm{WW-fusion}
+		&\approx\frac{\gHWW^2 \, \GF^2}{32 \, \pi^3}
+		\left[
+			\left(1 + \frac{\mH^2}{s}\right) \log\left(\frac{s}{\mH^2}\right)
+			- 2 \left(1 - \frac{\mH^2}{s}\right)
+		\right]\\
+		&=\gHWW^2\frac{(\hbar c)^6}{32 \, \pi^3}
+		\left[\frac{\GF}{(\hbar c)^3}\right]^2
+		\left[
+			\left(1 + \frac{\mH^2}{s}\right) \log\left(\frac{s}{\mH^2}\right)
+			- 2 \left(1 - \frac{\mH^2}{s}\right)
+		\right]\\
+		&=\gHWW^2\frac{(\vhc)^3}{32 \, \pi^3}
+		\left[\vGF\right]^2
+		\left[
+			\left(1 + \frac{\vmH^2}{\vs^2}\right) \log\left(\frac{\vs^2}{\vmH^2}\right)
+			- 2 \left(1 - \frac{\vmH^2}{\vs^2}\right)
+		\right]\\
+		&\approx \gHWW^2 \times (-6,0466389\times 10^{-15})
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{La largeur partielle pour $W\Wstar$ \cite{desy}}
+
+\begin{equation}
+	\Gamma\left(H\longrightarrow WW\right) = 
+		\frac{\gHWW^2 \, \mH^3}{64 \, \pi \, \mW^2}
+		\left(1 - \frac{4 \mW^2}{\mH^2} + \frac{12 \mW^4}{\mH^4}\right)
+		\left(1 - \frac{4 \mW^2}{\mH^2}\right)^{1/2}
+\end{equation}
+
+\begin{align*}
+	\Gamma\left(H\longrightarrow WW\right) 
+	&= \gHWW^2
+		\frac{\vmH^3}{64 \, \pi \, \vmW^2}
+		\left(1 - \frac{4\times \vmW^2}{\vmH^2} + \frac{12\times \vmW^4}{\vmH^4}\right)
+		\left(1 - \frac{4\times \vmW^2}{\vmH^2}\right)^{1/2}\\
+	&= \gHWW^2 
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{La section efficace de production du Higgs}
+
+\begin{equation}
+	\sigma_\mathrm{production} = \sigma_\mathrm{WW-fusion} \times \Gamma\left(H\longrightarrow WW\right)
+\end{equation}
+
+\begin{align*}
+	\sigma 
+		&= \frac{\gHWW^2 \, \GF^2}{32 \, \pi^3}
+		\left[
+			\left(1 + \frac{\mH^2}{s}\right) \log\left(\frac{s}{\mH^2}\right)
+			- 2 \left(1 - \frac{\mH^2}{s}\right)
+		\right]
+		\times 
+		\frac{\gHWW^2 \, \mH^3}{64 \, \pi \, \mW^2}
+		\left(1 - \frac{4 \mW^2}{\mH^2} + \frac{12 \mW^4}{\mH^4}\right)
+		\left(1 - \frac{4 \mW^2}{\mH^2}\right)^{1/2} \\
+	\sigma &= \gHWW^4 \frac{\GF^2}{32 \, \pi^4} \frac{\mH^3}{64 \, \mW^2}
+		\left[
+			\left(1 + \frac{\mH^2}{s}\right) \log\left(\frac{s}{\mH^2}\right)
+			- 2 \left(1 - \frac{\mH^2}{s}\right)
+		\right]
+		\left(1 - \frac{4 \mW^2}{\mH^2} + \frac{12 \mW^4}{\mH^4}\right)
+		\left(1 - \frac{4 \mW^2}{\mH^2}\right)^{1/2} \\
+	\sigma \propto \gHWW^4
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Nombre de Higgs attendu}
+
+Le nombre d'évènement est :
+\begin{equation}
+^	\mathcal{N}_\mathrm{event} 
+	= \mathcal{N}_\mathrm{signal} 
+	+ \mathcal{N}_\mathrm{background}
+\end{equation}
+
+Or le nombre d'évènement détecté est :
+\begin{equation}
+	\mathcal{N}_\mathrm{detect} 
+	= \mathcal{N}_\mathrm{event} \pm \sigma(\mathcal{N}_\mathrm{event})
+	= \mathcal{N}_\mathrm{event} \pm \sqrt{\mathcal{N}_\mathrm{event}}
+\end{equation}
+
+Et le signal est :
+\begin{equation}
+	\mathcal{N}_\mathrm{signal} 
+	= \mathcal{N}_\mathrm{detect} 
+	- \mathcal{N}_\mathrm{background}
+\end{equation}
+
+Donc le signal est :
+\begin{equation}
+	\mathcal{N}_\mathrm{detect} 
+	- \mathcal{N}_\mathrm{background} 
+	- \sqrt{\mathcal{N}_\mathrm{évènement}}
+	\leq \mathcal{N}_\mathrm{signal} \leq
+	\mathcal{N}_\mathrm{detect} 
+	- \mathcal{N}_\mathrm{background} 
+	+ \sqrt{\mathcal{N}_\mathrm{event}}
+\end{equation}
