@@ -109,7 +109,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input{start.tex}
+%\input{start.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -126,11 +126,13 @@
 
 \chapter{Résultats Physiques}
 
+\section{Résultats statistiques de \analysis}
+
+
+
 \section{Physique du Higgs}
 
 \subsection{Section efficace}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Quelques constantes}
 Avant de commencer, je vais rappeler certaines constantes utiles pour la suite tirée du PDG, \textit{Particle Data Group} 2022\cite{Workman:2022ynf} :
@@ -252,7 +254,7 @@ Comme on est à très haute énergie, on peut approximer que $ \sqrt{s} >> 2 \mW
 
 Le nombre d'évènement est :
 \begin{equation}
-	\mathcal{N}_\mathbox{évènement} 
+^	\mathcal{N}_\mathbox{évènement} 
 	= \mathcal{N}_\mathbox{signal} 
 	+ \mathcal{N}_\mathbox{bruit\ de\ fond}
 \end{equation}
@@ -282,106 +284,24 @@ Donc le signal est :
 	+ \sqrt{\mathcal{N}_\mathbox{évènement}}
 \end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\subsection{Propriétés à Préciser}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Conclusion}
-
-\section{Travail effectué}
-
-\section{Résultats attendus}
-
-\section{Au delà}
+\input{ccl.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{appendix}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\input{biblioEffective.tex}
+\input{orga.tex}
+%\input{fichier.tex}
 
-\chapter{Résumé du travail effectué}
-
-\section{Bibliographie}
-
-\paragraph{\url{https://tel.archives-ouvertes.fr/tel-03405418}}
-\begin{itemize}
-	\item Étude du calorilmètre hadronique semi-digital et étude du canal physique 
-	$$ \positron \electron \longrightarrow \nnh \ (H \longrightarrow WW \longrightarrow qqqq)$$ 
-	au collisionneur circulaire électron positon (CEPC) 
-	\item Bing Liu, IP2I
-	\item 2020
-\end{itemize}
-
-\paragraph{\url{https://tel.archives-ouvertes.fr/tel-02141420}}
-\begin{itemize}
-	\item Étude des gerbes hadroniques dans un calorimètre à grande granularité et étude du canal $$ \positron \electron \longrightarrow HZ \ (Z \longrightarrow qq) $$ dans les futurs collisionneurs leptoniques
-	\item Guillaume Garillot, IPNL
-	\item 2019
-\end{itemize}
-
-\section{Tutoriels}
-
-\begin{description}
-	\item[\texttt{LCIO}] \url{https://github.com/iLCSoft/LCIO}
-	\item[\texttt{ILDConfig}] \url{https://github.com/iLCSoft/ILDConfig}
-	\item[\texttt{Marlin}] \url{https://github.com/iLCSoft/Marlin}
-	\item[\texttt{key4hep}] \url{https://github.com/key4hep/k4MarlinWrapper}
-\end{description}
-
-\section{Code initial}
-
-\url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}
-
-\section{Code final}
-
-\url{https://github.com/alexhxia/nnhAnalysis}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Organisation du Projet}
-
-\section{Organisation initiale}
-
-\input{figure/tikz/orgaInit.tex}
-
-\section{Organisation finale}
-
-\input{figure/tikz/orgaFinal.tex}
-
-\section{Le dossier \texttt{NNH\_HOME}}
-
-Pour s'exécuter, le projet a besoin de la variable d'environnement \texttt{NNH\_HOME} qui est le chemin du programme que vous souhaitez exécuter,  mis en avant en rouge dans les Figure~\ref{orga:begin} et Figure~\ref{orga:end}.
-
-Donc dans le projet initial, il s'agissait de \texttt{NNH\_HOME=$\backslash$nnhAnalysis} et dans le nouveau projet :
-\begin{itemize}
-	\item \texttt{NNH\_HOME = $\backslash$nnhAnalysis$\backslash$nnhProgram$\backslash$original}
-	\item \texttt{NNH\_HOME = $\backslash$nnhAnalysis$\backslash$nnhProgram$\backslash$ilcsoft}
-	\item \texttt{NNH\_HOME = $\backslash$nnhAnalysis$\backslash$nnhProgram$\backslash$fcc}
-\end{itemize}
-
-
-\chapter{Fichiers \ROOT de sorties du programme \processor}
-
-On a vu précédemment que \processor converti une série de fichier \SLCIO en fichiers \ROOT. 
-
-Il considère deux canaux de désintégration du Higgs :
-\begin{align}
-	& h \longrightarrow b \bbar \label{eq:bbar}\\
-	& h \longrightarrow W \Wstar \longrightarrow qqqq \label{eq:WWstar}
-\end{align}
-
-La première équation (\ref{eq:bbar}) sera mesuré par le détecteur sous la forme de 2 jets reconstruit et identifié comme 2 quark \particle{b}.
-
-Alors que la seconde équation (\ref{eq:WWstar}) sera reconstruit comme 4 jets, 2 par boson \particle{W}\footnote{\particle{W} sur couche de masse, \particle{Wstar} hors couche de masse}.
 
 \end{appendix}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Figure %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\listoffigures
+%\listoffigures
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% BIBLIO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -24,10 +24,10 @@ Une fois encore, le détecteur SDHCAL candidate pour ce projet et pourrait être
 \section{Développement Numérique}
 
 Mon objectif est d'adapter les codes développés précédemment par Guillaume 
-\textsc{Garillot} du projet ILC au projet FCC qui n'utilise pas les mêmes suites logiciels.\\
+\textsc{Garillot} du projet ILC au projet FCC qui n'utilise pas les mêmes suites logiciels.
 
 
-\subsection{\convert}
+\subsection{Programme : \convert}
 
 Dans un premier temps, je dois convertir les fichiers \SLCIO en fichiers \ROOT en utilisant le programme libre \texttt{k4MarlinWrapper} du projet de \texttt{key4hep}\footnote{\url{https://github.com/key4hep/k4MarlinWrapper}}. 
 Il s'agit d'une collaboration entre chercheurs du CERN dont l'objectif est de développer des outils pour le projet FCC, y compris des utils de conversion entre \LCIO (\iLCSoft) et \EDMhep (\FCC).%, en utilisant les algorithmes \texttt{Gaudi}
@@ -37,10 +37,10 @@ Cette partie a été laborieux, car le programme \texttt{k4MarlinWrapper} est en
 J'ai du faire remonter de très nombreux problèmes en parallèle de mon travail. 
 En effet, à chaque mise à jour, le programme ne fonctionnait plus, ce qui m'a fait perdre beaucoup de temps en essayant de comprendre le problème, le signaler et le corriger quand je le comprenais, ou patienter pour que quelqu'un d'autre le corrige. 
 
-\subsection{\processor}
+\subsection{Programme : \processor}
 
 Comme les fichiers d'entrées sont à présent des fichiers \ROOT, il faut adapter cette partie pour que les fichiers de sortie soit les mêmes ou au moins équivalent.
 
-\subsection{\analysis}
+\subsection{Programme : \analysis}
 
 Cette partie reste inchangé par rapport à \ilcsoft.
