@@ -37,7 +37,7 @@
 \setbeamertemplate{navigation symbols}{} 
 \logo{} 
 \institute[IP2I]{Université de Claude Bernard Lyon 1} 
-\date[2022]{1\ier Juillet 2022} 
+\date[2022]{5 Septembre 2022} 
 \subject{nnhA} 
 
 % Décompte des pages sans les annexes
@@ -72,10 +72,10 @@
 \begin{frame}{Sommaire}
     
     \begin{columns}
-        \begin{column}{0.3\textwidth}
+        \begin{column}{0.4\textwidth}
         \tableofcontents
         \end{column}
-        \begin{column}{0.65\textwidth}
+        \begin{column}{0.6\textwidth}
     \begin{figure}[h!]
 	\center
     \resizebox{\textwidth}{!}{
@@ -121,55 +121,61 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-\subsection{Processus étudiés}
-\begin{frame}{Introduction}
 
-	$$ e^{+} e^{-} \longrightarrow \nu \nu h $$
+\subsection{Physique Expérimentales}
+
+\begin{frame}{Physique des Particules Expérimentales}
 
 	\begin{columns}
-		
-		\begin{column}{0.45\textwidth}
-			\begin{description}
-				\item[$e^{+} e^{-}$] collisionneur leptonique
-				\item[$\nu \nu h$] 2 neutrinos-higgs
-			\end{description}
-		\end{column}
-		
-		\begin{column}{0.3\textwidth}
-			\begin{block}{Canaux analysés}
-				\begin{enumerate}
-					\item $h \longrightarrow WW \longrightarrow qqqq$
-					\item $h \longrightarrow b\bbar$
-				\end{enumerate}
-			\end{block}
-        \end{column}
-		
-		\begin{column}{0.15\textwidth}
-            \begin{block}{Mesures}
-                \begin{enumerate}
-                    \item 4 jets
-                    \item 2 jets
-                \end{enumerate}
-            \end{block}
-		\end{column}
+	\begin{column}{0.45\textwidth}
+
+	\begin{block}{Collisionneur Hadronique}
+		\begin{itemize}
+			\item collision à haute énergie de hadron 
+			\begin{itemize}
+				\item (proton-proton)
+			\end{itemize}
+			\item machine à découverte 
+			\item Exemple : LHC 
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{Collisionneur Leptonique}
+		\begin{itemize}
+			\item collision à haute énergie de lepton
+			\begin{itemize}
+				\item (électron-positron)
+			\end{itemize}
+			\item machine de haute précision
+			\item Exemple : LEP 
+		\end{itemize}
+	\end{block}
+	
+	\end{column}
+	\begin{column}{0.45\textwidth}
+	
+	\begin{block}{Linéaire VS Circulaire}
+		\begin{itemize}
+			\item 
+		\end{itemize}
+	\end{block}
+	
+	\end{column}
 	\end{columns}
-    
+	
 \end{frame}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Détecteur SDHCAL}
 
 \begin{frame}{Détecteur SDHCAL}
-    \begin{block}{SDHCAL}
+    \begin{block}{SDHCAL - Semi-Digital Hadronic CALorimeter}
 
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 \begin{itemize}
                     \item Collaboration internationale CALICE
-                    \item Semi-Digital Hadronic CALorimeter
                     \item Calorimètres à grande granularité
                     \begin{itemize}
                         \item Mesure d'énergie
@@ -178,8 +184,12 @@
                     \end{itemize}
                     \item Très bonne performance des Algorithmes de Flux de Particules
                     \item Candidat pour les futurs collisionneurs leptoniques
-                    \item Septembre nouvelle phase de tests en faisceaux
-                    \item En cours de développement : exploitation du temps à 100 pico-seconde
+                    \item \textit{Prochaines étapes :
+                    \begin{itemize}
+             			\item  Septembre : tests en faisceaux
+                    		\item En cours de développement : 
+                    			exploitation du temps à $\mathrm{100\, ps}$     
+					\end{itemize}   }                 
                 \end{itemize}
             \end{column}
 	
@@ -245,7 +255,72 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Processus étudiés}
+\begin{frame}{Introduction}
 
+	\begin{columns}
+	
+		\begin{column}{0.3\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.8\textwidth]{../img/FeynmanHiggs_nnh.png} 
+				\caption{$ e^{+} e^{-} \longrightarrow \nu \nu h $}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{0.3\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=\textwidth]{../img/nnh_WW.png} 
+				\caption{Canal $WW^{*}$}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{0.3\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=\textwidth]{../img/nnh_bb.png} 
+				\caption{Canal $b\overline{b}$}
+			\end{figure}
+		\end{column}
+		
+	\end{columns}
+
+	
+
+	\begin{columns}
+		
+		\begin{column}{0.45\textwidth}
+			\begin{description}
+				\item[$e^{+} e^{-}$] collisionneur leptonique
+				\item[$\nu \nu h$] 2 neutrinos-higgs
+			\end{description}
+		\end{column}
+		
+		\begin{column}{0.3\textwidth}
+			\begin{block}{Canaux analysés}
+				\begin{enumerate}
+					\item $h \longrightarrow WW \longrightarrow qqqq$
+					\item $h \longrightarrow b\bbar$
+				\end{enumerate}
+			\end{block}
+        \end{column}
+		
+		\begin{column}{0.15\textwidth}
+            \begin{block}{Mesures}
+                \begin{enumerate}
+                    \item 4 jets
+                    \item 2 jets
+                \end{enumerate}
+            \end{block}
+		\end{column}
+	\end{columns}
+    
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programmes}
 
 \begin{frame}{Sommaire}
