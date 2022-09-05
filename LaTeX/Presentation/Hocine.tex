@@ -14,13 +14,13 @@
 \usepackage{tikz}
 \usepackage{tabularx}
 \usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
 
 
 \author[Hocine]{Alexia HOCINE\\Étudiante en Master 2 en Physique SUBAtomique}
 
 \title[Analyse de donnée de $ e^{+} e^{-} \longrightarrow \nu \nu H $]{
-	%Comparaison des prédictions des suites logicielles de ILC (iLCSoft) et de FCC (key4HEP) \\
-	%sur un signal $ e^{+} e^{-} \longrightarrow Z H $ 
     Détecteur SDHCAL pour le signal $ e^{+} e^{-} \longrightarrow \nu \nu H $: \\
     Optimisation et Adaptation de l'analyse de données \\
     pour le Projet FCC
@@ -55,7 +55,12 @@
 
 
 % math 
+
 \newcommand{\bbar}{\overline{b}}
+\newcommand{\Wstar}{W^{\star}}
+
+\newcommand{\bb}{$\mathrm{b\bbar}$\xspace}
+\newcommand{\WW}{$\mathrm{W\Wstar}$\xspace}
 
 \useoutertheme{infolines}
 
@@ -72,11 +77,13 @@
 \begin{frame}{Sommaire}
     
     \begin{columns}
-        \begin{column}{0.4\textwidth}
-        \tableofcontents
-        \end{column}
-        \begin{column}{0.6\textwidth}
-    \begin{figure}[h!]
+    
+        	\begin{column}{0.4\textwidth}
+        		\tableofcontents
+        	\end{column}
+        
+        	\begin{column}{0.6\textwidth}
+			\begin{figure}[h!]
 	\center
     \resizebox{\textwidth}{!}{
 	\begin{tikzpicture}%[width=\textwidth]
@@ -114,9 +121,8 @@
 	}
 	\label{orga:end}
 \end{figure}
-
-    \end{column}
-    \end{columns}
+    		\end{column}
+    	\end{columns}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -140,6 +146,9 @@
 		\end{itemize}
 	\end{block}
 	
+	\end{column}
+	\begin{column}{0.45\textwidth}
+	
 	\begin{block}{Collisionneur Leptonique}
 		\begin{itemize}
 			\item collision à haute énergie de lepton
@@ -148,15 +157,6 @@
 			\end{itemize}
 			\item machine de haute précision
 			\item Exemple : LEP 
-		\end{itemize}
-	\end{block}
-	
-	\end{column}
-	\begin{column}{0.45\textwidth}
-	
-	\begin{block}{Linéaire VS Circulaire}
-		\begin{itemize}
-			\item 
 		\end{itemize}
 	\end{block}
 	
@@ -254,7 +254,7 @@
     
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Processus étudiés}
 \begin{frame}{Introduction}
 
@@ -266,14 +266,26 @@
 				\includegraphics[width=0.8\textwidth]{../img/FeynmanHiggs_nnh.png} 
 				\caption{$ e^{+} e^{-} \longrightarrow \nu \nu h $}
 			\end{figure}
+			
+			\begin{itemize}
+				\item $e^{+} e^{-}$ : collisionneur leptonique
+				\item $\nu \nu h$ : 2 neutrinos-higgs
+			\end{itemize}
+			
 		\end{column}
 		
+	
 		\begin{column}{0.3\textwidth}
+		
 			\begin{figure}
 				\centering
 				\includegraphics[width=\textwidth]{../img/nnh_WW.png} 
 				\caption{Canal $WW^{*}$}
 			\end{figure}
+			\begin{itemize}
+				\item Canal : $$h \longrightarrow WW \longrightarrow qqqq$$
+				\item Mesures : 4 jets
+			\end{itemize}
 		\end{column}
 		
 		\begin{column}{0.3\textwidth}
@@ -282,45 +294,16 @@
 				\includegraphics[width=\textwidth]{../img/nnh_bb.png} 
 				\caption{Canal $b\overline{b}$}
 			\end{figure}
-		\end{column}
-		
-	\end{columns}
-
-	
-
-	\begin{columns}
-		
-		\begin{column}{0.45\textwidth}
-			\begin{description}
-				\item[$e^{+} e^{-}$] collisionneur leptonique
-				\item[$\nu \nu h$] 2 neutrinos-higgs
-			\end{description}
-		\end{column}
-		
-		\begin{column}{0.3\textwidth}
-			\begin{block}{Canaux analysés}
-				\begin{enumerate}
-					\item $h \longrightarrow WW \longrightarrow qqqq$
-					\item $h \longrightarrow b\bbar$
-				\end{enumerate}
-			\end{block}
-        \end{column}
-		
-		\begin{column}{0.15\textwidth}
-            \begin{block}{Mesures}
-                \begin{enumerate}
-                    \item 4 jets
-                    \item 2 jets
-                \end{enumerate}
-            \end{block}
+			\begin{itemize}
+				\item Canal : $$h \longrightarrow b\bbar$$
+				\item Mesures : 2 jets
+			\end{itemize}		
 		\end{column}
 	\end{columns}
     
 \end{frame}
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programmes}
 
 \begin{frame}{Sommaire}
@@ -337,12 +320,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{original}
+\subsection{\texttt{original}}
 
-\begin{frame}{original}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram/original}
+\begin{frame}{\texttt{original}}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram/original}
 
 \begin{block}{Projet initial}
 	\url{https://github.com/ggarillot/nnhAnalysis/tree/refactor}
+\end{block}
+
+\begin{block}{Type de processus}
+	\begin{figure}
+		\center
+		\includegraphics[width=\textwidth]{../img/listeProcessus.png} 
+	\end{figure}
 \end{block}
 
 \begin{columns}
@@ -366,13 +356,6 @@
 	\end{column}
 
 \end{columns}
-
-\begin{block}{Type de processus}
-	\begin{figure}
-		\center
-		\includegraphics[width=\textwidth]{../img/listeProcessus.png} 
-	\end{figure}
-\end{block}
 
 \end{frame}
 
@@ -407,10 +390,10 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{iLCSoft}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{iLCSoft}}
 
-\begin{frame}{iLCSoft}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram/ilcsoft}
+\begin{frame}{\texttt{iLCSoft}}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram/ilcsoft}
 
 	\begin{block}{Améliorations apporter à \texttt{processor} et \texttt{analysis}}
 		\begin{itemize}
@@ -431,10 +414,10 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{FCC}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{FCC}}
 
-\begin{frame}{FCC}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram}
+\begin{frame}{\texttt{FCC}}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhProgram}
 
 	\begin{block}{Ajout du programme \texttt{convert} (en cours)}
 		\begin{itemize}
@@ -457,7 +440,7 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Outils Numériques}
 
@@ -500,7 +483,9 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Test}
 
 \begin{frame}{Outils de Numérique : \texttt{Test}}{https://github.com/alexhxia/nnhAnalysis/tree/main/nnhTest}
@@ -539,8 +524,8 @@
 \end{block}
 
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusion}
 
@@ -555,18 +540,54 @@
     \end{columns}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Premiers résultats}
 
-\begin{frame}{Premiers résultats}{\texttt{analysis}}
+\begin{frame}{Premiers résultats}{Répartitions par canaux}
+		
+\begin{figure}[!ht]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\begin{description}
+			\item[0] \texttt{Signal}
+			\item[1] \texttt{Other higgs->WW*}
+			\item[2] \texttt{Other higgs}
+			\item[5] \texttt{2 fermions leptonic}
+			\item[6] \texttt{2 fermions hadronic}
+			\item[8] \texttt{4 fermions hadronic}
+			\item[9] \texttt{4 fermions semileptonic}
+			\item[7] \texttt{4 fermions leptonic}
+		\end{description}
+		\caption{Pour le canaux \WW}
+	\end{subfigure}
+     \hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\begin{description}
+			\item[0] \texttt{Signal}
+			\item[3] \texttt{Other higgs->bb}
+			\item[4] \texttt{Other higgs}
+			\item[5] \texttt{2 fermions leptonic}
+			\item[6] \texttt{2 fermions hadronic}
+			\item[8] \texttt{4 fermions hadronic}
+			\item[9] \texttt{4 fermions semileptonic}
+			\item[7] \texttt{4 fermions leptonic}
+		\end{description}
+		\caption{Pour le canaux \bb}
+		\label{stats:results:bb}
+	\end{subfigure}
+	\caption{Les numéros et les noms des différentes catégories d'\texttt{analysis} pour l'étude statistique}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Premiers résultats}{Variables à étudier}
 
 	\begin{columns}
     
         \begin{column}{0.3\textwidth}
-				\includegraphics[height=0.25\textheight]{../img/bb_original_run_1.png}\\
-				\includegraphics[height=0.25\textheight]{../img/bb_original_run_2.png}\\
-				\includegraphics[height=0.25\textheight]{../img/bb_original_run_3.png}
+			\includegraphics[width=0.9\textwidth]{../img/stats_bb_original_run1_run1.png} 
+			\includegraphics[width=0.9\textwidth]{../img/stats_bb_original_run2_run1.png}
         \end{column}
         
 		\begin{column}{0.65\textwidth}
@@ -591,6 +612,40 @@
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Variabilité entre 2 fichiers \texttt{analysis}}
+
+	%\begin{columns}
+	
+	%\begin{column}{0.45\textwidth}
+	
+	\begin{block}{Nombre d'évènement} 
+	
+	\begin{itemize}
+	\item un écart initial sur le nombre d'évènement de moins de 0.01\%, 
+	\item puis une diminution des évènements pré-sélectionnés de 17,6\% pour le \textit{run 1} contre 17,5\% pour le \textit{run 2}
+	\item Et une diminution de 59,6\% et 60,0\% pour les évènements sélectionnés par la BDT. 
+	\end{itemize}	
+	\end{block}
+	
+	%\end{column}
+	
+	%\begin{column}{0.45\textwidth}
+	
+	\begin{block}{Luminosité} 
+	
+	\begin{itemize}
+		\item diminution entre les variables \texttt{sum} et \texttt{effSel}, de 88,3\% et 88,5\%	\end{itemize}
+	
+	\end{block}
+	
+	%\end{column}
+	
+	%\end{columns}
+	
+
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -607,11 +662,9 @@
 		 		\item Programmation de codes de test
 			\end{itemize}
 		\end{exampleblock}
-        \begin{alertblock}{Travails en cours}
+        \begin{alertblock}{Travail non terminé}
 			\begin{itemize}
-		 		\item Optimisation des codes pour iLCSoft \texttt{analysis}
 		 		\item Adaptation au projet FCC
-                \item Étude de la variation des résultats dùes à la BDT
 			\end{itemize}
 		\end{alertblock}
 	\end{column}
@@ -650,45 +703,4 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\backupbegin
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\begin{frame}{Sources des Figures}
-
-%\listoftables 
-
-%\begin{description}
-	%\item[\ref{fig:Michelson}] \url{public.virgo-gw.eu/index.php?gmedia=Rv7bB&t=g\#photoBox-54}
-%\end{description}
-
-%\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\begin{frame}{Bibliographie}
-
-%\begin{description}
-	%\item[\ref{fig:Michelson}] \url{public.virgo-gw.eu/index.php?gmedia=Rv7bB&t=g\#photoBox-54}
-%\end{description}
-
-%\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\appendix
-%\begin{frame}
-
-%\begin{center}
-%\Huge{Suppléments}
-%\end{center}
-
-%\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\begin{frame}{Annexes}
-%\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\backupend
 \end{document}
