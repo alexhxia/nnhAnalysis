@@ -1,0 +1,90 @@
+{
+  "0": {
+    "stat": 312024,
+    "sum": 20.547669917345047,
+    "statPreSel": 298456,
+    "sumPreSel": 19.654178619384766,
+    "statSel": 204662,
+    "sumSel": 13.47757625579834,
+    "name": "Signal",
+    "effPreSel": 0.9565161742643115,
+    "effSel": 0.6559174986756732
+  },
+  "3": {
+    "stat": 2676427,
+    "sum": 164.35298906639218,
+    "statPreSel": 781906,
+    "sumPreSel": 36.99772221595049,
+    "statSel": 523124,
+    "sumSel": 16.883962631225586,
+    "name": "Other higgs->bb",
+    "effPreSel": 0.22511134373713676,
+    "effSel": 0.10272987870275438
+  },
+  "4": {
+    "stat": 2818992,
+    "sum": 131.83522200584412,
+    "statPreSel": 706080,
+    "sumPreSel": 24.494218826293945,
+    "statSel": 13030,
+    "sumSel": 0.7195425629615784,
+    "name": "Other higgs",
+    "effPreSel": 0.18579419409790307,
+    "effSel": 0.005457893209522428
+  },
+  "5": {
+    "stat": 3779058,
+    "sum": 12982.808364868164,
+    "statPreSel": 45373,
+    "sumPreSel": 157.13844299316406,
+    "statSel": 17,
+    "sumSel": 0.06780499219894409,
+    "name": "2 fermions leptonic",
+    "effPreSel": 0.012103578715556259,
+    "effSel": 5.222675271278459e-06
+  },
+  "6": {
+    "stat": 4150992,
+    "sum": 77324.19169616699,
+    "statPreSel": 2853449,
+    "sumPreSel": 50819.32995605469,
+    "statSel": 232,
+    "sumSel": 5.656787395477295,
+    "name": "2 fermions hadronic",
+    "effPreSel": 0.6572241990674935,
+    "effSel": 7.315676079363019e-05
+  },
+  "8": {
+    "stat": 2304920,
+    "sum": 16800.442489624023,
+    "statPreSel": 214194,
+    "sumPreSel": 1394.8447723388672,
+    "statSel": 12,
+    "sumSel": 0.016225729137659073,
+    "name": "4 fermions hadronic",
+    "effPreSel": 0.08302428779482,
+    "effSel": 9.657917729059879e-07
+  },
+  "9": {
+    "stat": 9138908,
+    "sum": 19529.04107284546,
+    "statPreSel": 3106444,
+    "sumPreSel": 2456.816093444824,
+    "statSel": 35693,
+    "sumSel": 10.732304573059082,
+    "name": "4 fermions semileptonic",
+    "effPreSel": 0.12580321195908348,
+    "effSel": 0.0005495561473308604
+  },
+  "7": {
+    "stat": 16712335,
+    "sum": 10423.671430706978,
+    "statPreSel": 352275,
+    "sumPreSel": 289.7360974550247,
+    "statSel": 301,
+    "sumSel": 0.13022466003894806,
+    "name": "4 fermions leptonic",
+    "effPreSel": 0.02779597374889373,
+    "effSel": 1.2493166242301218e-05
+  }
+}
