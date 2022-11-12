@@ -43,6 +43,6 @@ Ici vous trouverez des scripts permettant d'automatiser la compilation, l'exécu
 
 Dans ce dossier vous trouverez des programmes python qui permettent de vérifier les données générées par les programmes.
 
-## [`nnhResult`](nnhResult)
+## [`result`](result)
 
 Dans ce dossier vous trouverez résultats en JSON qui valide les données générées par les programmes.
