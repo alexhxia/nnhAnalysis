@@ -66,7 +66,7 @@ export NNH_OUTPUT=/gridgroup/ilc/nnhAnalysisFiles/result
 
 ```
 /path/to/nnhAnalysis
-└─── nnhHome
+└─── program
 |   └─── original
 |   |   └─── miniDSTMaker
 |   |   └─── processor
@@ -75,7 +75,7 @@ export NNH_OUTPUT=/gridgroup/ilc/nnhAnalysisFiles/result
 |   |   └─── processor
 |   |   └─── analysis
 |   └─── fcc
-└─── nnhScript
+└─── script
 |   └─── nnh.sh
 |   └─── nnhProcessor.sh
 |   └─── nnhAnalysis.sh
@@ -85,32 +85,35 @@ export NNH_OUTPUT=/gridgroup/ilc/nnhAnalysisFiles/result
 |       └─── help.sh
 |       └─── export.sh
 |       └─── functions.sh
-└─── nnhTest
+└─── test
 |   └─── testProcessor_isCompleted.py
 |   └─── testProcessor_isSame2.py
 |   └─── testAnalysis_isCompleted.py
 |   └─── testAnalysis_isSame2.py
+```
+```
+export NNH=/path/to/nnhAnalysis
 ```
 
 ### Dossiers du Programme `nnhHome`
 
 ```
 /path/to/nnhAnalysis
-└─── nnhHome
+└─── program
 |   └─── original
 |   └─── ilcsoft
 |   └─── fcc
-└─── nnhScript
-└─── nnhTest
+└─── script
+└─── test
 ```
 
 ```
-export NNH_HOME=~/nnhAnalysis/nnhHome
+export NNH_PROGRAM=$NNH/program
 ```
 
 #### Programme `original`
 ```
-/path/to/nnhAnalysis/nnhHome/original
+/path/to/nnhAnalysis/program/original
 └─── miniDSTMaker
 |   └─── miniDST.py
 |   └─── Observer.py
@@ -158,12 +161,12 @@ export NNH_HOME=~/nnhAnalysis/nnhHome
 |   |   └─── launchBDT_bb.py
 ```
 ```
-export NNH_ORIGINAL=~/nnhAnalysis/nnhHome/original
+export NNH_ORIGINAL=$NNH_PROGRAM/original
 ```
 
 #### Programme `ilcsoft`
 ```
-/path/to/nnhAnalysis/nnhHome/ilcsoft
+/path/to/nnhAnalysis/program/ilcsoft
 └─── processor
 |   └─── script
 |   |   └─── Merge.py
@@ -195,24 +198,26 @@ export NNH_ORIGINAL=~/nnhAnalysis/nnhHome/original
 |   |   └─── launchBDT_bb.py
 ```
 ```
-export NNH_ILCSOFT=~/nnhAnalysis/nnhHome/ilcsoft
+export NNH_ILCSOFT=$NNH_PROGRAM/ilcsoft
 ```
 
 #### Programme `fcc` 
 ```
-/path/to/nnhAnalysis/nnhHome/fcc
+/path/to/nnhAnalysis/program/fcc
 ```
 ```
-export NNH_FCC=~/nnhAnalysis/nnhHome/fcc
+export NNH_FCC=$NNH_PROGRAM/fcc
 ```
 
 #### Sous-Programme `processor`
+Les dossiers d'entrés et de sorties du programme :
 ```
 export NNH_PROCESSOR_INPUT=$NNH_INPUT \
        NNH_PROCESSOR_OUTPUT=$NNH_HOME/processor/RESULTS
 ```
 
-#### Sous-Programme `processor`
+#### Sous-Programme `analysis`
+Les dossiers d'entrés et de sorties du programme :
 ```
 export NNH_ANALYSIS_INPUT=$NNH_HOME/processor/RESULTS \
        NNH_ANALYSIS_OUTPUT=$NNH_HOME/analysis/DATA 
@@ -223,11 +228,11 @@ export NNH_ANALYSIS_INPUT=$NNH_HOME/processor/RESULTS \
 export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 ```
 
-## Projet `nnhScript`
+## Dossier `script`
 ```
 /path/to/nnhAnalysis
-└─── nnhHome
-└─── nnhScript
+└─── program
+└─── script
 |   └─── nnh.sh
 |   └─── nnhProcessor.sh
 |   └─── nnhAnalysis.sh
@@ -237,23 +242,23 @@ export MARLIN_DLL=$MARLIN_DLL:$NNH_HOME/processor/lib/libnnhProcessor.so
 |       └─── help.sh
 |       └─── export.sh
 |       └─── functions.sh
-└─── nnhTest
+└─── test
 ```
 ```
-export NNH_SCRIPT=~/nnhAnalysis/nnhScript
+export NNH_SCRIPT=$NNH/script
 ```
 
-## Projet `nnhTest`
+## Dossier `test`
 ```
 /path/to/nnhAnalysis
-└─── nnhHome
-└─── nnhScript
-└─── nnhTest
+└─── program
+└─── script
+└─── test
 |   └─── testProcessor_isCompleted.py
 |   └─── testProcessor_isSame2.py
 |   └─── testAnalysis_isCompleted.py
 |   └─── testAnalysis_isSame2.py
 ```
 ```
-export NNH_TEST=~/nnhAnalysis/nnhTest
+export NNH_TEST=$NNH/test
 ```
